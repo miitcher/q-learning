@@ -1,0 +1,4 @@
+# Extra files created when compiling latex
+*.aux
+*.log
+*.pdf
