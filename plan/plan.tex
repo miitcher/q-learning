@@ -1,10 +1,10 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{graphicx}
+\usepackage[utf8]{inputenc} % Allow using of åäö, etc.
+\usepackage{graphicx} % Add pictures.
+\usepackage{verbatim} % Add multiline comments.
 
 % comment about something
-\author{Mikael Grön (473488), Anssi Moisio (),
-    Visa Koski (), Lassi Knuuttila ()}
+\author{Mikael Grön, Anssi Moisio, Visa Koski, Lassi Knuuttila}
 \title{Q-learning Project Plan - C++ ELEC-A7150}
 \date{\today}
 
@@ -13,14 +13,100 @@
 \maketitle
 
 
+
+\section{Features / Scope}
+We are aiming to make an advanced program. Therefore our program will fill
+the assignments minimal and optional requirements.
+
+\begin{enumerate}
+\item Minimal requirements
+    \begin{itemize}
+    \item Basic Q-Learning implementation
+    \item Simple graphics to visualise learning process
+    \item A system where bots will eventually learn how to perform simple
+    tasks (such as moving forward) by themselves
+    \end{itemize}
+\item Optional requirements:
+    \begin{itemize}
+    \item Application can save learning data to some external file so user
+    doesn't lose progress between sessions (suggested)
+    \item Ability to fast forward learning steps
+    \item Bots can share their knowledge with other bots to speed up learning
+    process
+    \end{itemize}
+\end{enumerate}
+
+To accomplich the optional requirements our program needs to be able to run
+at different speeds, so "fast forward learning steps" is possible. This
+means that the simulation of the agent can have different speeds.
+
+To have multiple agents, that share knowledge, we need a framework where
+concurrent computation is possible. \textbf{Does this mean threads or
+processes?}
+
+The Q-learning algorithm does newer finish, so it needs to be terminatable
+by the user, therefore threading is needed, for a responsive experience.
+
+
+
+\section{Tools}
+\begin{tabular}{ll}
+Plan                    & Latex \\
+Class Structure         & UML \\
+Documentation           & Doxygen \\
+Compiler                & g++ \\
+Compilation manager     & cmake \textbf{?make?} \\
+Version controll        & git \\
+Graphics and physics    & Box2D \\
+\end{tabular}
+
+
+
+\section{Design and Practice}
+\begin{itemize}
+\item Regular physical weekly meetings, and possible some webcalls,
+where every developer lists his progress since the last meeting,
+and states what the next development goals and its blockers are.
+\item Commit only working code. Meaning that the all tests pass.
+\item Write code and its tests in tandem, or write test before the actual code.
+\item Comment properly your code. Espessially important because Doxygen.
+\item Everything written is in English; comments, names, etc.
+\item If someone is fast finishing his part, then he can help elsewhere.
+\item We try to first make a working version, that then can be further
+developed.
+\item Limit line length to 80 characters.
+\item Tabs are 4 spaces.
+\end{itemize}
+
+
+
+\section{Preliminary Schedule}
+We will have our internal deadlines about 1 to 1/2 weeks before the
+courses deadlines, so we have time to iron out possible problems that
+were not seen beforehand.
+
+
+\section{Algorithms?}
+\textbf{MORE CONTENT}
+
+
+
 \section{Q-learning}
-In Q-learning the algorithm is simple, but when running it multiple times over
-all the possible states, with all possible actions, the algorith can find the
-optimal behavior of the system. The system consists of an actor that has a state
-from which the actor can do some actions, that move the actor into a new state.
-After every action the system gives the actor a revard (a punishment is a
-negative revard). The optimal behavior is determined by how the revard is
-maximized.
+The core Q-learning algorithm is quite simple, so its implementation should
+be quite straigh forward. The complexity of the problem can rise problems,
+so developing the algorithm will also mean the defining of
+the problem the Q-learning will solve.
+
+Running the algorithm means having it test different solutions, and finally
+maximising the revard, when the agent has learned. The learning means
+that the agent runs multiple times over all the possible states,
+with all possible actions.
+
+The actor is the thing that is in states from which the actor can do some
+actions, that move the actor into a new state. After every action the
+system gives the actor a revard (a punishment is a negative revard).
+The optimal behavior is determined by how the system gives the actor the
+biggest revard.
 
 
 \subsection{Q-values}
@@ -106,24 +192,36 @@ wich is 4 bytes, then the Q-values will occupy 18KB of memory.
 Thus the memory size would be tolerable, even when having multiple agents
 at the same time learning.
 
+The analysis of the number of Q-values could be too high or low, but that
+can be adjusted when trying to run the algorithm.
+
+
 
 \section{Class Structure}
-The main divide of the program is; the learning and the simulation. The
+The main divide of the program is; learning and simulation. The
 simulation and the learning parts communicate with eachother mainly by the
 learning part telling the simulation to do an action. The simulation will then
 simulate the action, returning the new simulated change of the agent, to the
 learning part. The learning part evaluates the simulated change, determining
 what the revard for the performed action was, updating the Q-value.
-And so on.
 
-\textbf{Insert here the UML picture.}
+In other words the simulation part contains the world and the body of the agent.
+The learning part contains the "brain" of the agent.
+
+The agent is an object that that initializes the learning and simulation parts.
+
+\textbf{INSERT UML PICTURE}
+
+\textbf{The subsections under will describe the UML picture.}
 
 
 \subsection{Agent}
+\textbf{MORE CONTENT}
 The spesifications of the agent contain; actors, sensors, physical form.
 
 
 \subsection{Q-learning}
+\textbf{MORE CONTENT}
 Anssi is a creative boy, and hopfully will find something to say about this
 divide...
 
@@ -131,16 +229,80 @@ Q-Value-table; revardFunction; Q-function; doRandomActionFunction
 
 
 \subsection{Simulation}
+\textbf{MORE CONTENT}
 The simulation is divided into the graphics and the physics...bla bla blaa...
 
 
-% Parts under this line will not exist in the final version. 
+
+\section{Distribution of Roles}
+Mikael and Anssi will implement the learning part.
+Visa and Lassi will implement the simulation part.
+
+\textbf{MORE CONTENT: When the UML is created, the roles can better be defined.
+The more exact roles may be feesible to define later thou...}
+
+
+
+\begin{comment}
+\end{comment}
 \newpage
 
+
+
+\section{Assignment for Project Plan}
+\textbf{REMOVE LATER}
+
+Star means ready.
+
+Parenthesis lists details.
+
+\subsection{describing}
+
+scope of the project *
+
+preliminary schedule *
+
+design rationale * % in Design & Practice
+
+major architectural decisions (waiting on UML)
+
+distribution of roles in the group (waiting on UML)
+
+
+\subsection{contains}
+
+five pages *
+
+class relationships (waiting on UML)
+
+idea of the high level structure (waiting on UML)
+
+algorithms to use (did not think of any other than the Q-learning)
+
+do not go into details, because plans change (maby failed this already ???)
+
+
+
 \section{Using Latex}
+\textbf{REMOVE LATER}
+
 Compile to pdf with command: \textbf{pdflatex plan.tex}
 
 The pdf can be read with okular.
 The open file is updated in the reader, when again compiling.
+
+
+
+\section{Sublime Settings}
+\textbf{REMOVE LATER}
+\begin{comment}
+{
+    "rulers": [80],
+    "translate_tabs_to_spaces": true,
+    "scroll_past_end": false,
+    "ensure_newline_at_eof_on_save": true,
+    "trim_trailing_white_space_on_save": true
+}
+\end{comment}
 
 \end{document}
