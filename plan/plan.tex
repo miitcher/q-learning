@@ -36,15 +36,15 @@ the assignments minimal and optional requirements.
     \end{itemize}
 \end{enumerate}
 
-To accomplich the optional requirements our program needs to be able to run
+To accomplish the optional requirements our program needs to be able to run
 at different speeds, so "fast forward learning steps" is possible. This
 means that the simulation of the agent can have different speeds.
 
-To have multiple agents, that share knowledge, we need a framework where
+To have multiple agents that share knowledge, we need a framework where
 concurrent computation is possible. \textbf{Does this mean threads or
 processes?}
 
-The Q-learning algorithm does newer finish, so it needs to be terminatable
+The Q-learning algorithm never finishes, so it needs to be terminatable
 by the user, therefore threading is needed, for a responsive experience.
 
 
@@ -64,15 +64,15 @@ Graphics and physics    & Box2D \\
 
 \section{Design and Practice}
 \begin{itemize}
-\item Regular physical weekly meetings, and possible some webcalls,
-where every developer lists his progress since the last meeting,
+\item Regular physical weekly meetings, and possibly some webcalls,
+in which every developer lists his progress since the last meeting,
 and states what the next development goals and its blockers are.
-\item Commit only working code. Meaning that the all tests pass.
+\item Commit only working code. Meaning that all the tests pass.
 \item Write code and its tests in tandem, or write test before the actual code.
-\item Comment properly your code. Espessially important because Doxygen.
-\item Everything written is in English; comments, names, etc.
+\item Comment properly your code. Especially important because of Doxygen.
+\item Everything written is in English: comments, names, etc.
 \item If someone is fast finishing his part, then he can help elsewhere.
-\item We try to first make a working version, that then can be further
+\item We try to first make a working version, which then can be further
 developed.
 \item Limit line length to 80 characters.
 \item Tabs are 4 spaces.
@@ -93,24 +93,24 @@ were not seen beforehand.
 
 \section{Q-learning}
 The core Q-learning algorithm is quite simple, so its implementation should
-be quite straigh forward. The complexity of the problem can rise problems,
+be quite straigh forward. The complexity of the problem can raise problems,
 so developing the algorithm will also mean the defining of
 the problem the Q-learning will solve.
 
 Running the algorithm means having it test different solutions, and finally
-maximising the revard, when the agent has learned. The learning means
+maximising the reward, when the agent has learned. The learning means
 that the agent runs multiple times over all the possible states,
 with all possible actions.
 
 The actor is the thing that is in states from which the actor can do some
-actions, that move the actor into a new state. After every action the
-system gives the actor a revard (a punishment is a negative revard).
+actions that move the actor into a new state. After every action the
+system gives the actor a reward (a punishment is a negative reward).
 The optimal behavior is determined by how the system gives the actor the
-biggest revard.
+biggest reward.
 
 
 \subsection{Q-values}
-Every compination of states and actions has a Q-value. These Q-values are
+Every combination of states and actions has a Q-value. These Q-values are
 initialized all as 0. The optimal action in a state is the action with the
 highest Q-value. When the system is learning, an action is performed, and the
 Q-learning function updates the Q-value which is assosiated with the current
@@ -120,19 +120,19 @@ state and performed action:
 - Q(s_t, a_t) ]\]
 
 Here $s_t$ is the current state, $a_t$ the current action,
-$\alpha$ is the learning rate, $r_t$ is the revard from doing the action,
+$\alpha$ is the learning rate, $r_t$ is the reward from doing the action,
 $\gamma$ is the discount factor, $max_aQ(s_{t+1}, a)$ is the next states
 highest possible Q-value.
 
 The Q-learning function makes the Q-values more accurate by testing out
 the combinations of states and actions in the system. The Q-learning is an
 optimisation method, which will find a optimal path, which gives the maximum
-revard. The best path is the global maximum, but there can exist local maximums.
-The local maximums can be avoided by introducing random actions in the learning
+reward. The best path is the global maximum, but there can exist local maxima.
+The local maxima can be avoided by introducing random actions in the learning
 process. If the Q-learning has found a local maximum a random action will
 hopefully try out someting that moves to the global maximum.
 
-Teoretically the exact Q-values are found by running the learning process
+Theoretically the exact Q-values are found by running the learning process
 for an infinitially long time. This is not practical (duh), so approximate
 Q-values are enough. The learning needs to be terminated from outside, when an
 satisfactory accuracy is achived.
@@ -147,7 +147,7 @@ This depends on the system.
 
 \subsection{Modelling of Agents}
 We model agents as a combination of sensors and actors. The sensors determine
-which state the agent is in, and the actors can permorm actions.
+which state the agent is in, and the actors can perform actions.
 We limit our systems to be two dimensional (2D), meaning the world and agents
 are 2D. We will implement our program to support other 2D systems, but we
 will start by studying a simple case of the agent in the picture:
@@ -155,16 +155,16 @@ will start by studying a simple case of the agent in the picture:
 \includegraphics[width=0.8\textwidth]{simple_agent}
 
 We will model this agent that moves trough a flat 2D world.
-The agent gets a positive revard when it moves to the right, and a negative
-revard when it moves to the left.
+The agent gets a positive reward when it moves to the right, and a negative
+reward when it moves to the left.
 
 The agent has a body and an arm. The arm consists of two beams and two joints
 (A and B). The joints angles determine the state of the actor, and actions are
-performed by roteting the beams, changing the joints angles.
+performed by rotating the beams, changing the joints angles.
 Both joints can move 360$^\circ$ continously, but we need to quantisize
 the angles, so we can have a limited amount of states. We can also be wise
-gods and limit the angle the joints can move. We can see that in our agents
-case that the arm will not effect the state if it flails in the air, not
+gods and limit the angle the joints can move. We can see that in our agent's
+case that the arm will not affect the state if it flails in the air, not
 touching the ground. Also we say that the beam between the joints can not
 occupy the same space as the body. Therefore we can limit the joints
 permitted angles.
@@ -199,16 +199,16 @@ can be adjusted when trying to run the algorithm.
 
 \section{Class Structure}
 The main divide of the program is; learning and simulation. The
-simulation and the learning parts communicate with eachother mainly by the
+simulation and the learning parts communicate with each other mainly by the
 learning part telling the simulation to do an action. The simulation will then
 simulate the action, returning the new simulated change of the agent, to the
 learning part. The learning part evaluates the simulated change, determining
-what the revard for the performed action was, updating the Q-value.
+what the reward for the performed action was, updating the Q-value.
 
-In other words the simulation part contains the world and the body of the agent.
-The learning part contains the "brain" of the agent.
+In other words, the simulation part contains the world and the body of the agent.
+The learning part contains the "brains" of the agent.
 
-The agent is an object that that initializes the learning and simulation parts.
+The agent is an object that initializes the learning and simulation parts.
 
 \textbf{INSERT UML PICTURE}
 
@@ -221,11 +221,55 @@ The spesifications of the agent contain; actors, sensors, physical form.
 
 
 \subsection{Q-learning}
-\textbf{MORE CONTENT}
-Anssi is a creative boy, and hopfully will find something to say about this
-divide...
+The high-level process of Q-learning:
+the Q-learner class can inherit the Agent class or otherwise get the information
+what kinds of states and actions are applicable and what the sensors can detect
+and initialize itself accordingly. It will initialize its Q-table from a file or
+as some pre-determined values, e.g. zeros.
 
-Q-Value-table; revardFunction; Q-function; doRandomActionFunction
+The basic functionalities are: choosing an action based on the current state and
+the Q-table, getting a reward based on action, and updating the Q-table based on
+the reward. These functionalities will each consist of multiple functions.
+\begin{enumerate}
+\item To choose an action will be a major part of the Q-learning implementation. An
+      example of the involved functions could be:
+    \begin{itemize}
+    \item getQValue(state, action) function that returns the Q-value of a state-action pair.
+    \item maxValue(state) returns the maximum Q-value of the actions of this state
+    \item bestAction(state) compares actions (calls maxValue which in turn calls getQValue)
+      and returns the best for a given state
+    \item getRandomAction() returns a random action
+    \end{itemize}
+\end{enumerate}
+
+\textbf{should we use epsilon( = exploration = random actions) and how?}
+Choosing the action may be partly random. The value of epsilon will determine to
+what degree the action is random; if epsilon is zero, the chosen action is always
+the action with a maximum Q-value. Simple way to use epsilon would be to set it
+to be some positive constant, e.g. 0.1. A more advanced use of epsilon is to have
+it approach zero as the learning process converges.
+
+getAction(state) will decide which action is chosen. It will call bestAction(state)
+and/or getRandomAction() depending on epsilon.
+\begin{enumerate}
+\item Learning consists in the abstract of getting rewards and updating the Q-table
+  according to rewards. Its basic functions should include:
+   \begin{itemize}
+   \item getReward(parameters from the simulation) will evaluate an action based on what
+     happened in the simulation when the action was performed. The evaluation will be
+     based on predetermined values; what the agent should do in the world, what are her
+     highest goals and what is the meaning of her existence, e.g. move right.
+   \item updateQValue(state, action, qvalue) will call getReward and update the Q-value of
+     the given action accordingly
+     \textbf{I will add some more functions here and also explain alpha and gamma}
+    \end{itemize}
+\end{enumerate}
+
+There should also be functions to manage the Q-table data, so that the Q-table is
+saved when the program is closed: saveQTable, loadQTable, and to show the Q-table:
+printQTable.
+
+
 
 
 \subsection{Simulation}
@@ -239,8 +283,14 @@ Mikael and Anssi will implement the learning part.
 Visa and Lassi will implement the simulation part.
 
 \textbf{MORE CONTENT: When the UML is created, the roles can better be defined.
-The more exact roles may be feesible to define later thou...}
+  The more exact roles may be feesible to define later thou...}
+The Q-learning implementation could be divided (between Mikael and Anssi) for example
+to (A)functions that communicate with the simulation (getReward), update the
+Q-table (updateQValue, updateQTable) and manage the Q-table data (saveQTable,
+loadQTable, printQTable etc.) and (B) functions that choose the action based on the
+Q-table.
 
+\textbf{MORE CONTENT: division of the simulation part}
 
 
 \begin{comment}
