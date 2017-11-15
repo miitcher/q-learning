@@ -127,7 +127,7 @@ highest possible Q-value.
 
 The Q-learning function makes the Q-values more accurate by testing out
 the combinations of states and actions in the system. The Q-learning is an
-optimisation method, which will find a optimal path, which gives the maximum
+optimisation method that will find an optimal path which gives the maximum
 reward. The best path is the global maximum, but there can exist local maxima.
 The local maxima can be avoided by introducing random actions in the learning
 process. If the Q-learning has found a local maximum a random action will
@@ -259,15 +259,16 @@ according to rewards. Its basic functions should include:
   right.
   \item updateQValue(state, action, qvalue) will call getReward and update the
   Q-value of the given action accordingly
-
-\textbf{I will add some more functions here and also explain alpha and gamma}
 \end{itemize}
 
 There should also be functions to manage the Q-table data, so that the Q-table is
 saved when the program is closed: saveQTable, loadQTable, and to show the Q-table:
 printQTable.
 
-
+The agents have different parameters, therefore all data structures and classes
+need to support dynamic creation. The Q-table that contains all state-action pairs
+and the Q-values could be for example a vector of state-action pair objects. These
+objects contain the Q-value as an attribute.
 
 
 \subsection{Simulation}
@@ -326,8 +327,11 @@ class relationships (waiting on UML)
 idea of the high level structure (waiting on UML)
 
 algorithms to use (did not think of any other than the Q-learning)
+\textbf{would it be smarter strucure to have section 6 as a subsection of 5?}
 
 do not go into details, because plans change (maby failed this already ???)
+
+
 
 
 
