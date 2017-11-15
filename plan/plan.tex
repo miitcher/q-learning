@@ -56,9 +56,10 @@ Plan                    & Latex \\
 Class Structure         & UML \\
 Documentation           & Doxygen \\
 Compiler                & g++ \\
-Compilation manager     & cmake \textbf{?make?} \\
+Compilation manager     & cmake and make \\
 Version controll        & git \\
 Graphics and physics    & Box2D \\
+Testing                 & Google Test \\
 \end{tabular}
 
 
@@ -86,9 +87,7 @@ We will have our internal deadlines about 1 to 1/2 weeks before the
 courses deadlines, so we have time to iron out possible problems that
 were not seen beforehand.
 
-
-\section{Algorithms?}
-\textbf{MORE CONTENT}
+When bigger obstacles arises, the deadlines are adjusted case by case.
 
 
 
@@ -209,16 +208,15 @@ what the reward for the performed action was, updating the Q-value.
 In other words, the simulation part contains the world and the body of the agent.
 The learning part contains the "brain" of the agent.
 
-The agent is an object that initializes the learning and simulation parts.
+Most of the programs classes are dynamically created, aka. temlate classes.
 
 \textbf{INSERT UML PICTURE}
 
 \textbf{The subsections under will describe the UML picture.}
 
 
-\subsection{Agent}
-\textbf{MORE CONTENT}
-The spesifications of the agent contain; actors, sensors, physical form.
+\subsection{Agent Simulation Initialization}
+Loads agent parameters from file and sets the learning and simulationi parts.
 
 
 \subsection{Q-learning}
@@ -291,70 +289,5 @@ the Q-table.
 
 \textbf{MORE CONTENT: division of the simulation part}
 
-
-\begin{comment}
-\end{comment}
-\newpage
-
-
-
-\section{Assignment for Project Plan}
-\textbf{REMOVE LATER}
-
-Star means ready.
-
-Parenthesis lists details.
-
-\subsection{describing}
-
-scope of the project *
-
-preliminary schedule *
-
-design rationale * % in Design & Practice
-
-major architectural decisions (waiting on UML)
-
-distribution of roles in the group (waiting on UML)
-
-
-\subsection{contains}
-
-five pages *
-
-class relationships (waiting on UML)
-
-idea of the high level structure (waiting on UML)
-
-algorithms to use (did not think of any other than the Q-learning)
-\textbf{would it be smarter strucure to have section 6 as a subsection of 5?}
-
-do not go into details, because plans change (maby failed this already ???)
-
-
-
-
-
-\section{Using Latex}
-\textbf{REMOVE LATER}
-
-Compile to pdf with command: \textbf{pdflatex plan.tex}
-
-The pdf can be read with okular.
-The open file is updated in the reader, when again compiling.
-
-
-
-\section{Sublime Settings}
-\textbf{REMOVE LATER}
-\begin{comment}
-{
-    "rulers": [80],
-    "translate_tabs_to_spaces": true,
-    "scroll_past_end": false,
-    "ensure_newline_at_eof_on_save": true,
-    "trim_trailing_white_space_on_save": true
-}
-\end{comment}
 
 \end{document}
