@@ -12,7 +12,8 @@
 
 \maketitle
 
-
+\tableofcontents
+\newpage
 
 \section{Features / Scope}
 We are aiming to make an advanced program. Therefore our program will fill
@@ -206,7 +207,7 @@ learning part. The learning part evaluates the simulated change, determining
 what the reward for the performed action was, updating the Q-value.
 
 In other words, the simulation part contains the world and the body of the agent.
-The learning part contains the "brains" of the agent.
+The learning part contains the "brain" of the agent.
 
 The agent is an object that initializes the learning and simulation parts.
 
@@ -221,8 +222,7 @@ The spesifications of the agent contain; actors, sensors, physical form.
 
 
 \subsection{Q-learning}
-The high-level process of Q-learning:
-the Q-learner class can inherit the Agent class or otherwise get the information
+The Q-learner class can inherit the Agent class or otherwise get the information
 what kinds of states and actions are applicable and what the sensors can detect
 and initialize itself accordingly. It will initialize its Q-table from a file or
 as some pre-determined values, e.g. zeros.
@@ -230,40 +230,38 @@ as some pre-determined values, e.g. zeros.
 The basic functionalities are: choosing an action based on the current state and
 the Q-table, getting a reward based on action, and updating the Q-table based on
 the reward. These functionalities will each consist of multiple functions.
-\begin{enumerate}
-\item To choose an action will be a major part of the Q-learning implementation. An
-      example of the involved functions could be:
-    \begin{itemize}
-    \item getQValue(state, action) function that returns the Q-value of a state-action pair.
-    \item maxValue(state) returns the maximum Q-value of the actions of this state
-    \item bestAction(state) compares actions (calls maxValue which in turn calls getQValue)
-      and returns the best for a given state
-    \item getRandomAction() returns a random action
-    \end{itemize}
-\end{enumerate}
 
-\textbf{should we use epsilon( = exploration = random actions) and how?}
+To choose an action will be a major part of the Q-learning implementation. An
+example of the involved functions could be:
+\begin{itemize}
+  \item getQValue(state, action) function that returns the Q-value of a state-
+    action pair.
+  \item maxValue(state) returns the maximum Q-value of the actions of this state
+  \item bestAction(state) compares actions (calls maxValue which in turn calls
+    getQValue) and returns the best for a given state
+  \item getRandomAction() returns a random action
+  \item getAction(state) will decide which action is chosen. It will call
+    bestAction(state) and/or getRandomAction() depending on epsilon.
+\end{itemize}
 Choosing the action may be partly random. The value of epsilon will determine to
 what degree the action is random; if epsilon is zero, the chosen action is always
 the action with a maximum Q-value. Simple way to use epsilon would be to set it
 to be some positive constant, e.g. 0.1. A more advanced use of epsilon is to have
 it approach zero as the learning process converges.
 
-getAction(state) will decide which action is chosen. It will call bestAction(state)
-and/or getRandomAction() depending on epsilon.
-\begin{enumerate}
-\item Learning consists in the abstract of getting rewards and updating the Q-table
-  according to rewards. Its basic functions should include:
-   \begin{itemize}
-   \item getReward(parameters from the simulation) will evaluate an action based on what
-     happened in the simulation when the action was performed. The evaluation will be
-     based on predetermined values; what the agent should do in the world, what are her
-     highest goals and what is the meaning of her existence, e.g. move right.
-   \item updateQValue(state, action, qvalue) will call getReward and update the Q-value of
-     the given action accordingly
-     \textbf{I will add some more functions here and also explain alpha and gamma}
-    \end{itemize}
-\end{enumerate}
+Learning consists in the abstract of getting rewards and updating the Q-table
+according to rewards. Its basic functions should include:
+\begin{itemize}
+  \item getReward(parameters from the simulation) will evaluate an action based
+  on what happened in the simulation when the action was performed. The evaluation
+  will be based on predetermined values; what the agent should do in the world,
+  what are her highest goals and what is the meaning of her existence, e.g. move
+  right.
+  \item updateQValue(state, action, qvalue) will call getReward and update the
+  Q-value of the given action accordingly
+
+\textbf{I will add some more functions here and also explain alpha and gamma}
+\end{itemize}
 
 There should also be functions to manage the Q-table data, so that the Q-table is
 saved when the program is closed: saveQTable, loadQTable, and to show the Q-table:
@@ -284,11 +282,11 @@ Visa and Lassi will implement the simulation part.
 
 \textbf{MORE CONTENT: When the UML is created, the roles can better be defined.
   The more exact roles may be feesible to define later thou...}
-The Q-learning implementation could be divided (between Mikael and Anssi) for example
-to (A)functions that communicate with the simulation (getReward), update the
-Q-table (updateQValue, updateQTable) and manage the Q-table data (saveQTable,
-loadQTable, printQTable etc.) and (B) functions that choose the action based on the
-Q-table.
+The Q-learning implementation could be divided (between Mikael and Anssi) for
+example to (A)functions that communicate with the simulation (getReward), update
+the Q-table (updateQValue, updateQTable) and manage the Q-table data (saveQTable,
+loadQTable, printQTable etc.) and (B) functions that choose the action based on
+the Q-table.
 
 \textbf{MORE CONTENT: division of the simulation part}
 
