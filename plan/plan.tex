@@ -218,8 +218,14 @@ The simulation is divided into the graphics and the physics. Box2d provides only
 so we have to write our own visual representation of world and agents with a graphics engine like SFML.
 Box2d uses float numbers in simulation, and that may cause minor inaccuracies in the world.
 Main features of Box2d that are going to be used in project are: bodies, joints, fixtures, gravity and friction.
+
 Body consists of shapes that are connected to each other with joints and/or fixtures.
-Joints are rotatable and provide core for agent to move in world. If a joint is forced to turn where it can not turn, it will not turn. Fixtures are used to make a fixed connections between the shapes.
+
+Joints are rotatable and provide core for agent to move in world. If a joint is 
+forced to turn where it can not turn, it will not turn. 
+
+Fixtures are used to make a fixed connections between the shapes.
+
 Gravity and friction are used to enable the agent's moving abilities.
 
 \subsection{Agent Simulation Initialization}
@@ -289,7 +295,8 @@ the Q-table (updateQValue, updateQTable) and manage the Q-table data (saveQTable
 loadQTable, printQTable etc.) and (B) functions that choose the action based on
 the Q-table.
 
-\textbf{MORE CONTENT: division of the simulation part}
+The simulation can be divided to three main parts: The Agent, physics and graphics.
+Lassi and Visa will either do these parts together or separately.
 
 
 \end{document}
