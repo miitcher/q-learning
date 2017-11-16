@@ -115,7 +115,7 @@ initialized all as 0. The optimal action in a state is the action with the
 highest Q-value. When the system is learning, an action is performed, and the
 Q-learning function updates the Q-value which is assosiated with the current
 state and performed action:
-
+													
 \[Q(s_t, a_t) = Q(s_t, a_t) + \alpha [ r_t + \gamma \cdot max_aQ(s_{t+1}, a)
 - Q(s_t, a_t) ]\]
 
@@ -270,8 +270,14 @@ objects contain the Q-value as an attribute.
 
 
 \subsection{Simulation}
-\textbf{MORE CONTENT}
-The simulation is divided into the graphics and the physics...bla bla blaa...
+The simulation is divided into the graphics and the physics. Box2d provides only physics simulation, 
+so group must write own visual representation of world and agents.
+Box2d uses float numbers in simulation, and that causes minor inaccuracies in world.
+Main features of box2d that are going to be used in project are: bodies, joints, gravity and friction.
+Joints are rotatable and provide core for agent to move in world. 
+If joint is forced to turn where it can not turn, it will not turn.
+Gravity and friction are used to make project more realistic.
+
 
 
 
