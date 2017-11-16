@@ -45,7 +45,7 @@ To have multiple agents that share knowledge, we need a framework where
 concurrent computation is possible. \textbf{Does this mean threads or
 processes?}
 
-The Q-learning algorithm never finishes, so it needs to be terminatable
+The Q-learning algorithm never finishes, so it needs to be able to be terminated
 by the user, therefore threading is needed, for a responsive experience.
 
 
@@ -57,7 +57,7 @@ Class Structure         & UML \\
 Documentation           & Doxygen \\
 Compiler                & g++ \\
 Compilation manager     & cmake and make \\
-Version controll        & git \\
+Version control         & git \\
 Graphics and physics    & Box2D \\
 Testing                 & Google Test \\
 \end{tabular}
@@ -66,7 +66,7 @@ Testing                 & Google Test \\
 
 \section{Design and Practice}
 \begin{itemize}
-\item Regular physical weekly meetings, and possibly some webcalls,
+\item Regular physical weekly meetings, and possibly some web calls,
 in which every developer lists his progress since the last meeting,
 and states what the next development goals and its blockers are.
 \item Commit only working code. Meaning that all the tests pass.
@@ -93,7 +93,7 @@ When bigger obstacles arises, the deadlines are adjusted case by case.
 
 \section{Q-learning}
 The core Q-learning algorithm is quite simple, so its implementation should
-be quite straigh forward. The complexity of the problem can raise problems,
+be quite straightforward. The complexity of the problem can raise problems,
 so developing the algorithm will also mean the defining of
 the problem the Q-learning will solve.
 
@@ -105,7 +105,7 @@ with all possible actions.
 The actor is the thing that is in states from which the actor can do some
 actions that move the actor into a new state. After every action the
 system gives the actor a reward (a punishment is a negative reward).
-The optimal behavior is determined by how the system gives the actor the
+The optimal behaviour is determined by how the system gives the actor the
 biggest reward.
 
 
@@ -113,9 +113,9 @@ biggest reward.
 Every combination of states and actions has a Q-value. These Q-values are
 initialized all as 0. The optimal action in a state is the action with the
 highest Q-value. When the system is learning, an action is performed, and the
-Q-learning function updates the Q-value which is assosiated with the current
+Q-learning function updates the Q-value which is associated with the current
 state and performed action:
-													
+
 \[Q(s_t, a_t) = Q(s_t, a_t) + \alpha [ r_t + \gamma \cdot max_aQ(s_{t+1}, a)
 - Q(s_t, a_t) ]\]
 
@@ -130,18 +130,18 @@ optimisation method that will find an optimal path which gives the maximum
 reward. The best path is the global maximum, but there can exist local maxima.
 The local maxima can be avoided by introducing random actions in the learning
 process. If the Q-learning has found a local maximum a random action will
-hopefully try out someting that moves to the global maximum.
+hopefully try out something that moves to the global maximum.
 
 Theoretically the exact Q-values are found by running the learning process
 for an infinitially long time. This is not practical (duh), so approximate
 Q-values are enough. The learning needs to be terminated from outside, when an
-satisfactory accuracy is achived.
+satisfactory accuracy is achieved.
 
 To get accurate Q-values, the different combinations of states and actions
 need to be tested multiple times during the learning process.
 The number of Q-values are the number of states times the number of actions
 in every state. Having a smaller amount of Q-values leads to a shorter learning
-time. More Q-values can lead to more complex behavior for the learned actor.
+time. More Q-values can lead to more complex behaviour for the learned actor.
 This depends on the system.
 
 
@@ -161,7 +161,7 @@ reward when it moves to the left.
 The agent has a body and an arm. The arm consists of two beams and two joints
 (A and B). The joints angles determine the state of the actor, and actions are
 performed by rotating the beams, changing the joints angles.
-Both joints can move 360$^\circ$ continously, but we need to quantisize
+Both joints can move 360$^\circ$ continuously, but we need to quantisize
 the angles, so we can have a limited amount of states. We can also be wise
 gods and limit the angle the joints can move. We can see that in our agent's
 case that the arm will not affect the state if it flails in the air, not
@@ -176,19 +176,19 @@ $2^4 \cdot 2^5 =$ \textbf{512 states}. The smallest angle registered at
 the joint, due to the quantization, is
 $135^\circ / 2^4 = 270^\circ / 2^5 \approx 8.4^\circ$.
 The angle can be more precise, when simulating the agent, but the
-Q-learning algorith will just "see" the quantizised angle.
+Q-learning algorithm will just "see" the quantizised angle.
 
 A joint can be moved, by performing an action. We limit the movement to be
 just one speed, which is one quantization step. A joint can only move
-clockwise, counterclockwise or not move at all. Multiple joints rises the
+clockwise, counter-clockwise or not move at all. Multiple joints rises the
 possible actions to be 3 to the power of the number of joints. Our
 agent has two joints, therefore there is $3^2$ = \textbf{9 actions} to
 perform in a state.
 
 The number of Q-values is states times actions. Therefore there is
 $512 \cdot 9$ = \textbf{4608 Q-values}. This should be a manageable
-amount to use the Q-learing algorithm on. If a Q-value is a float,
-wich is 4 bytes, then the Q-values will occupy 18KB of memory.
+amount to use the Q-learning algorithm on. If a Q-value is a float,
+which is 4 bytes, then the Q-values will occupy 18KB of memory.
 Thus the memory size would be tolerable, even when having multiple agents
 at the same time learning.
 
@@ -208,7 +208,7 @@ what the reward for the performed action was, updating the Q-value.
 In other words, the simulation part contains the world and the body of the agent.
 The learning part contains the "brain" of the agent.
 
-Most of the programs classes are dynamically created, aka. temlate classes.
+Most of the programs classes are dynamically created, aka. template classes.
 
 \textbf{INSERT UML PICTURE}
 
@@ -216,7 +216,7 @@ Most of the programs classes are dynamically created, aka. temlate classes.
 
 
 \subsection{Agent Simulation Initialization}
-Loads agent parameters from file and sets the learning and simulationi parts.
+Loads agent parameters from file and sets the learning and simulation parts.
 
 
 \subsection{Q-learning}
@@ -270,14 +270,8 @@ objects contain the Q-value as an attribute.
 
 
 \subsection{Simulation}
-The simulation is divided into the graphics and the physics. Box2d provides only physics simulation, 
-so group must write own visual representation of world and agents.
-Box2d uses float numbers in simulation, and that causes minor inaccuracies in world.
-Main features of box2d that are going to be used in project are: bodies, joints, gravity and friction.
-Joints are rotatable and provide core for agent to move in world. 
-If joint is forced to turn where it can not turn, it will not turn.
-Gravity and friction are used to make project more realistic.
-
+\textbf{MORE CONTENT}
+The simulation is divided into the graphics and the physics...bla bla blaa...
 
 
 
@@ -286,7 +280,7 @@ Mikael and Anssi will implement the learning part.
 Visa and Lassi will implement the simulation part.
 
 \textbf{MORE CONTENT: When the UML is created, the roles can better be defined.
-  The more exact roles may be feesible to define later thou...}
+  The more exact roles may be feasible to define later thou...}
 The Q-learning implementation could be divided (between Mikael and Anssi) for
 example to (A)functions that communicate with the simulation (getReward), update
 the Q-table (updateQValue, updateQTable) and manage the Q-table data (saveQTable,
