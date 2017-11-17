@@ -160,7 +160,7 @@ reward when it moves to the left.
 
 The agent has a body and an arm. The arm consists of two beams and two joints
 (A and B). The angles of the joints determine the state of the actor, and
-actions are performed by rotating the beams, changing the joint's angles.
+actions are performed by rotating the beams, changing the joints' angles.
 Both joints can move 360$^\circ$ continuously, but we need to quantisize
 the angles, so we can have a limited amount of states. We can also be wise
 gods and limit the angle the joints can move. We can see that in our agent's
@@ -188,7 +188,7 @@ perform in a state.
 The number of Q-values is states times actions. Therefore there is
 $512 \cdot 9$ = \textbf{4608 Q-values}. This should be a manageable
 amount to use the Q-learning algorithm on. If a Q-value is a float,
-which is 4 bytes, then the Q-values will occupy 18KB of memory.
+which is 4 bytes, then the Q-values will occupy 18kB of memory.
 Thus the memory size would be tolerable, even when having multiple agents
 learning at the same time.
 
@@ -240,11 +240,17 @@ or as zeros. The agents may have different actors and sensors,
 therefore all data structures and classes
 need to support dynamic creation.
 
+The Qlearner class will have attributes alpha, which is the learning rate,
+and gamma, the discount factor. The discount factor will determine the trade-off
+between rewards of distant and near future and the learning rate determines how
+much of an effect each reward has on the corresponding q-value, i.e. what is the
+trade-off between newly learned values and values learned in the past.
+
 The basic functionalities are choosing an action based on the current state and
 the Q-table, getting a reward based on
 action, and updating the Q-table based on
 the reward. These functionalities will each consist of multiple functions and
-small classes.
+smaller classes.
 
 To choose an action will be a major part of the Q-learning implementation. An
 example of the involved functions could be:
@@ -281,6 +287,9 @@ according to rewards. Its basic functions should include:
   Q-value of the given action using the parameters $\alpha$ and $\gamma$,
   or learning rate and discount factor, respectively.
 \end{itemize}
+
+Some of these functions might be better divided to multiple
+functions.
 
 There can be also some smaller classes in addition to the Q-learner class,
 if needed. The Q-learner class can be an abstract class that has children
