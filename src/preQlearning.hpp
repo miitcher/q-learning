@@ -1,11 +1,9 @@
 functions for Q-learner
 
-
+//Mikael
 class Actor(){
 
 }
-
-
 class Sensor(){
 
 }
@@ -14,7 +12,10 @@ typedef float QvalueType;
 typedef int stateType;
 typedef int actionType;
 typedef int rewardType;
+typedef double sensorInputType;
+// add typedef for action and responses
 
+//anssi
 class Qtable(std::vector<Actor> actors, std::vector<Sensor> sensors){
     /* vector of state-vectors that contain actions for that state
     */
@@ -47,7 +48,7 @@ private:
 
 }
 
-class
+//anssi
 
 class Agent(std::vector<Actor> actors, std::vector<Sensor> sensors, Qtable qtable)
 {
@@ -56,16 +57,13 @@ public:
     // chooses the best or a random action
 
 
-    rewardType& calcReward(std::vector<ResponsePacket>);
-    //
+    rewardType& calcReward(std::vector<std::pair<int, sensorInputType>> response);
+    // response from simulation
 
-    updateQtable(state, action, nextState)
-                        maxQ = getMaxQ(nextState)
-                        reward = getReward()
-                        Q[state][action] = (1-alpha)*Q[state][action] + alpha *
-                                                        (reward + gamma*maxQ)
+    void updateQtable(stateType state, actionType action, stateType nextState);
 
-                        return void
+    void doAction(std::vector<std::pair<int, actionType>> action);
+    //action to simulation
 
 private:
     double discountFactor; // range 0...1, e.g. 0.9, increase
@@ -76,6 +74,7 @@ private:
 
 }
 
+// Mikael
 
 class AgentManager(){
 public:
@@ -106,10 +105,3 @@ public:
 private:
     std::vector<thread_type> agentThreads;
 }
-
-
-
-
-
-
-
