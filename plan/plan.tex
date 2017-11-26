@@ -228,6 +228,7 @@ Fixtures are used to make a fixed connections between the shapes.
 
 Gravity and friction are used to enable the agent's moving abilities.
 
+
 \subsection{Agent Simulation Initialization}
 Loads agent parameters from file and sets the learning and simulation parts.
 
@@ -320,6 +321,62 @@ the Q-table.
 
 The simulation can be divided to three main parts: The Agent, physics and graphics.
 Lassi and Visa will either do these parts together or separately.
+
+
+
+\section{Modification / Addition to plan}
+Things Anssi and Mikael came up with 25.11.2017.
+
+\includegraphics[width=0.8\textwidth]{improved_pseudo_UML}
+
+The map above is pseudo UML. It shows the structure of the learning part
+and the interface to the simulation and graphics.
+
+Main controls IO and gives control of learning and simulation to AgentManager.
+AgentManager initializes the run from configure files, that tell what the
+Agent "looks" like in the learning and simulation. Here a saved Q-table can
+be used.
+
+The AgentManager creates a thread per agent. In every thread there is a
+agent and its simulation. The agent has a Q-table. The simulation and main/IO
+has controll of the graphics.
+
+
+\subsection{Communication Between Learning and Simulation}
+In a thread the learnig process looks like this: The simulation waits, while
+the agent chooses an action. The choosen action is sent to the simulation, and
+the agent waits. The simulation resives the action and the simulation
+simulates it. The simulation will have a response from the action.
+The simulation sends the response to the agent, where after the simulation
+waits. The agent resives the response and from it calculates the revard and
+the new state, and updates the Q-table according to the Q-learning
+algorithm. And so on.
+
+The communication between the learning and the simulation is this:
+\begin{itemize}
+  \item Action is a vector of pairs: (actor-ID, actor-action)
+  \item Response is a vector of pairs: (sensor-ID, sensor-input)
+\end{itemize}
+
+
+\subsection{Multiple Agents Teaching Eachother}
+When running multiple agents, they will teach eachother by the fittest
+agent copying its Q-table to the other agents. The fittest agent is
+determined by having some goal in the simulation, like a finishline, that
+ends the current generation. The AgentManager controls the evolution
+of the agents, when copying the Q-table. When moving to the next generation
+the Q-learning functions parameters (learning-rate, etc.), can also be changed.
+The different agents will have somewhat differing parameters. E.g. different
+amounts of random-actions will result agents that will explore different things.
+
+
+\subsection{Contents of Configure Files}
+\begin{itemize}
+  \item Describes the agent and world (shape, actors, sensors)
+  The actors and sensors quantization and limitations are needed.
+  \item Q-learning-function-parameters (learning-rate, ...)
+  \item Saved Q-table (optional)
+\end{itemize}
 
 
 \end{document}

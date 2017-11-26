@@ -1,3 +1,8 @@
+# Files generated when compiling the plan
+*.aux
+*.log
+*.toc
+
 # Files generated when compiling and running the program and tests
 *.o
 *.a
