@@ -1,0 +1,6 @@
+# Files generated when compiling and running the program and tests
+*.o
+*.a
+*src/main
+*test/learning_test
+*tmc_test_results.xml

@@ -1,12 +1,6 @@
 functions for Q-learner
 
-//Mikael
-class Actor(){
 
-}
-class Sensor(){
-
-}
 
 typedef float QvalueType;
 typedef int stateType;
