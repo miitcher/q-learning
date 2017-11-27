@@ -6,47 +6,95 @@
 
 typedef float QvalueType;
 typedef int StateType;
-typedef int ActionType;
 typedef int RewardType;
 typedef double SensorInputType;
-typedef std::pair<int, ActionType> ActionPacketType;        // (actorID, Action)
-typedef std::pair<int, SensorInputType> ResponsePacketType; // (sensorID, SensorInput)
 
-// TODO: Mikael
-// An agent has actors. The actor can do things in the simulation,
-// depending on the actor type; e.g. a actor can be a joint, that can rotate
-// in 2D-space.
-class Actor {
-public:
-    Actor();
-    const int& getActorID();
-    const std::string& getDescription();
-
-    int returnTwo(); // TODO: remove
-private:
-    int actorID;
-    std::string description;
+// Possible moves for an Actor. The enumerators are integers, so
+// they can be used as keys in the Q-table.
+// If other actions are possible, then they need to be added to the enum.
+enum ActionType {
+    Still,
+    Counterclockwise,
+    Clockwise
 };
 
-// TODO: Mikael
-// An agent has sensors. The sensor can sense things in the
-// simulation, depending on the sensor type; e.g. a angle-sensor can detect
-// in what angle a joint is, for the agent.
-class Sensor {
+typedef std::pair<int, ActionType> ActionPacketType;
+// (actorID, Action)
+typedef std::pair<int, SensorInputType> ResponsePacketType;
+// (sensorID, SensorInput)
+
+// An interactor is the parent class for actor or a sensor. An agent can
+// interact on the world with actors, and sense the world with sensors.
+// For now we only consider interactors that "use" angles (joints), but
+// other interactors can be added.
+//
+// When it is an actor it is a joint that can rotate in 2D space.
+// When it is a sensor it can sense what angle the sensor is in 2D space.
+class Interactor {
 public:
-    Sensor();
-    const int& getActorID();
-    const std::string& getDescription();
+    Interactor(int ID, std::string const& description, int quantizationSteps,
+        float minAngle, float maxAngle)
+        : ID(ID), description(description),
+        quantizationSteps(quantizationSteps),
+        minAngle(minAngle), maxAngle(maxAngle) {}
+    // access data
+    const int& getID() const { return ID; }
+    const std::string& getDescription() const { return description; }
+    const int& getQuantizationSteps() const { return quantizationSteps; }
+    const float& getMinAngle() const { return minAngle; }
+    const float& getMaxAngle() const { return maxAngle; }
 private:
-    int sensorID;
+    int ID;
     std::string description;
+    // When looking at an angle, then the angle between two quantization
+    // steps nearest eachother is the smallest angle used.
+    // The quantizationSteps tells how many states an sensor can be in,
+    // if the interactor is a sensor.
+    int quantizationSteps; // 2 ^ X
+    // The min and max angles limit the angle, if angles are used.
+    // An angle is in reference to the unit circle.
+    // Therefore an angle of 0 is to the right, an angle of pi/2 is up and
+    // the max angle is counterclockwise of the min angle.
+    // If the angles are the same, then the angle is not limited.
+    float minAngle;
+    float maxAngle;
+};
+
+class Actor : public Interactor {
+public:
+    Actor(int ID, std::string const& description,
+        int quantizationSteps, float minAngle, float maxAngle,
+        std::vector<ActionType> actions);
+    const std::vector<ActionType>& getActions() const { return actions; }
+    int getNumberOfActions() const { return actions.size(); }
+private:
+    std::vector<ActionType> actions;
+};
+
+class Sensor : public Interactor {
+public:
+    Sensor(int ID, std::string const& description,
+        int quantizationSteps, float minAngle, float maxAngle);
+};
+
+// The acting part of a 2D joint.
+class JointActor : public Actor {
+public:
+    JointActor(int ID, int quantizationSteps, float minAngle, float maxAngle);
+};
+
+// The sensing part of a 2D joint.
+class JointSensor : public Sensor {
+public:
+    JointSensor(int ID, int quantizationSteps,
+        float minAngle, float maxAngle);
 };
 
 // TODO: Anssi
 // Vector of state-vectors that contain actions for that state.
 class Qtable {
 public:
-    Qtable(std::vector<Actor> actors, std::vector<Sensor> sensors);
+    Qtable(std::vector<Actor> interactors, std::vector<Sensor> sensors);
 
     QvalueType& getQvalue(StateType state, ActionType action);
 
@@ -94,12 +142,14 @@ private:
 };
 
 // TODO: Mikael
-// Initializes and controlls the threads where agents and their simulation is done.
+// Initializes and controlls the threads where agents and their simulation is
+// done.
 class AgentManager {
 public:
     // Function used by threads to run the learning and simulation of one agent
-    void agentThreadFunction(); /* TODO: add parameter for agent and simulation
-    classes, and possibly saved Q-values*/
+    void agentThreadFunction();
+    // TODO: add parameter for agent and simulation
+    // classes, and possibly saved Q-values
 
     // Reads files and creates threads that contain an agent and its simulation
     void initRun(std::string simulationFileName, std::string qvaluesFilename);
