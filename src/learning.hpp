@@ -3,15 +3,20 @@
 
 #include <vector>
 #include <string>
+#include <thread>
 
 typedef float QvalueType;
 typedef int StateType;
 typedef int RewardType;
 typedef double SensorInputType;
+typedef int AgentShapeType;
+// TODO: agentShape will be implemented according to the needs of the simulation.
 
-// Possible moves for an Actor. The enumerators are integers, so
-// they can be used as keys in the Q-table.
-// If other actions are possible, then they need to be added to the enum.
+/**
+Possible moves for an Actor. The enumerators are integers, so
+they can be used as keys in the Q-table.
+If other actions are possible, then they need to be added to the enum.
+*/
 enum ActionType {
     Still,
     Counterclockwise,
@@ -23,13 +28,15 @@ typedef std::pair<int, ActionType> ActionPacketType;
 typedef std::pair<int, SensorInputType> ResponsePacketType;
 // (sensorID, SensorInput)
 
-// An interactor is the parent class for actor or a sensor. An agent can
-// interact on the world with actors, and sense the world with sensors.
-// For now we only consider interactors that "use" angles (joints), but
-// other interactors can be added.
-//
-// When it is an actor it is a joint that can rotate in 2D space.
-// When it is a sensor it can sense what angle the sensor is in 2D space.
+/**
+An interactor is the parent class for actor or a sensor. An agent can
+interact on the world with actors, and sense the world with sensors.
+For now we only consider interactors that "use" angles (joints), but
+other interactors can be added.
+
+When it is an actor it is a joint that can rotate in 2D space.
+When it is a sensor it can sense what angle the sensor is in 2D space.
+*/
 class Interactor {
 public:
     Interactor(int ID, std::string const& description, int quantizationSteps,
@@ -142,12 +149,14 @@ private:
 };
 
 // TODO: Mikael
-// Initializes and controlls the threads where agents and their simulation is
-// done.
+// Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {
 public:
+    AgentManager(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
+        AgentShapeType& agentShape, unsigned int agentCount);
+
     // Function used by threads to run the learning and simulation of one agent
-    void agentThreadFunction();
+    void agentThreadTask();
     // TODO: add parameter for agent and simulation
     // classes, and possibly saved Q-values
 
@@ -171,7 +180,34 @@ public:
 
 private:
     // TODO: Find out how to handle threads
-    // std::vector<thread_type> agentThreads;
+    std::vector<std::thread> agentThreads;
 };
+
+/* TODO: Mikael - THOUGHTS ABOUT THREADING (connected to AgentManager threads)
+Use mutex on q-table when copying it between generations.
+The mutex locks the resours. The mutex would be in the copy function of the q-table.
+
+The copying of a q-table from one thread to many threads could be done
+by giving the other threads a reference or pointer to the q-table
+
+When a agent gets to the goal, all agents will stop moving and then some signal/event happens
+that tells all the agents to move to the beginning (change state in
+learning and in simulation) and copying the q-table.
+
+
+Alternatively all but the winer would survive between generations, and
+the other new Agents for the next generation would be created from scratch.
+Thus the new Agents Q-table would be made by the copy constructor.
+
+Could always create one Agent, and then copy it. This would be done
+in the beginning of the run and between every genereation.
+With only one Agent the only difference would be not copying and
+that there is no goal.
+
+condition_variable could be used to have the thread communicate with each other.
+
+
+Is the method of discarding all but the winners Q-values effective computatively?
+*/
 
 #endif
