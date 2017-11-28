@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/learning.hpp"
+#include "../src/q-table.hpp"
+#include "../src/q-table.cpp"
 #include <iostream>
 
 TEST(test_learning, test_Interactor) {
@@ -58,3 +60,65 @@ TEST(test_learning, test_JointSensor) {
     EXPECT_EQ(a.getMinAngle(), float(2));
     EXPECT_EQ(a.getMaxAngle(), float(1));
 }
+
+TEST(test_Qtable, test_constructor) {
+    /*Actor(int ID, std::string const& description, int quantizationSteps,
+    float minAngle, float maxAngle,
+        std::vector<ActionType> actions)*/
+    Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
+    Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
+
+    /*Interactor(int ID, std::string const& description, int quantizationSteps,
+        float minAngle, float maxAngle)*/
+    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
+    std::vector<Actor> actorVec = {a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    Qtable t(actorVec, sensorVec);
+
+    EXPECT_EQ(t.getNumberOfStates(), 13 * 12);
+    EXPECT_EQ(t.getNumberOfActions(), 15 * 33);
+}
+
+TEST(test_Qtable, test_get_and_update_Qvalue) {
+    Actor a1 = Actor(22, "generic actor", 1, 1, 200, {Still, Clockwise});
+    Actor a2 = Actor(23, "generic actor", 3, 1, 200, {Still, Clockwise});
+    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 2, 10, 200);
+    std::vector<Actor> actorVec = {a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    Qtable t(actorVec, sensorVec);
+    StateType x = 0;
+    ActionType y = Still;
+    QvalueType z = 0;
+
+    EXPECT_EQ(t.getQvalue(x,y), z);
+
+    z = 13;
+    t.updateQvalue(x,y,z);
+    EXPECT_EQ(t.getQvalue(x,y), 13);
+
+    x = 7;
+    ActionType y1 = Clockwise;
+    z = 2.222;
+    QvalueType p = 2.222;
+    t.updateQvalue(x,y1,z);
+    EXPECT_EQ(t.getQvalue(x,y1), p);
+}
+
+/* To do: test the rest of Q-table class
+TEST(test_Qtable, test_rest) {
+    Actor a1 = Actor(22, "generic actor", 1, 1, 200, {Still, Clockwise});
+    Actor a2 = Actor(23, "generic actor", 3, 1, 200, {Still, Clockwise});
+    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 2, 10, 200);
+    std::vector<Actor> actorVec = {a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    Qtable t(actorVec, sensorVec);
+    std::cout << t.getRandomAction(1);
+
+    //int intAction0 = static_cast<int>(y);
+   // int intAction2 = static_cast<int>(y1);
+    //std::cout << intAction0 << intAction2;
+}
+*/

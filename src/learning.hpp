@@ -97,29 +97,7 @@ public:
         float minAngle, float maxAngle);
 };
 
-// TODO: Anssi
-// Vector of state-vectors that contain actions for that state.
-class Qtable {
-public:
-    Qtable(std::vector<Actor> interactors, std::vector<Sensor> sensors);
-
-    QvalueType& getQvalue(StateType state, ActionType action);
-
-    ActionType& getBestAction(StateType state);
-
-
-    ActionType& getRandomAction(StateType state);
-
-    // Compares actions and returns the largest Q-value
-    QvalueType& getOptimalFutureQvalue(StateType state);
-
-    void updateQvalue(StateType state, ActionType action, QvalueType qValue);
-
-private:
-    std::vector<std::vector<QvalueType>> qValues; // qValues[state][action]
-};
-
-// TODO: Anssi
+/* TODO: Anssi
 class Agent {
 public:
     Agent(std::vector<Actor> actors, std::vector<Sensor> sensors, Qtable qtable);
@@ -147,6 +125,7 @@ private:
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
 };
+*/
 
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
