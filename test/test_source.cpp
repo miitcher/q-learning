@@ -107,11 +107,11 @@ TEST(test_Agent, test_constructor) {
 }
 TEST(test_Agent, test_functions) {
     Actor a0 = Actor
-    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (21, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
     Actor a1 = Actor
-    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (22, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
     Actor a2 = Actor
-    (23, "generic actor", 33, 1, 200, {Still, Counterclockwise});
+    (23, "generic actor", 33, 1, 200, {Counterclockwise, Clockwise});
 
     Sensor b = Sensor(20, "sensor1", 13, 11, 200);
     Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
@@ -121,9 +121,59 @@ TEST(test_Agent, test_functions) {
   //  for (auto i : a.actors){std::cout << i.getActions()[1];}
   //  for (auto i : a.sensors){std::cout << i.getID();}
     ActionPacketType ap(21, Counterclockwise);
-    ActionPacketType ap1(22, Counterclockwise);
-    ActionPacketType ap2(23, Counterclockwise);
+    ActionPacketType ap1(22, Still);
+    ActionPacketType ap2(23, Clockwise);
     std::vector<ActionPacketType> apvec = {ap, ap1, ap2};
+    /*
+       If there is 3 actors in an agent that have actionVectors:
 
-    EXPECT_EQ(a.convertActionToIndex(apvec), (2*1) + (3*2) + (9*1));
+       a0: {Still, Counterclockwise, Clockwise},
+       a1: {Still, Counterclockwise, Clockwise},
+       a2: {Counterclockwise, Clockwise},
+
+       or same vectors as enumerations:
+       a0: {0, 1, 2},
+       a1: {0, 1, 2},
+       a2: {1, 2},
+
+       the convertActionToIndex should return an index according to the
+       following table:
+
+       index    a2  a1  a0
+       0        1   0   0
+       1        1   0   1
+       2        1   0   2
+       3        1   1   0
+       4        1   1   1
+       5        1   1   2
+       6        1   2   0
+       7        1   2   1
+       8        1   2   2
+       9        2   0   0
+       10       2   0   1
+       11       2   0   2
+       12       2   1   0
+       13       2   1   1
+       14       2   1   2
+       15       2   2   0
+       16       2   2   1
+       17       2   2   2
+    */
+    EXPECT_EQ(a.convertActionToIndex(apvec), 10);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

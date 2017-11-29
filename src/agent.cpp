@@ -22,7 +22,8 @@ Agent::Agent(std::vector<Actor> const& actors,
     Qtable _Qtable = newQ;
 }
 
-int Agent::convertActionToIndex(const std::vector<ActionPacketType>& actionPacs){
+int Agent::convertActionToIndex
+    (const std::vector<ActionPacketType>& actionPacs){
     /* This function converts a vector of actions for individual actors of the
      * agent to a single action for the agent, which is an index to the Q-table.
      */
@@ -62,7 +63,8 @@ int Agent::convertActionToIndex(const std::vector<ActionPacketType>& actionPacs)
     for (size_t i = 0; i < indeces.size(); i++){
         index += factor * indeces[i];
         factor = factor * numsOfActions[i];
-    /*    for (auto i : indeces){std::cout << i << " ";}
+    /*
+        for (auto i : indeces){std::cout << i << " ";}
         std::cout << std::endl;
         for (auto i : numsOfActions){std::cout << i << " ";}
         std::cout << std::endl << "factor: " << factor<< std::endl <<"index: "
