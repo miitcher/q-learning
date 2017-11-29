@@ -97,36 +97,6 @@ public:
         float minAngle, float maxAngle);
 };
 
-/* TODO: Anssi
-class Agent {
-public:
-    Agent(std::vector<Actor> actors, std::vector<Sensor> sensors, Qtable qtable);
-
-    // Chooses the best or a random action
-    ActionType& chooseAction(StateType state);
-
-    void updateQtable(StateType state, ActionType action, StateType nextState);
-
-    StateType getState();
-
-    // The action tells what the agent tries to do in the simulation.
-    void doAction(std::vector<ActionPacketType> actionMessage);
-
-    // The response is the result of an action in the simulation.
-    RewardType& calcReward(std::vector<ResponsePacketType> responseMessage);
-
-private:
-    int ID;
-    double discountFactor;      // range 0...1, e.g. 0.9, increase
-    double learningRate;        // range: 0...1, e.g. 0.1
-    double explorationFactor;   // range: 0...1, e.g. 0.5, decrease
-    StateType currentState;
-
-    std::vector<Actor> actors;
-    std::vector<Sensor> sensors;
-};
-*/
-
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {

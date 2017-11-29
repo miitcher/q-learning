@@ -2,6 +2,8 @@
 #include "../src/learning.hpp"
 #include "../src/q-table.hpp"
 #include "../src/q-table.cpp"
+#include "../src/agent.hpp"
+#include "../src/agent.cpp"
 #include <iostream>
 
 TEST(test_learning, test_Interactor) {
@@ -62,6 +64,29 @@ TEST(test_learning, test_JointSensor) {
 }
 
 TEST(test_Qtable, test_constructor) {
+    Qtable t(2,2);
+    EXPECT_EQ(t.getNumberOfStates(), 2);
+    EXPECT_EQ(t.getNumberOfActions(), 2);
+}
+
+TEST(test_Qtable, test_get_and_update_Qvalue) {
+    Qtable t(4,4);
+
+    int x = 1;
+    int y = 1;
+    QvalueType z = 0.122;
+    t.updateQvalue(x,y,z);
+    EXPECT_EQ(t.getQvalue(x,y), z);
+
+    x = 3; y = 3; z = 0.1224;
+    t.updateQvalue(x,y,z);
+    EXPECT_EQ(t.getQvalue(x,y), z);
+    x = 3; y = 3; z = 0.155;
+    t.updateQvalue(x,y,z);
+    EXPECT_EQ(t.getQvalue(x,y), z);
+}
+
+TEST(test_Agent, test_constructor) {
     /*Actor(int ID, std::string const& description, int quantizationSteps,
     float minAngle, float maxAngle,
         std::vector<ActionType> actions)*/
@@ -74,51 +99,31 @@ TEST(test_Qtable, test_constructor) {
     Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
     std::vector<Actor> actorVec = {a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
-    Qtable t(actorVec, sensorVec);
 
-    EXPECT_EQ(t.getNumberOfStates(), 13 * 12);
-    EXPECT_EQ(t.getNumberOfActions(), 15 * 33);
+    Agent a(actorVec, sensorVec);
+    EXPECT_EQ(a.getNumberOfStates(), 13 * 12);
+    EXPECT_EQ(a.getNumberOfActions(), 15 * 33);
+
 }
+TEST(test_Agent, test_functions) {
+    Actor a0 = Actor
+    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    Actor a1 = Actor
+    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    Actor a2 = Actor
+    (23, "generic actor", 33, 1, 200, {Still, Counterclockwise});
 
-TEST(test_Qtable, test_get_and_update_Qvalue) {
-    Actor a1 = Actor(22, "generic actor", 1, 1, 200, {Still, Clockwise});
-    Actor a2 = Actor(23, "generic actor", 3, 1, 200, {Still, Clockwise});
-    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
-    Sensor b1 = Sensor(21, "sensor2", 2, 10, 200);
-    std::vector<Actor> actorVec = {a1, a2};
+    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
+    std::vector<Actor> actorVec = {a0, a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
-    Qtable t(actorVec, sensorVec);
-    StateType x = 0;
-    ActionType y = Still;
-    QvalueType z = 0;
+    Agent a(actorVec, sensorVec);
+  //  for (auto i : a.actors){std::cout << i.getActions()[1];}
+  //  for (auto i : a.sensors){std::cout << i.getID();}
+    ActionPacketType ap(21, Counterclockwise);
+    ActionPacketType ap1(22, Counterclockwise);
+    ActionPacketType ap2(23, Counterclockwise);
+    std::vector<ActionPacketType> apvec = {ap, ap1, ap2};
 
-    EXPECT_EQ(t.getQvalue(x,y), z);
-
-    z = 13;
-    t.updateQvalue(x,y,z);
-    EXPECT_EQ(t.getQvalue(x,y), 13);
-
-    x = 7;
-    ActionType y1 = Clockwise;
-    z = 2.222;
-    QvalueType p = 2.222;
-    t.updateQvalue(x,y1,z);
-    EXPECT_EQ(t.getQvalue(x,y1), p);
+    EXPECT_EQ(a.convertActionToIndex(apvec), (2*1) + (3*2) + (9*1));
 }
-
-/* To do: test the rest of Q-table class
-TEST(test_Qtable, test_rest) {
-    Actor a1 = Actor(22, "generic actor", 1, 1, 200, {Still, Clockwise});
-    Actor a2 = Actor(23, "generic actor", 3, 1, 200, {Still, Clockwise});
-    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
-    Sensor b1 = Sensor(21, "sensor2", 2, 10, 200);
-    std::vector<Actor> actorVec = {a1, a2};
-    std::vector<Sensor> sensorVec = {b, b1};
-    Qtable t(actorVec, sensorVec);
-    std::cout << t.getRandomAction(1);
-
-    //int intAction0 = static_cast<int>(y);
-   // int intAction2 = static_cast<int>(y1);
-    //std::cout << intAction0 << intAction2;
-}
-*/
