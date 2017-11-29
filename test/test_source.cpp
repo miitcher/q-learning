@@ -4,6 +4,8 @@
 #include "../src/q-table.cpp"
 #include "../src/agent.hpp"
 #include "../src/agent.cpp"
+#include "../src/agent_manager.hpp"
+#include "../src/agent_manager.cpp"
 #include <iostream>
 
 TEST(test_interactor, test_Interactor) {
@@ -61,6 +63,30 @@ TEST(test_interactor, test_JointSensor) {
     EXPECT_EQ(a.getQuantizationSteps(), 46);
     EXPECT_EQ(a.getMinAngle(), float(2));
     EXPECT_EQ(a.getMaxAngle(), float(1));
+}
+
+// TODO: Mikael - This test should be refined.
+TEST(test_agentManager, test_threads) {
+    Actor a0 = Actor
+    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    Actor a1 = Actor
+    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    Actor a2 = Actor
+    (23, "generic actor", 33, 1, 200, {Still, Counterclockwise});
+
+    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
+
+    std::vector<Actor> actorVec = {a0, a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+
+    AgentShapeType as = 42;
+
+    AgentManager am(actorVec, sensorVec, as, 3, "");
+
+    am.initRun();
+
+    EXPECT_EQ(1,1);
 }
 
 TEST(test_Qtable, test_constructor) {
@@ -161,19 +187,3 @@ TEST(test_Agent, test_functions) {
     */
     EXPECT_EQ(a.convertActionToIndex(apvec), 10);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

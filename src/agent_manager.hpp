@@ -1,29 +1,40 @@
-#ifndef QLEARNING_9_LEARNING_H_
-#define QLEARNING_9_LEARNING_H_
+#ifndef QLEARNING_9_AGENT_MANAGER_H_
+#define QLEARNING_9_AGENT_MANAGER_H_
 
+#include "agent.hpp"
+#include "interactor.hpp"
 #include <vector>
 #include <string>
 #include <thread>
+
+void printHello();
+
+// Function used by threads to run the learning and simulation of one agent
+// TODO: add parameter for agent and simulation
+// classes, and possibly saved Q-values
+void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
+    AgentShapeType& agentShape, std::string const& qtableFilename);
 
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {
 public:
     AgentManager(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-        AgentShapeType& agentShape, unsigned int agentCount);
+        AgentShapeType& agentShape, unsigned int agentCount,
+        std::string const& qtableFilename)
+        : actors(actors), sensors(sensors), agentShape(agentShape),
+        agentCount(agentCount), qtableFilename(qtableFilename) {}
 
-    // Function used by threads to run the learning and simulation of one agent
-    void agentThreadTask();
-    // TODO: add parameter for agent and simulation
-    // classes, and possibly saved Q-values
+    // Creates threads that contain an agent and its simulation.
+    void initRun();
 
-    // Reads files and creates threads that contain an agent and its simulation
-    void initRun(std::string simulationFileName, std::string qvaluesFilename);
-
-    // Has the fittest agent teach the other agents, when multiple agents
-    // are learning. Copies the Q-values of the fittest agent to other agents
-    // from the previous eneration and modifies the parameters in the
-    // Q-learning function (discountFactor, etc.).
+    /**
+    Has the fittest agent teach the other agents, when multiple agents
+    are learning. The learning is done by copying the Q-values of the
+    fittest agent to other agents from the previous generation.
+    The Q-learning function parameters (discountFactor, etc.) are also here
+    modified.
+    */
     void evolveAgents();
 
     // Pauses all the threads
@@ -36,9 +47,18 @@ public:
     void endSimulation();
 
 private:
+    std::vector<Actor> actors;
+    std::vector<Sensor> sensors;
+    AgentShapeType& agentShape;
+    unsigned int agentCount;
+    std::string qtableFilename; //
     // TODO: Find out how to handle threads
     std::vector<std::thread> agentThreads;
 };
+
+/* AgentManager behavior:
+Create agent threads, and give them the q-value source (null or filename).
+*/
 
 /* TODO: Mikael - THOUGHTS ABOUT THREADING (connected to AgentManager threads)
 Use mutex on q-table when copying it between generations.

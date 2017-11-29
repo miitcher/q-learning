@@ -2,6 +2,7 @@
 #define QLEARNING_9_AGENT_H_
 
 #include "q-table.hpp"
+#include "interactor.hpp"
 #include <vector>
 #include <string>
 #include <iostream>

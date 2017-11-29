@@ -1,6 +1,7 @@
 #ifndef QLEARNING_9_TABLE_H_
 #define QLEARNING_9_TABLE_H_
 
+#include "interactor.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -42,7 +43,9 @@ public:
 
     int getNumberOfStates(){return numberOfStates;};
     int getNumberOfActions(){return numberOfActions;};
-
+    // read and write
+    void saveToFile();
+    void loadFromFile(std::string const& qtableFilename);
 private:
     std::vector<std::vector<QvalueType>> qValues; // qValues[state][action]
     int numberOfStates;
