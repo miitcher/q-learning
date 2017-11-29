@@ -1,7 +1,7 @@
 CC=g++
 CPPFLAGS=-c -g -std=c++0x -Wall -Wextra -pedantic
-SOURCES=main.cpp learning.cpp learning.hpp
-OBJECTS=main.o learning.o
+SOURCES=main.cpp interactor.cpp interactor.hpp
+OBJECTS=main.o interactor.o
 EXECUTABLE=main
 
 all: $(SOURCES) $(EXECUTABLE)

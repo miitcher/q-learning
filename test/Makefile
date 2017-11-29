@@ -14,7 +14,7 @@ CXXFLAGS += -std=c++0x -g -Wall -Wextra -pthread -Wno-missing-field-initializers
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = learning_test
+TESTS = interactor_test
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -28,8 +28,8 @@ all : $(TESTS)
 clean :
 	rm -f $(TESTS) gtest.a gtest_main.a *.o
 
-run: learning_test
-	./learning_test --gtest_output="xml:./tmc_test_results.xml" 2> /dev/null; true
+run: interactor_test
+	./interactor_test --gtest_output="xml:./tmc_test_results.xml" 2> /dev/null; true
 
 # Builds gtest.a and gtest_main.a.
 
@@ -60,12 +60,12 @@ gtest_main.a : gtest-all.o gtest_main.o
 # function.
 
 
-learning.o :  $(USER_DIR)/learning.cpp $(USER_DIR)/learning.hpp $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/learning.cpp
+interactor.o :  $(USER_DIR)/interactor.cpp $(USER_DIR)/interactor.hpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/interactor.cpp
 
 test_source.o : $(TEST_DIR)/test_source.cpp \
-                     $(USER_DIR)/learning.hpp
+                     $(USER_DIR)/interactor.hpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/test_source.cpp
 
-learning_test : learning.o test_source.o gtest_main.a
+interactor_test : interactor.o test_source.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@

@@ -1,11 +1,17 @@
 #ifndef QLEARNING_9_AGENT_H_
 #define QLEARNING_9_AGENT_H_
 
-#include "learning.hpp"
 #include "q-table.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
+
+// The state and reward are calculated by the agent from the simulations
+// resopnse.
+typedef int StateType;
+typedef int RewardType;
+typedef int AgentShapeType; // TODO: agentShape will be implemented according
+    // to the needs of the simulation.
 
 class Agent {
 public:

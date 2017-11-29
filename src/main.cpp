@@ -1,4 +1,3 @@
-#include "learning.hpp"
 #include <iostream>
 
 // The main will controll IO and graphics, and start the program.

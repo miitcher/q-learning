@@ -1,15 +1,16 @@
 #ifndef QLEARNING_9_TABLE_H_
 #define QLEARNING_9_TABLE_H_
 
-#include "learning.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
 
+typedef float QvalueType;
+
 // This class contains the Q-table and manages the acces to it.
 class Qtable {
 public:
-    /* The Qtable is initialized from actors and sensors. Initializer needs the
+    /* The Qtable is initialized from actors and sensors. Initializer needs
      * the number each actor's possible actions and the number of each
      * state-detecting sensor's possible states. Qtable is a vector of
      * state-vectors that contain actions for that state. The size of the Qtable

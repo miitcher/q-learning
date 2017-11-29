@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
-#include "../src/learning.hpp"
+#include "../src/interactor.hpp"
 #include "../src/q-table.hpp"
 #include "../src/q-table.cpp"
 #include "../src/agent.hpp"
 #include "../src/agent.cpp"
 #include <iostream>
 
-TEST(test_learning, test_Interactor) {
+TEST(test_interactor, test_Interactor) {
     Interactor a(42, "generic interactor", 1256, -3.14, 1.1);
 
     EXPECT_EQ(a.getID(), 42);
@@ -16,7 +16,7 @@ TEST(test_learning, test_Interactor) {
     EXPECT_EQ(a.getMaxAngle(), float(1.1));
 }
 
-TEST(test_learning, test_Actor) {
+TEST(test_interactor, test_Actor) {
     Actor a(23, "generic actor", 126, 1, 2, {Still, Clockwise});
 
     EXPECT_EQ(a.getID(), 23);
@@ -32,7 +32,7 @@ TEST(test_learning, test_Actor) {
     EXPECT_EQ(actions[1], 2);
 }
 
-TEST(test_learning, test_Sensor) {
+TEST(test_interactor, test_Sensor) {
     Sensor a(231, "generic sensor", 126, 10, 2);
 
     EXPECT_EQ(a.getID(), 231);
@@ -42,7 +42,7 @@ TEST(test_learning, test_Sensor) {
     EXPECT_EQ(a.getMaxAngle(), float(2));
 }
 
-TEST(test_learning, test_JointActor) {
+TEST(test_interactor, test_JointActor) {
     JointActor a(2, 456, 0.0, 0);
 
     EXPECT_EQ(a.getID(), 2);
@@ -53,7 +53,7 @@ TEST(test_learning, test_JointActor) {
     EXPECT_EQ(a.getNumberOfActions(), 3);
 }
 
-TEST(test_learning, test_JointSensor) {
+TEST(test_interactor, test_JointSensor) {
     JointSensor a(1, 46, 2, 1);
 
     EXPECT_EQ(a.getID(), 1);
