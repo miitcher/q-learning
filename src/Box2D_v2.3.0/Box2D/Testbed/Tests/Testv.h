@@ -64,10 +64,10 @@
 				revoluteJointDef.bodyB = arm1;
 				revoluteJointDef.collideConnected = false;
 				revoluteJointDef.enableMotor = true;
-  				revoluteJointDef.maxMotorTorque = 10;
+  				revoluteJointDef.maxMotorTorque = 500;
 				revoluteJointDef.localAnchorA.Set(2,1);//the top right corner of the box
 				revoluteJointDef.localAnchorB.Set(-1.5,0);
-  				b2RevoluteJoint* m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
+  				m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 				
 				
 				revoluteJointDef.bodyA = arm2;
@@ -75,7 +75,7 @@
 				revoluteJointDef.collideConnected = false;
 				revoluteJointDef.localAnchorA.Set(-1.5,0);
 				revoluteJointDef.localAnchorB.Set(1.5,0);
-  				b2RevoluteJoint* n_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
+  				n_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 				
 
 				m_button = false;
@@ -83,35 +83,10 @@
 			}
    		}
 		
-		void Keyboard(unsigned char key)
-		{
-			switch (key)
-			{
-			case 'a':
-				m_button = true;
-				break;
-
-			case 'd':
-				n_button = true;
-				break;
-
-			}
-		}
+		
 
         void Step(Settings* settings)
         {
-			if(m_button)
-			{
-				m_joint->SetMotorSpeed(2);
-			}
-			else if(n_button)
-			{
-				m_joint->SetMotorSpeed(-2);
-			}
-			else
-			{
-				m_joint->SetMotorSpeed(0);
-			}
             //run the default physics and rendering
             Test::Step(settings); 
     
@@ -121,11 +96,27 @@
 
         }
     
+		void Keyboard(unsigned char key)
+		{
+			switch (key)
+			{
+			case 'a':
+				m_joint->SetMotorSpeed(5.0f);
+				break;
+
+			case 'd':
+				m_joint->SetMotorSpeed(-5.0f);
+				break;
+
+			}
+		}
+
         static Test* Create()
         {
             return new Testv;
         }
 		b2RevoluteJoint* m_joint;
+		b2RevoluteJoint* n_joint;
 		bool m_button;
 		bool n_button;
     };
