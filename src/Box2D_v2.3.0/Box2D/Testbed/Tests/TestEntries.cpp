@@ -74,11 +74,11 @@
 #include "VaryingRestitution.h"
 #include "VerticalStack.h"
 #include "Web.h"
-#include "Testv.h"
+#include "TestCrawler.h"
 
 TestEntry g_testEntries[] =
 {
-	{"Testv", Testv::Create},
+	{"TestCrawler", TestCrawler::Create},
 	{"Ray-Cast", RayCast::Create},
 	{"Dump Shell", DumpShell::Create},
 	{"Convex Hull", ConvexHull::Create},
