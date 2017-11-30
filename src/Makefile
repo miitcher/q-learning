@@ -1,7 +1,8 @@
 CC=g++
-CPPFLAGS=-c -g -std=c++0x -Wall -Wextra -pedantic
-SOURCES=main.cpp interactor.cpp interactor.hpp
-OBJECTS=main.o interactor.o
+CPPFLAGS=-c -g -std=c++0x -Wall -Wextra -pedantic -pthread
+LDFLAGS=-lpthread
+SOURCES=main.cpp
+OBJECTS=main.o
 EXECUTABLE=main
 
 all: $(SOURCES) $(EXECUTABLE)

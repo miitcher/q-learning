@@ -6,7 +6,7 @@
 
 void printHello() {
     std::cout << "A thread started!" << std::endl;
-    //std::this_thread::sleep_for (std::chrono::seconds(1));
+    std::this_thread::sleep_for (std::chrono::seconds(1));
     std::cout << "A thread is done!" << std::endl;
 }
 /*

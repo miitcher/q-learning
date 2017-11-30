@@ -65,9 +65,9 @@ TEST(test_interactor, test_JointSensor) {
     EXPECT_EQ(a.getMaxAngle(), float(1));
 }
 
-// TODO: Mikael - This test should be refined.
+// TODO: Mikael - This tests should be refined.
 /*
-TEST(test_agentManager, test_threads) {
+TEST(test_agentManager, test_threads1) {
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
@@ -86,6 +86,15 @@ TEST(test_agentManager, test_threads) {
     AgentManager am(actorVec, sensorVec, as, 3, "");
 
     //am.initRun();
+}
+
+TEST(test_agentManager, test_threads2) {
+    // Mikael - Code for testing threading and CMake
+    printHello();
+    std::thread t1(printHello);
+    std::cout << "Main thread is executing." << std::endl;
+    t1.join();
+    std::cout << "Thread joined." << std::endl;
 
     EXPECT_EQ(1,1);
 }
@@ -133,6 +142,7 @@ TEST(test_Agent, test_constructor) {
     EXPECT_EQ(a.getNumberOfActions(), 15 * 33);
 
 }
+
 TEST(test_Agent, test_functions) {
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
