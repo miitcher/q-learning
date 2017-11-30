@@ -35,7 +35,7 @@
 				// create arm1
 				b2Body* arm1 = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(4, 2); //set the starting position
+  				myBodyDef.position.Set(3.5, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
 				arm1 = m_world->CreateBody(&myBodyDef);
 				
@@ -48,7 +48,7 @@
                                 // create arm2
 				b2Body* arm2 = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(7, 2); //set the starting position
+  				myBodyDef.position.Set(6.5, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
 				arm2 = m_world->CreateBody(&myBodyDef);
 				
@@ -63,25 +63,55 @@
  				revoluteJointDef.bodyA = crawler;
 				revoluteJointDef.bodyB = arm1;
 				revoluteJointDef.collideConnected = false;
+				revoluteJointDef.enableMotor = true;
+  				revoluteJointDef.maxMotorTorque = 10;
 				revoluteJointDef.localAnchorA.Set(2,1);//the top right corner of the box
 				revoluteJointDef.localAnchorB.Set(-1.5,0);
   				b2RevoluteJoint* m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
-
+				
+				
 				revoluteJointDef.bodyA = arm2;
 				revoluteJointDef.bodyB = arm1;
 				revoluteJointDef.collideConnected = false;
 				revoluteJointDef.localAnchorA.Set(-1.5,0);
 				revoluteJointDef.localAnchorB.Set(1.5,0);
   				b2RevoluteJoint* n_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
-		
+				
 
-
+				m_button = false;
+				n_button = false;
 			}
-
    		}
 		
+		void Keyboard(unsigned char key)
+		{
+			switch (key)
+			{
+			case 'a':
+				m_button = true;
+				break;
+
+			case 'd':
+				n_button = true;
+				break;
+
+			}
+		}
+
         void Step(Settings* settings)
         {
+			if(m_button)
+			{
+				m_joint->SetMotorSpeed(2);
+			}
+			else if(n_button)
+			{
+				m_joint->SetMotorSpeed(-2);
+			}
+			else
+			{
+				m_joint->SetMotorSpeed(0);
+			}
             //run the default physics and rendering
             Test::Step(settings); 
     
@@ -95,6 +125,9 @@
         {
             return new Testv;
         }
+		b2RevoluteJoint* m_joint;
+		bool m_button;
+		bool n_button;
     };
   
   #endif
