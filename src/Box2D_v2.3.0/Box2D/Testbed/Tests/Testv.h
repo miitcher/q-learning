@@ -39,7 +39,7 @@
   				myBodyDef.angle = 0; //set the starting angle
 				arm1 = m_world->CreateBody(&myBodyDef);
 				
-  				boxShape.SetAsBox(2,0.1);
+  				boxShape.SetAsBox(1.5,0.1);
   
   				boxFixtureDef.shape = &boxShape;
   				boxFixtureDef.density = 1;
@@ -50,8 +50,8 @@
  				revoluteJointDef.bodyA = crawler;
 				revoluteJointDef.bodyB = arm1;
 				revoluteJointDef.collideConnected = false;
-				revoluteJointDef.localAnchorA.Set(1,1);//the top right corner of the box
-				revoluteJointDef.localAnchorB.Set(-1,0);
+				revoluteJointDef.localAnchorA.Set(2,1);//the top right corner of the box
+				revoluteJointDef.localAnchorB.Set(-1.5,0);
   				b2RevoluteJoint* m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 		
 
