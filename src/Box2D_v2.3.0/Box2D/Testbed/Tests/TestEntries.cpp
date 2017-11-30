@@ -74,10 +74,12 @@
 #include "VaryingRestitution.h"
 #include "VerticalStack.h"
 #include "Web.h"
+#include "Testv.h"
 
 TestEntry g_testEntries[] =
 {
 	{"Ray-Cast", RayCast::Create},
+	{"Testv", Testv::Create},
 	{"Dump Shell", DumpShell::Create},
 	{"Convex Hull", ConvexHull::Create},
 	{"Apply Force", ApplyForce::Create},
