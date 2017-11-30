@@ -35,7 +35,7 @@
 				// create arm1
 				b2Body* arm1 = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(2, 1); //set the starting position
+  				myBodyDef.position.Set(4, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
 				arm1 = m_world->CreateBody(&myBodyDef);
 				
@@ -45,7 +45,20 @@
   				boxFixtureDef.density = 1;
   				arm1->CreateFixture(&boxFixtureDef);
 
-				// set joint
+                                // create arm2
+				b2Body* arm2 = NULL;
+				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
+  				myBodyDef.position.Set(7, 2); //set the starting position
+  				myBodyDef.angle = 0; //set the starting angle
+				arm2 = m_world->CreateBody(&myBodyDef);
+				
+  				boxShape.SetAsBox(1.5,0.1);
+  
+  				boxFixtureDef.shape = &boxShape;
+  				boxFixtureDef.density = 1;
+  				arm2->CreateFixture(&boxFixtureDef);
+
+				// set joint crawler-arm1
 				b2RevoluteJointDef revoluteJointDef;
  				revoluteJointDef.bodyA = crawler;
 				revoluteJointDef.bodyB = arm1;
@@ -53,6 +66,13 @@
 				revoluteJointDef.localAnchorA.Set(2,1);//the top right corner of the box
 				revoluteJointDef.localAnchorB.Set(-1.5,0);
   				b2RevoluteJoint* m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
+
+				revoluteJointDef.bodyA = arm2;
+				revoluteJointDef.bodyB = arm1;
+				revoluteJointDef.collideConnected = false;
+				revoluteJointDef.localAnchorA.Set(-1.5,0);
+				revoluteJointDef.localAnchorB.Set(1.5,0);
+  				b2RevoluteJoint* n_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 		
 
 
