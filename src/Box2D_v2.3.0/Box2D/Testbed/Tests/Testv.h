@@ -24,18 +24,18 @@
 				crawler = m_world->CreateBody(&myBodyDef);
 				
 				b2PolygonShape boxShape;
-  				boxShape.SetAsBox(2,1);
+  				boxShape.SetAsBox(3,1);
   
   				b2FixtureDef boxFixtureDef;
   				boxFixtureDef.shape = &boxShape;
-  				boxFixtureDef.density = 5;
-				boxFixtureDef.friction = 10;
+  				boxFixtureDef.density = 1;
+				boxFixtureDef.friction = 1;
   				crawler->CreateFixture(&boxFixtureDef);
 
 				// create arm1
 				b2Body* arm1 = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(3.5, 2); //set the starting position
+  				myBodyDef.position.Set(4, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
 				arm1 = m_world->CreateBody(&myBodyDef);
 				
@@ -43,13 +43,15 @@
   
   				boxFixtureDef.shape = &boxShape;
   				boxFixtureDef.density = 1;
+				boxFixtureDef.friction = 10;
   				arm1->CreateFixture(&boxFixtureDef);
 
                                 // create arm2
 				b2Body* arm2 = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(6.5, 2); //set the starting position
+  				myBodyDef.position.Set(7, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
+				
 				arm2 = m_world->CreateBody(&myBodyDef);
 				
   				boxShape.SetAsBox(1.5,0.1);
@@ -101,13 +103,42 @@
 			switch (key)
 			{
 			case 'a':
-				m_joint->SetMotorSpeed(5.0f);
+				m_joint->SetMotorSpeed(2.0f);
 				break;
 
 			case 'd':
-				m_joint->SetMotorSpeed(-5.0f);
+				m_joint->SetMotorSpeed(-2.0f);
+				break;
+			
+			case 's':
+				n_joint->SetMotorSpeed(-2.0f);
 				break;
 
+			case 'w':
+				n_joint->SetMotorSpeed(2.0f);
+				break;
+			}
+		}
+
+		void KeyboardUp(unsigned char key)
+		{
+			switch (key)
+			{
+			case 'a':
+				m_joint->SetMotorSpeed(0);
+				break;
+
+			case 'd':
+				m_joint->SetMotorSpeed(0);
+				break;
+			
+			case 's':
+				n_joint->SetMotorSpeed(0);
+				break;
+
+			case 'w':
+				n_joint->SetMotorSpeed(0);
+				break;
 			}
 		}
 
