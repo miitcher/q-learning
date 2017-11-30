@@ -4,8 +4,19 @@
   class Testv : public Test
     {
         public:
-        Testv() { } //do nothing, no scene yet
-    
+        Testv() 
+		{
+			b2Body* ground = NULL;
+			{
+				b2BodyDef bd;
+				ground = m_world->CreateBody(&bd);
+
+				b2EdgeShape shape;
+				shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+				ground->CreateFixture(&shape, 0.0f);
+			}
+   		}
+		
         void Step(Settings* settings)
         {
             //run the default physics and rendering
