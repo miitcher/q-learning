@@ -19,7 +19,8 @@ public:
     Agent(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
-    int convertActionToIndex(const std::vector<ActionPacketType>& action);
+    int convertActionToIndex(const std::vector<ActionPacketType>& actPacs);
+    int convertResponseToIndex(const std::vector<ResponsePacketType>& senPacs);
 
     // Chooses the best or a random action
     ActionType& chooseAction(StateType state);
@@ -34,10 +35,10 @@ public:
     // The response is the result of an action in the simulation.
     RewardType& calcReward(std::vector<ResponsePacketType> responseMessage);
 
-    int getNumberOfStates(){return numOfStates;};
-    int getNumberOfActions(){return numOfActions;};
-    std::vector<Actor> getActors(){return actors;};
-    std::vector<Sensor> getSensors(){return sensors;};
+    const int& getNumberOfStates() const {return numOfStates;};
+    const int& getNumberOfActions() const {return numOfActions;};
+    const std::vector<Actor>& getActors() const {return actors;};
+    const std::vector<Sensor>& getSensors() const {return sensors;};
 
 private:
     int ID;

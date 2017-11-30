@@ -140,6 +140,10 @@ TEST(test_Agent, test_constructor) {
     Agent a(actorVec, sensorVec);
     EXPECT_EQ(a.getNumberOfStates(), 13 * 12);
     EXPECT_EQ(a.getNumberOfActions(), 15 * 33);
+    EXPECT_EQ(a.getActors()[0].getID(), a1.getID());
+    EXPECT_EQ(a.getSensors()[0].getID(), b.getID());
+    EXPECT_EQ(a.getActors()[1].getID(), a2.getID());
+    EXPECT_EQ(a.getSensors()[1].getID(), b1.getID());
 
 }
 

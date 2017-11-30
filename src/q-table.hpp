@@ -41,11 +41,12 @@ public:
      */
     ActionType& getBestAction(const int& stateIndex);
 
-    int getNumberOfStates(){return numberOfStates;};
-    int getNumberOfActions(){return numberOfActions;};
+    const int& getNumberOfStates() const {return numberOfStates;};
+    const int& getNumberOfActions() const {return numberOfActions;};
     // read and write
     void saveToFile();
-    void loadFromFile(std::string const& qtableFilename);
+    void loadFromFile(const std::string& qtableFilename);
+
 private:
     std::vector<std::vector<QvalueType>> qValues; // qValues[state][action]
     int numberOfStates;
