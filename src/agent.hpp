@@ -50,10 +50,13 @@ public:
     };
 
 private:
-    FRIEND_TEST(test_Agent, test_agents_actor); // needed for testing
-    FRIEND_TEST(test_Agent, test_constructor);  // private methods
+    /* The agent unittests can atm not be compiled!
+    // GTest uses FRIEND_TEST to access private methods in unittests.
+    FRIEND_TEST(test_Agent, test_agents_actor);
+    FRIEND_TEST(test_Agent, test_constructor);
     FRIEND_TEST(test_Agent, test_agents_sensor);
     FRIEND_TEST(test_Agent, test_quantizise);
+    */
 
     // The next two functions are used only at initialization
     // because they are slow.
