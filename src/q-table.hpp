@@ -11,8 +11,7 @@ typedef float QValue;
 // This class contains the Q-table and manages the acces to it.
 class Qtable {
 public:
-
-    Qtable(int s, int a);
+    Qtable(int stateDimension, int actionDimension);
 
     const QValue& getQvalue(const int& stateIndex,
         const int& actionIndex) const;
@@ -24,6 +23,9 @@ public:
      */
     QValue getMaxQvalue(int stateIndex);
 
+    /* Generates a random integer (=index)
+     * from the range 0 to numberOfActions-1
+     */
     int getRandomAction(){ return (rand() % numberOfActions); };
 
     /* Compares actions
@@ -41,6 +43,10 @@ public:
     void loadFromFile(const std::string& qtableFilename);
 
 private:
+    // The QTable is now a vector of vectors (= two dimensional matrix).
+    // The size of the matrix doesn't change so the std::vector's ability of
+    // size changing is redundant. Is there a better container? Array?
+
     std::vector<std::vector<QValue>> qValues; // qValues[state][action]
     int numberOfStates;
     int numberOfActions;

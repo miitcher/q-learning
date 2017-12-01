@@ -16,6 +16,16 @@ typedef int AgentShape; // TODO: agentShape will be implemented according
 
 class Agent {
 public:
+    /* The Qtable is initialized from actors and sensors. Initializer needs
+     * the number each actor's possible actions and the number of each
+     * state-detecting sensor's possible states. Qtable is a vector of
+     * state-vectors that contain actions for that state. The size of the Qtable
+     * will be states * actions. If an agent has, for example, three actors
+     * with 3, 2 and 2 possible actions, for each state there is
+     * 3 * 2 * 2 = 12 possible actions. If three state-detecting sensors can
+     * detect each 10 different states, the total number of states is
+     * 10³ = 1000. This would make a Qtable of a size 1000 * 12.
+     */
     Agent(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
@@ -25,33 +35,45 @@ public:
     void receiveSimulationResponse(
         std::vector<ResponsePacket> responseMessage);
 
-    // These two are used only at initialization because they are slow.
+    // The next two functions are used only at initialization
+    // because they are slow.
     // To do Anssi: create a dictionary structure using these functions.
     // The dictionary is fast and is used during the learning process.
+
+    /* This function converts a vector of actions of individual actors
+     * to a single action of the agent which is an index to the Q-table.
+     */
     int convertActionToIndex(
         const std::vector<ActionPacket>& actionMessage);
+
+    /* This function converts a vector of states of individual sensors
+     * to a single state of the agent which is an index to the Q-table.
+     */
     int convertResponseToIndex(
         const std::vector<ResponsePacket>& responseMessage);
 
-    // Chooses the best or a random action
+    /* Chooses the best or a random action depending on the explorationFactor */
     std::vector<ActionPacket> chooseAction();
 
+    /* Calculates the updated Q-value using the reward, discoutFactor,
+     * learningRate and the maximum Q-value of the next state's actions.
+     */
     void updateQtable(QState state, Action action, QState nextState);
 
-    // This function communicates the action to the simulation.
+    /* This function communicates the action to the simulation. */
     void doAction(std::vector<ActionPacket> actionMessage);
 
-    // The response is the result of an action in the simulation.
+    /* The response is the result of an action in the simulation. */
     QReward& calcReward(std::vector<ResponsePacket> responseMessage);
 
-    // Acces functions
+    /* Acces functions */
     const int& getNumberOfStates() const { return numOfStates; };
     const int& getNumberOfActions() const { return numOfActions; };
     const std::vector<Actor>& getActors() const { return actors; };
     const std::vector<Sensor>& getSensors() const { return sensors; };
     const QState& getState() const { return currentState; };
 
-    // read and write Qtable
+    /* Read Qtable from - and write Qtable to - an external file */
     void saveQtable() { _Qtable->saveToFile(); };
     void loadQtable(std::string const& qtableFilename) {
         _Qtable->loadFromFile(qtableFilename);
