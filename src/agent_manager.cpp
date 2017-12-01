@@ -24,7 +24,7 @@ void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
     // The learning and simulation parts communicate.
     /*
     while (true) {
-        std::vector<ActionPacket> actionMessage = agent.chooseAction();
+        std::vector<ActionPacket> actionMessage = agent.doAction();
         std::vector<ResponsePacket> responseMessage
             = simulation.simulateAction(actionMessage);
         agent.receiveSimulationResponse(responseMessage);
