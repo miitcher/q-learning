@@ -29,11 +29,31 @@ public:
     Agent(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
-    int convertSensorInputToInteger(SensorInput const& sInput);
-
     // Unpack the response - use convertSensorInputToInteger
     void receiveSimulationResponse(
         std::vector<ResponsePacket> responseMessage);
+
+    /* This function communicates the action to the simulation. */
+    ActionMessage doAction(std::vector<ActionPacket> actionMessage);
+
+    /* Acces functions */
+    const int& getNumberOfStates() const { return numOfStates; };
+    const int& getNumberOfActions() const { return numOfActions; };
+    const std::vector<Actor>& getActors() const { return actors; };
+    const std::vector<Sensor>& getSensors() const { return sensors; };
+    const QState& getState() const { return currentState; };
+
+    /* Read Qtable from - and write Qtable to - an external file */
+    void saveQtable() { _Qtable->saveToFile(); };
+    void loadQtable(std::string const& qtableFilename) {
+        _Qtable->loadFromFile(qtableFilename);
+    };
+
+private:
+    FRIEND_TEST(test_Agent, test_agents_actor); // needed for testing
+    FRIEND_TEST(test_Agent, test_constructor);  // private methods
+    FRIEND_TEST(test_Agent, test_agents_sensor);
+    FRIEND_TEST(test_Agent, test_quantizise);
 
     // The next two functions are used only at initialization
     // because they are slow.
@@ -52,33 +72,24 @@ public:
     int convertResponseToIndex(
         const std::vector<ResponsePacket>& responseMessage);
 
-    /* Chooses the best or a random action depending on the explorationFactor */
-    std::vector<ActionPacket> chooseAction();
+    /* This function scales the sensorInput (double at the moment)
+     * to integer from 0 to quantizationSteps.
+     * I.e. from the scale minAngle < double angle < maxAngle to
+     * the scale 0 < int index < quantizationSteps
+     */
+    int quantiziseSensorInput(Sensor& sensor, SensorInput sInput);
 
     /* Calculates the updated Q-value using the reward, discoutFactor,
      * learningRate and the maximum Q-value of the next state's actions.
      */
     void updateQtable(QState state, Action action, QState nextState);
 
-    /* This function communicates the action to the simulation. */
-    void doAction(std::vector<ActionPacket> actionMessage);
-
     /* The response is the result of an action in the simulation. */
     QReward& calcReward(std::vector<ResponsePacket> responseMessage);
 
-    /* Acces functions */
-    const int& getNumberOfStates() const { return numOfStates; };
-    const int& getNumberOfActions() const { return numOfActions; };
-    const std::vector<Actor>& getActors() const { return actors; };
-    const std::vector<Sensor>& getSensors() const { return sensors; };
-    const QState& getState() const { return currentState; };
+    /* Chooses the best or a random action depending on the explorationFactor */
+    std::vector<ActionPacket> chooseAction();
 
-    /* Read Qtable from - and write Qtable to - an external file */
-    void saveQtable() { _Qtable->saveToFile(); };
-    void loadQtable(std::string const& qtableFilename) {
-        _Qtable->loadFromFile(qtableFilename);
-    };
-private:
     int ID;
     double discountFactor;      // range 0...1, e.g. 0.9, increase
     double learningRate;        // range: 0...1, e.g. 0.1

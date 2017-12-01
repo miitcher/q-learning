@@ -147,13 +147,9 @@ TEST(test_Qtable, test_functions) {
 }
 
 TEST(test_Agent, test_constructor) {
-    /*Actor(int ID, std::string const& description, int quantizationSteps,
-    float minAngle, float maxAngle,
-        std::vector<Action> actions)*/
     Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
     Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
-
-    /*Interactor(int ID, std::string const& description, int quantizationSteps,
+    /*(int ID, std::string description, int quantizationSteps,
         float minAngle, float maxAngle)*/
     Sensor b = Sensor(20, "sensor1", 13, 11, 200);
     Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
@@ -170,16 +166,15 @@ TEST(test_Agent, test_constructor) {
 
 }
 
-TEST(test_Agent, test_functions) {
+TEST(test_Agent, test_agents_actor) {
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
     Actor a1 = Actor
     (22, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
     Actor a2 = Actor
     (23, "generic actor", 33, 1, 200, {Counterclockwise, Clockwise});
-
-    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
-    Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
+    Sensor b = Sensor(20, "sensor1", 12, 11.111, 200.00);
+    Sensor b1 = Sensor(21, "sensor2", 13, 12.3333, 200.1231231);
     std::vector<Actor> actorVec = {a0, a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
     Agent a(actorVec, sensorVec);
@@ -224,18 +219,83 @@ TEST(test_Agent, test_functions) {
        16       2   2   1
        17       2   2   2
     */
-    EXPECT_EQ(a.convertActionToIndex(apvec), 10);
 
-    SensorInput si0 = 1;
-    SensorInput si1 = 1;
+    // test convertActionToIndex
+    EXPECT_EQ(a.convertActionToIndex(apvec), 10);
+}
+TEST(test_Agent, test_quantizise) {
+    // Quantizising is done during the learning process so this should not
+    // be slow.
+    Actor a0 = Actor
+    (21, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
+    Actor a1 = Actor
+    (22, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
+    Actor a2 = Actor
+    (23, "generic actor", 33, 1, 200, {Counterclockwise, Clockwise});
+    Sensor b = Sensor(20, "sensor1", 12, 15, 200.00);
+    Sensor b1 = Sensor(21, "sensor2", 13, 24.3333, 200.1231231);
+    std::vector<Actor> actorVec = {a0, a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    Agent a(actorVec, sensorVec);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 5.000), -1);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 15.000), 0);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 55), 2);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 100), 5);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 140), 8);
+    EXPECT_EQ(a.quantiziseSensorInput(b, 200), 12);
+
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 13.000), -1);
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 55), 2);
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 100), 5);
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 129), 7);
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 200), 12);
+    EXPECT_EQ(a.quantiziseSensorInput(b1, 2000), -1);
+}
+
+TEST(test_Agent, test_agents_sensor) {
+    Actor a0 = Actor
+    (21, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
+    Actor a1 = Actor
+    (22, "generic actor", 15, 1, 200, {Still, Counterclockwise, Clockwise});
+    Actor a2 = Actor
+    (23, "generic actor", 33, 1, 200, {Counterclockwise, Clockwise});
+
+    Sensor b = Sensor(20, "sensor1", 12, 15, 200.00);
+    Sensor b1 = Sensor(21, "sensor2", 13, 24.3333, 200.1231231);
+    std::vector<Actor> actorVec = {a0, a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    Agent a(actorVec, sensorVec);
+
+    // test convertResponseToIndex
+    SensorInput si0 = 15;
+    SensorInput si1 = 30;
     ResponsePacket rp0(20, si0);
     ResponsePacket rp1(21, si1);
+/*
+    for(int i = 11; i < 21; i++){
+        std::cout << a.quantiziseSensorInput
+        (b, static_cast<SensorInput>(i)) << " ";
+    }
+    std::cout << std::endl << std::endl; */
+
     std::vector<ResponsePacket> rpvec = {rp0, rp1};
-    EXPECT_EQ(a.convertResponseToIndex(rpvec), 1*1 + 1*13);
-    SensorInput si2 = 2;
-    SensorInput si3 = 2;
+
+    std::cout << "test convertResponseToIndex" << std::endl;
+    for(int i = 10; i < 200; i = i+20){
+        for(int j = 10; j < 200; j = j+20){
+            rp0 = {20, static_cast<SensorInput>(j)};
+            rp1 = {21, static_cast<SensorInput>(i)};
+            rpvec = {rp0, rp1};
+            std::cout << a.convertResponseToIndex(rpvec) << " ";
+        }
+        std::cout << std::endl;
+    }std::cout << std::endl;
+
+    EXPECT_EQ(a.convertResponseToIndex(rpvec), 13*12 -1);
+    SensorInput si2 = 11.1;
+    SensorInput si3 = 13.1;
     ResponsePacket rp2(20, si2);
     ResponsePacket rp3(21, si3);
     rpvec = {rp2, rp3};
-    EXPECT_EQ(a.convertResponseToIndex(rpvec), 1*2 + 2*13);
+    EXPECT_EQ(a.convertResponseToIndex(rpvec), 0);
 }

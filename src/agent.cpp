@@ -23,6 +23,7 @@ Agent::Agent(std::vector<Actor> const& actors,
 
 int Agent::convertActionToIndex
     (const std::vector<ActionPacket>& actionPacs){
+
     // This nice loopety-loop generates a vector that contains each index to an
     // actor's vector of actions. i.e. the index of the action in that actors
     // action-vector that should be done.
@@ -33,9 +34,10 @@ int Agent::convertActionToIndex
             if (packet.first == actor.getID()){
                 for (auto action : actor.getActions()){
                     if(action != packet.second){
-                        incr++;
+                        incr++; // The index in the actor's action-vector
                     }else{
-                        indeces.push_back(incr);
+                        indeces.push_back(incr); // this vector contains indeces
+                                            // for every actors' action-vector
                         incr = 0;
                         break;
                     }
@@ -44,7 +46,7 @@ int Agent::convertActionToIndex
         }
     }
     std::vector<int> numsOfActions = {};
-    for (auto actor : actors){
+    for (auto actor : getActors()){
         numsOfActions.push_back(actor.getNumberOfActions());
     }
 /*
@@ -69,18 +71,22 @@ int Agent::convertActionToIndex
     return index;
 }
 
-int Agent::convertSensorInputToInteger(SensorInput const& sInput){
-    // To do Anssi: scale the input to integer from 0 to quantizationSteps
-    // i.e. from the scale minAngle < double angle < maxAngle to
-    // the scale 0 < int index < quantizationSteps
-    return static_cast<int>(sInput);
+int Agent::quantiziseSensorInput(Sensor& sensor, SensorInput sInput){
+
+    if(sInput < sensor.getMinAngle() || sInput > sensor.getMaxAngle()){
+        return -1; ////// to do Anssi: error message here?
+    }
+    SensorInput scaled = (sensor.getQuantizationSteps() *
+                        (sInput - sensor.getMinAngle())) /
+                        (sensor.getMaxAngle() - sensor.getMinAngle());
+    return static_cast<int>(scaled);
 }
 
 int Agent::convertResponseToIndex
     (const std::vector<ResponsePacket>& responsePacs){
 
     // At the moment, this function assumes that all sensors contribute to the
-    // aggregate state of the actual agent.
+    // aggregate state of the actual agent. Should be changed (todoAnssi)
     std::vector<int> indeces = {};
     int incr = 0;
     for (auto packet : responsePacs){
@@ -88,7 +94,7 @@ int Agent::convertResponseToIndex
             if (packet.first == sensor.getID()){
                 for (int state = 0; state < sensor.getQuantizationSteps()
                                         ; state++){
-                    if(state != convertSensorInputToInteger(packet.second)){
+                    if(state != quantiziseSensorInput(sensor, packet.second)){
                         incr++;
                     }else{
                         indeces.push_back(incr);
