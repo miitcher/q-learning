@@ -10,17 +10,19 @@ Possible moves for an Actor. The enumerators are integers, so
 they can be used as keys in the Q-table.
 If other actions are possible, then they need to be added to the enum.
 */
-enum ActionType {
+enum Action {
     Still,
     Counterclockwise,
     Clockwise
 };
 
-typedef double SensorInputType;
-typedef std::pair<int, ActionType> ActionPacketType;
+typedef double SensorInput;
+typedef std::pair<int, Action> ActionPacket;
     // (actorID, Action)
-typedef std::pair<int, SensorInputType> ResponsePacketType;
+typedef std::pair<int, SensorInput> ResponsePacket;
     // (sensorID, SensorInput)
+typedef std::vector<ActionPacket> ActionMessage;
+typedef std::vector<ResponsePacket> ResponseMessage;
 
 /**
 An interactor is the parent class for the actor and the sensor. An agent can
@@ -65,11 +67,11 @@ class Actor : public Interactor {
 public:
     Actor(int ID, std::string const& description,
         int quantizationSteps, float minAngle, float maxAngle,
-        std::vector<ActionType> actions);
-    const std::vector<ActionType>& getActions() const { return actions; }
+        std::vector<Action> actions);
+    const std::vector<Action>& getActions() const { return actions; }
     int getNumberOfActions() const { return actions.size(); }
 private:
-    std::vector<ActionType> actions;
+    std::vector<Action> actions;
 };
 
 class Sensor : public Interactor {

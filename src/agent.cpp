@@ -23,7 +23,7 @@ Agent::Agent(std::vector<Actor> const& actors,
 }
 
 int Agent::convertActionToIndex
-    (const std::vector<ActionPacketType>& actionPacs){
+    (const std::vector<ActionPacket>& actionPacs){
     /* This function converts a vector of actions for individual actors of the
      * agent to a single action for the agent, which is an index to the Q-table.
      */
@@ -75,21 +75,21 @@ int Agent::convertActionToIndex
 }
 
 /*
-void Agent::updateQtable(StateType state,
-        ActionType action, StateType nextState){
+void Agent::updateQtable(QState state,
+        Action action, QState nextState){
 
 }
 
-StateType Agent::getState(){
+QState Agent::getState(){
 
 }
 
-void Agent::doAction(std::vector<ActionPacketType> actionMessage){
+void Agent::doAction(std::vector<ActionPacket> actionMessage){
 
 }
 
-RewardType& Agent::calcReward
-    (std::vector<ResponsePacketType> responseMessage){
+QReward& Agent::calcReward
+    (std::vector<ResponsePacket> responseMessage){
 
 }
 */

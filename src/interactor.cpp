@@ -4,7 +4,7 @@
 
 Actor::Actor(int ID, std::string const& description,
     int quantizationSteps, float minAngle, float maxAngle,
-    std::vector<ActionType> actions)
+    std::vector<Action> actions)
     : Interactor(ID, description, quantizationSteps, minAngle, maxAngle),
     actions(actions) {}
 

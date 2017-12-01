@@ -81,7 +81,7 @@ TEST(test_agentManager, test_threads1) {
     std::vector<Actor> actorVec = {a0, a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
 
-    AgentShapeType as = 42;
+    AgentShape as = 42;
 
     AgentManager am(actorVec, sensorVec, as, 3, "");
 
@@ -111,7 +111,7 @@ TEST(test_Qtable, test_get_and_update_Qvalue) {
 
     int x = 1;
     int y = 1;
-    QvalueType z = 0.122;
+    QValue z = 0.122;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getQvalue(x,y), z);
 
@@ -126,7 +126,7 @@ TEST(test_Qtable, test_get_and_update_Qvalue) {
 TEST(test_Agent, test_constructor) {
     /*Actor(int ID, std::string const& description, int quantizationSteps,
     float minAngle, float maxAngle,
-        std::vector<ActionType> actions)*/
+        std::vector<Action> actions)*/
     Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
     Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
 
@@ -162,10 +162,10 @@ TEST(test_Agent, test_functions) {
     Agent a(actorVec, sensorVec);
   //  for (auto i : a.actors){std::cout << i.getActions()[1];}
   //  for (auto i : a.sensors){std::cout << i.getID();}
-    ActionPacketType ap(21, Counterclockwise);
-    ActionPacketType ap1(22, Still);
-    ActionPacketType ap2(23, Clockwise);
-    std::vector<ActionPacketType> apvec = {ap, ap1, ap2};
+    ActionPacket ap(21, Counterclockwise);
+    ActionPacket ap1(22, Still);
+    ActionPacket ap2(23, Clockwise);
+    std::vector<ActionPacket> apvec = {ap, ap1, ap2};
     /*
        If there is 3 actors in an agent that have actionVectors:
 

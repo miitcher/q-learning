@@ -9,21 +9,23 @@
 
 void printHello();
 
-// Function used by threads to run the learning and simulation of one agent
-// TODO: add parameter for agent and simulation
-// classes, and possibly saved Q-values
+/**
+Function for the threads task, that runs the learning and simulation of
+one agent.
+*/
 void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-    AgentShapeType& agentShape, std::string const& qtableFilename);
+    AgentShape& agentShape, std::string const& qtableFilename);
 
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {
 public:
     AgentManager(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-        AgentShapeType& agentShape, unsigned int agentCount,
-        std::string const& qtableFilename)
+        AgentShape& agentShape, unsigned int agentCount,
+        std::string const& qtableFilename, bool drawGraphics)
         : actors(actors), sensors(sensors), agentShape(agentShape),
-        agentCount(agentCount), qtableFilename(qtableFilename) {}
+        agentCount(agentCount), qtableFilename(qtableFilename),
+        drawGraphics(drawGraphics) {}
 
     // Creates threads that contain an agent and its simulation.
     void initRun();
@@ -49,11 +51,35 @@ public:
 private:
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
-    AgentShapeType& agentShape;
+    AgentShape& agentShape;
     unsigned int agentCount;
-    std::string qtableFilename; //
+    std::string qtableFilename;
+    bool drawGraphics;
     // TODO: Find out how to handle threads
     std::vector<std::thread> agentThreads;
+};
+
+// Model-class used before the real Box2D simulation can be used.
+// Shows the wanted behaviour.
+class Simulation {
+public:
+    Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
+        AgentShape& agentShape, bool drawGraphics)
+        : actors(actors), sensors(sensors), agentShape(agentShape),
+        drawGraphics(drawGraphics) {}
+
+    std::vector<ResponsePacket> simulateAction(
+        std::vector<ActionPacket> actionMessage)
+    {
+        std::pair<int, SensorInput> rp1(1, 3.2);
+        std::pair<int, SensorInput> rp2(2, 31.2);
+        return {rp1, rp2};
+    };
+private:
+    std::vector<Actor> actors;
+    std::vector<Sensor> sensors;
+    AgentShape& agentShape;
+    bool drawGraphics;
 };
 
 /* AgentManager behavior:
