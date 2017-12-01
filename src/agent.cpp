@@ -12,8 +12,7 @@ Agent::Agent(std::vector<Actor> const& actors,
      * actors with 3, 2 and 2 possible actions, for each state there is
      * 3 * 2 * 2 = 12 possible actions. If three state-detecting sensors can
      * detect each 10 different states, the total number of states is
-     * 10³ = 1000. This would make a Qtable of a size 1000 * 12. The "ID" of
-     * each action and state is the index in the vector.
+     * 10³ = 1000. This would make a Qtable of a size 1000 * 12.
      */
     numOfStates = 1; numOfActions = 1;
     // Calculate the total number of states
@@ -84,6 +83,9 @@ int Agent::convertActionToIndex
 }
 
 int Agent::convertSensorInputToInteger(SensorInput const& sInput){
+    // To do Anssi: scale the input to integer from 0 to quantizationSteps
+    // i.e. from the scale minAngle < double angle < maxAngle to
+    // the scale 0 < int index < quantizationSteps
     return static_cast<int>(sInput);
 }
 
@@ -123,13 +125,14 @@ int Agent::convertResponseToIndex
     return index;
 }
 
-/*
-void Agent::updateQtable(QState state,
-        Action action, QState nextState){
+/* To do Anssi: implement the rest
+
+std::vector<ActionPacket> Agent::chooseAction(){
 
 }
 
-QState Agent::getState(){
+void Agent::updateQtable(QState state,
+        Action action, QState nextState){
 
 }
 
@@ -139,6 +142,14 @@ void Agent::doAction(std::vector<ActionPacket> actionMessage){
 
 QReward& Agent::calcReward
     (std::vector<ResponsePacket> responseMessage){
+
+}
+
+void Agent::saveQtable() { _Qtable->saveToFile(){
+
+}
+
+void Agent::loadQtable(std::string const& qtableFilename){
 
 }
 */

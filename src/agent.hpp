@@ -7,8 +7,8 @@
 #include <string>
 #include <iostream>
 
-// The state and reward are calculated by the agent from the simulations
-// resopnse.
+// The state and reward are calculated by the agent from the simulation's
+// response.
 typedef int QState;
 typedef int QReward;
 typedef int AgentShape; // TODO: agentShape will be implemented according
@@ -21,6 +21,13 @@ public:
 
     int convertSensorInputToInteger(SensorInput const& sInput);
 
+    // Unpack the response - use convertSensorInputToInteger
+    void receiveSimulationResponse(
+        std::vector<ResponsePacket> responseMessage);
+
+    // These two are used only at initialization because they are slow.
+    // To do Anssi: create a dictionary structure using these functions.
+    // The dictionary is fast and is used during the learning process.
     int convertActionToIndex(
         const std::vector<ActionPacket>& actionMessage);
     int convertResponseToIndex(
@@ -29,23 +36,20 @@ public:
     // Chooses the best or a random action
     std::vector<ActionPacket> chooseAction();
 
-    void receiveSimulationResponse(
-        std::vector<ResponsePacket> responseMessage);
-
     void updateQtable(QState state, Action action, QState nextState);
 
-    QState getState();
-
-    // The action tells what the agent tries to do in the simulation.
+    // This function communicates the action to the simulation.
     void doAction(std::vector<ActionPacket> actionMessage);
 
     // The response is the result of an action in the simulation.
     QReward& calcReward(std::vector<ResponsePacket> responseMessage);
 
-    const int& getNumberOfStates() const {return numOfStates;};
-    const int& getNumberOfActions() const {return numOfActions;};
-    const std::vector<Actor>& getActors() const {return actors;};
-    const std::vector<Sensor>& getSensors() const {return sensors;};
+    // Acces functions
+    const int& getNumberOfStates() const { return numOfStates; };
+    const int& getNumberOfActions() const { return numOfActions; };
+    const std::vector<Actor>& getActors() const { return actors; };
+    const std::vector<Sensor>& getSensors() const { return sensors; };
+    const QState& getState() const { return currentState; };
 
     // read and write Qtable
     void saveQtable() { _Qtable->saveToFile(); };

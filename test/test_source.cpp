@@ -231,5 +231,11 @@ TEST(test_Agent, test_functions) {
     ResponsePacket rp0(20, si0);
     ResponsePacket rp1(21, si1);
     std::vector<ResponsePacket> rpvec = {rp0, rp1};
-    EXPECT_EQ(a.convertResponseToIndex(rpvec), 14);
+    EXPECT_EQ(a.convertResponseToIndex(rpvec), 1*1 + 1*13);
+    SensorInput si2 = 2;
+    SensorInput si3 = 2;
+    ResponsePacket rp2(20, si2);
+    ResponsePacket rp3(21, si3);
+    rpvec = {rp2, rp3};
+    EXPECT_EQ(a.convertResponseToIndex(rpvec), 1*2 + 2*13);
 }
