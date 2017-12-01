@@ -43,7 +43,7 @@ int Agent::convertActionToIndex
     std::vector<int> indeces = {};
     int incr = 0;
     for (auto packet : actionPacs){
-        for (auto actor : actors){
+        for (auto actor : getActors()){
             if (packet.first == actor.getID()){
                 for (auto action : actor.getActions()){
                     if(action != packet.second){
@@ -79,6 +79,46 @@ int Agent::convertActionToIndex
         std::cout << std::endl << "factor: " << factor<< std::endl <<"index: "
                                             << index << std::endl;
     */
+    }
+    return index;
+}
+
+int Agent::convertSensorInputToInteger(SensorInput const& sInput){
+    return static_cast<int>(sInput);
+}
+
+int Agent::convertResponseToIndex
+    (const std::vector<ResponsePacket>& responsePacs){
+    /* This function converts a vector of states for individual sensors of the
+     * agent to a single state for the agent, which is an index to the Q-table.
+     */
+    std::vector<int> indeces = {};
+    int incr = 0;
+    for (auto packet : responsePacs){
+        for (auto sensor : getSensors()){
+            if (packet.first == sensor.getID()){
+                for (int state = 0; state < sensor.getQuantizationSteps()
+                                        ; state++){
+                    if(state != convertSensorInputToInteger(packet.second)){
+                        incr++;
+                    }else{
+                        indeces.push_back(incr);
+                        incr = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    std::vector<int> numsOfStates = {};
+    for (auto sensor : getSensors()){
+        numsOfStates.push_back(sensor.getQuantizationSteps());
+    }
+    int index = 0;
+    int factor = 1;
+    for (size_t i = 0; i < indeces.size(); i++){
+        index += factor * indeces[i];
+        factor = factor * numsOfStates[i];
     }
     return index;
 }

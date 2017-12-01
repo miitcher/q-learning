@@ -19,6 +19,8 @@ public:
     Agent(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
+    int convertSensorInputToInteger(SensorInput const& sInput);
+
     int convertActionToIndex(
         const std::vector<ActionPacket>& actionMessage);
     int convertResponseToIndex(
