@@ -33,6 +33,9 @@ public:
 
     const int& getNumberOfStates() const {return numberOfStates;};
     const int& getNumberOfActions() const {return numberOfActions;};
+
+    void printQtable();
+
     // read and write
     void saveToFile();
     void loadFromFile(const std::string& qtableFilename);

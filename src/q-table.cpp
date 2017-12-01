@@ -1,5 +1,6 @@
 #include "q-table.hpp"
 #include <iostream>
+#include <iomanip>
 
 Qtable::Qtable(int s, int a) :
         numberOfStates(s), numberOfActions(a) {
@@ -46,4 +47,15 @@ int Qtable::getBestAction(int stateIndex){
         }
     }
     return best;
+}
+
+void Qtable::printQtable(){
+    for (int i = 0; i < getNumberOfActions(); i++){
+        for (int j = 0; j < getNumberOfStates(); j++){
+            std::cout << std::fixed;
+            std::cout << std::setprecision(4) << getQvalue(i, j) << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }

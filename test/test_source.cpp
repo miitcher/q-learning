@@ -109,14 +109,6 @@ TEST(test_Qtable, test_constructor) {
 TEST(test_Qtable, test_functions) {
     Qtable t(4,4);
 
- /*   for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            std::cout << t.getQvalue(i, j) << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl; */
-
     // test updateQvalue
     int x = 0;
     int y = 0;
@@ -145,14 +137,10 @@ TEST(test_Qtable, test_functions) {
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getMaxQvalue(x), z);
     EXPECT_EQ(t.getBestAction(x), y);
-/*
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            std::cout << t.getQvalue(i, j) << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl; */
+
+    // test printQtable
+    std::cout << "test printQtable" << std::endl;
+    t.printQtable();
 
     // test getRandomAction
     EXPECT_EQ(true, (t.getRandomAction() < 4) && (t.getRandomAction() >= 0));
