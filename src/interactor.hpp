@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <istream>
+#include <ostream>
 
 /**
 Possible moves for an Actor. The enumerators are integers, so
@@ -54,14 +56,17 @@ private:
     // The quantizationSteps tells how many states an sensor can be in,
     // if the interactor is a sensor.
     int quantizationSteps; // 2 ^ X
+    // The angles are in radians.
     // The min and max angles limit the angle, if angles are used.
     // An angle is in reference to the unit circle.
-    // Therefore an angle of 0 is to the right, an angle of pi/2 is up and
-    // the max angle is counterclockwise of the min angle.
+    // Therefore an angle of 0 rad is to the right, an angle of pi/2 rad is up
+    // and the max angle is counterclockwise of the min angle.
     // If the angles are the same, then the angle is not limited.
     float minAngle;
     float maxAngle;
 };
+
+std::ostream& operator<<(std::ostream& os, Interactor const& p);
 
 class Actor : public Interactor {
 public:
@@ -91,6 +96,14 @@ class JointSensor : public Sensor {
 public:
     JointSensor(int ID, int quantizationSteps,
         float minAngle, float maxAngle);
+};
+
+/* Sensor that senses the Agents position in the x-axis. This can be used
+for calculating the revard when the goal is to travel to the right.
+*/
+class XAxisSensor : public Sensor {
+public:
+    XAxisSensor(int ID);
 };
 
 #endif

@@ -17,7 +17,12 @@ add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread)
 #    COMMENT "Building Doxygen documentation")
 
 # Create SOURCES variable that contain the used source files
-set(SOURCES src/interactor.hpp src/interactor.cpp src/q-table.hpp src/q-table.cpp src/agent.hpp src/agent.cpp src/agent_manager.hpp src/agent_manager.cpp)
+set(SOURCES
+    src/interactor.hpp src/interactor.cpp
+    src/q-table.hpp src/q-table.cpp
+    src/agent.hpp src/agent.cpp
+    src/agent_manager.hpp src/agent_manager.cpp
+    src/config_reader.hpp src/config_reader.cpp)
 
 # Add main
 ADD_EXECUTABLE(main src/main.cpp ${SOURCES})
@@ -27,6 +32,11 @@ target_link_libraries(main pthread)
 enable_testing()
 add_subdirectory(lib/gtest-1.7.0)
 include_directories(lib/gtest-1.7.0/include)
-ADD_EXECUTABLE(qtests test/test_source.cpp ${SOURCES})
+ADD_EXECUTABLE(qtests
+    test/test_source.cpp
+    test/test_interactor.cpp
+    test/test_config_reader.cpp
+    test/test_agent_manager.cpp
+    ${SOURCES})
 target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )

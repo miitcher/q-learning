@@ -12,3 +12,6 @@
 
 # Build files with CMake in separate directory
 *build_Makefile*
+
+# Local TODO-list
+*TODO
