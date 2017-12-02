@@ -18,6 +18,9 @@ Directory structure:
 
 ## Compiling the project and its tests ##
 
+* Install cmake if it's not installed already
+`sudo apt install cmake`
+
 * Create build folder in the q-learning-9 folder.
 `mkdir build_Makefile`
 

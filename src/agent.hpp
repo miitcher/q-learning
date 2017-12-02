@@ -7,6 +7,11 @@
 #include <string>
 #include <iostream>
 
+// Add these two lines and FRIEND_TEST declarations in private to test
+// private methods
+#define FRIEND_TEST(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
+
 // The state and reward are calculated by the agent from the simulation's
 // response.
 typedef int QState;
@@ -50,13 +55,10 @@ public:
     };
 
 private:
-    /* The agent unittests can atm not be compiled!
-    // GTest uses FRIEND_TEST to access private methods in unittests.
     FRIEND_TEST(test_Agent, test_agents_actor);
     FRIEND_TEST(test_Agent, test_constructor);
     FRIEND_TEST(test_Agent, test_agents_sensor);
     FRIEND_TEST(test_Agent, test_quantizise);
-    */
 
     // The next two functions are used only at initialization
     // because they are slow.
