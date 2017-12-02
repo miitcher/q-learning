@@ -16,25 +16,17 @@ add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread)
 #    COMMAND cd .. && doxygen doxygen/doxygen.conf
 #    COMMENT "Building Doxygen documentation")
 
-# Add 3rd party library include directory
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/3rdpartylibs/libname/include)
-#include_directories(lib/gtest-1.7.0/include)
+# Create SOURCES variable that contain the used source files
+set(SOURCES src/interactor.hpp src/interactor.cpp src/q-table.hpp src/q-table.cpp src/agent.hpp src/agent.cpp src/agent_manager.hpp src/agent_manager.cpp)
 
-# Add subdirectories (in order of dependencies)
-# As told before, these directories should have their own CMakeLists.txt files!
-#ADD_SUBDIRECTORY(src)
-#ADD_SUBDIRECTORY(test)
-#ADD_SUBDIRECTORY(lib/gtest-1.7.0)
+# Add main
+ADD_EXECUTABLE(main src/main.cpp ${SOURCES})
+target_link_libraries(main pthread)
 
-# Link runTests with what we want to test and the GTest and pthread library
-ADD_EXECUTABLE(main src/main.cpp)
-#target_link_libraries(main ${GTEST_LIBRARIES} pthread)
-
-# Add tests and google test
+# Add tests that use googletest
 enable_testing()
 add_subdirectory(lib/gtest-1.7.0)
 include_directories(lib/gtest-1.7.0/include)
-set(SOURCES src/interactor.hpp src/interactor.cpp src/q-table.hpp src/q-table.cpp src/agent.hpp src/agent.cpp src/agent_manager.hpp)
-add_executable(qtests test/test_source.cpp ${SOURCES})
+ADD_EXECUTABLE(qtests test/test_source.cpp ${SOURCES})
 target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )
