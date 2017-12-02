@@ -33,10 +33,11 @@ enable_testing()
 add_subdirectory(lib/gtest-1.7.0)
 include_directories(lib/gtest-1.7.0/include)
 ADD_EXECUTABLE(qtests
-    test/test_source.cpp
     test/test_interactor.cpp
     test/test_config_reader.cpp
     test/test_agent_manager.cpp
+    test/test_qtable.cpp
+    test/test_agent.cpp
     ${SOURCES})
 target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )
