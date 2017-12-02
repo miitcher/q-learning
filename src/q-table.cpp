@@ -2,8 +2,9 @@
 #include <iostream>
 #include <iomanip>
 
-Qtable::Qtable(int s, int a) :
-        numberOfStates(s), numberOfActions(a) {
+Qtable::Qtable(int s, int a, std::string const& qtableFilename)
+    : numberOfStates(s), numberOfActions(a), qtableFilename(qtableFilename)
+{
     QValue initial = 0; // initial Q-value
     std::vector<QValue> actionVector(numberOfActions, initial);
     std::vector<QValue>& ref = actionVector;
@@ -11,6 +12,8 @@ Qtable::Qtable(int s, int a) :
         qValues.push_back(ref);
     }
 }
+
+Qtable::Qtable(int s, int a) : Qtable(s, a, "") {}
 
 const QValue& Qtable::getQvalue(const int& stateIndex,
         const int& actionIndex) const{

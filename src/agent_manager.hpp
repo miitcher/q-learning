@@ -71,7 +71,8 @@ public:
     std::vector<ResponsePacket> simulateAction(
         std::vector<ActionPacket> actionMessage)
     {
-        std::pair<int, SensorInput> rp1(1, 3.2);
+        int i = actionMessage[0].first;
+        std::pair<int, SensorInput> rp1(i, 3.2);
         std::pair<int, SensorInput> rp2(2, 31.2);
         return {rp1, rp2};
     };

@@ -2,7 +2,9 @@
 #include "q-table.hpp"
 
 Agent::Agent(std::vector<Actor> const& actors,
-        std::vector<Sensor> const& sensors) : actors(actors), sensors(sensors)
+        std::vector<Sensor> const& sensors,
+        std::string const& qtableFilename)
+        : actors(actors), sensors(sensors)
     {
     numOfStates = 1;
     numOfActions = 1; // An empty Qtable becomes 1x1-sized (Improve?)
@@ -17,9 +19,13 @@ Agent::Agent(std::vector<Actor> const& actors,
         numOfActions = numOfActions * (*it).getQuantizationSteps();
     }
     // Initialize the Q-table
-    Qtable newQ(numOfStates, numOfActions);
+    Qtable newQ(numOfStates, numOfActions, qtableFilename);
     Qtable _Qtable = newQ;
 }
+
+Agent::Agent(std::vector<Actor> const& actors,
+        std::vector<Sensor> const& sensors)
+        : Agent(actors, sensors, "") {}
 
 int Agent::convertActionToIndex
     (const std::vector<ActionPacket>& actionPacs){

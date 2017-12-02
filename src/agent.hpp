@@ -32,6 +32,11 @@ public:
      * 10³ = 1000. This would make a Qtable of a size 1000 * 12.
      */
     Agent(std::vector<Actor> const& actors,
+        std::vector<Sensor> const& sensors,
+        std::string const& qtableFilename);
+
+    // Construct Agent with qtableFilename as "".
+    Agent(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
     // Unpack the response - use convertSensorInputToInteger
@@ -48,12 +53,8 @@ public:
     const std::vector<Sensor>& getSensors() const { return sensors; };
     const QState& getState() const { return currentState; };
 
-    /* Read Qtable from - and write Qtable to - an external file */
+    /* Write Qtable to - an external file */
     void saveQtable() { _Qtable->saveToFile(); };
-    void loadQtable(std::string const& qtableFilename) {
-        _Qtable->loadFromFile(qtableFilename);
-    };
-
 private:
     FRIEND_TEST(test_Agent, test_agents_actor);
     FRIEND_TEST(test_Agent, test_constructor);

@@ -27,7 +27,7 @@ TEST(test_config_reader, test_readAgentConfigFile) {
 
     // The other variables.
     EXPECT_EQ(agentShape, 2); // TODO: Define agentShape for Box2D.
-    EXPECT_EQ(agentCount, 3);
+    EXPECT_EQ(agentCount, unsigned(3));
     EXPECT_EQ(qtableFilename, "");
     EXPECT_EQ(drawGraphics, false);
 

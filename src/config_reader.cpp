@@ -80,89 +80,89 @@ void readAgentConfigFile(std::string& agentConfigFilename,
                     currentSetting = DrawGraphicsSetting;
                 } else if ( line[0] == '/') {
                     currentSetting = Nothing;
+                } else {
 
-                } else if ( currentSetting != Nothing) {
                     // Handle parsing the settings.
                     settingParameters = commaSplitString(line);
                     //std::cout << ' ' << line << '\n'; // Debug
-
                     switch(currentSetting)
                     {
-
-                    case ActorSetting:
-                        if (settingParameters.size() == 5
-                            && settingParameters[0] == "JointActor")
-                        {
-                            JointActor actor(
-                                std::stoi(settingParameters[1]),
-                                std::stoi(settingParameters[2]),
-                                std::stof(settingParameters[3]),
-                                std::stof(settingParameters[4])
-                            );
-                            actors.push_back(actor);
-                        } else {
+                        case ActorSetting:
+                            if (settingParameters.size() == 5
+                                && settingParameters[0] == "JointActor")
+                            {
+                                JointActor actor(
+                                    std::stoi(settingParameters[1]),
+                                    std::stoi(settingParameters[2]),
+                                    std::stof(settingParameters[3]),
+                                    std::stof(settingParameters[4])
+                                );
+                                actors.push_back(actor);
+                            } else {
+                                throw std::runtime_error("FAULTY LINE:"
+                                    + std::to_string(lineNumber) + ": " + line);
+                            }
+                            break;
+                        case SensorSetting:
+                            if (settingParameters.size() == 5
+                                && settingParameters[0] == "JointSensor")
+                            {
+                                JointSensor sensor(
+                                    std::stoi(settingParameters[1]),
+                                    std::stoi(settingParameters[2]),
+                                    std::stof(settingParameters[3]),
+                                    std::stof(settingParameters[4])
+                                );
+                                sensors.push_back(sensor);
+                            } else if (settingParameters[0] == "XAxisSensor") {
+                                XAxisSensor sensor(
+                                    std::stoi(settingParameters[1])
+                                );
+                                sensors.push_back(sensor);
+                            } else {
+                                throw std::runtime_error("FAULTY LINE:"
+                                    + std::to_string(lineNumber) + ": " + line);
+                            }
+                            break;
+                        case AgentShapeSetting:
+                            if (settingParameters.size() == 4
+                                && settingParameters[0] == "Body")
+                            {
+                                // TODO: Change when AgentShape is defined.
+                                AgentShape shape = std::stoi(
+                                    settingParameters[1]);
+                                agentShape = shape;
+                            } else {
+                                throw std::runtime_error("FAULTY LINE:"
+                                    + std::to_string(lineNumber) + ": " + line);
+                            }
+                            break;
+                        case AgentCountSetting:
+                            agentCount = std::stoi(line);
+                            break;
+                        case QtableFilenameSetting:
+                            qtableFilename = line;
+                            break;
+                        case DrawGraphicsSetting:
+                            if (line == "true") {
+                                drawGraphics = true;
+                            } else if (line == "false") {
+                                drawGraphics = false;
+                            } else {
+                                throw std::runtime_error("FAULTY LINE:"
+                                    + std::to_string(lineNumber) + ": " + line);
+                            }
+                            break;
+                        case Nothing:
                             throw std::runtime_error("FAULTY LINE:"
                                 + std::to_string(lineNumber) + ": " + line);
-                        }
-                        break;
-                    case SensorSetting:
-                        if (settingParameters.size() == 5
-                            && settingParameters[0] == "JointSensor")
-                        {
-                            JointSensor sensor(
-                                std::stoi(settingParameters[1]),
-                                std::stoi(settingParameters[2]),
-                                std::stof(settingParameters[3]),
-                                std::stof(settingParameters[4])
-                            );
-                            sensors.push_back(sensor);
-                        } else if (settingParameters[0] == "XAxisSensor") {
-                            XAxisSensor sensor(
-                                std::stoi(settingParameters[1])
-                            );
-                            sensors.push_back(sensor);
-                        } else {
-                            throw std::runtime_error("FAULTY LINE:"
-                                + std::to_string(lineNumber) + ": " + line);
-                        }
-                        break;
-                    case AgentShapeSetting:
-                        if (settingParameters.size() == 4
-                            && settingParameters[0] == "Body")
-                        {
-                            // TODO: Change when AgentShape is defined.
-                            AgentShape shape = std::stoi(settingParameters[1]);
-                            agentShape = shape;
-                        } else {
-                            throw std::runtime_error("FAULTY LINE:"
-                                + std::to_string(lineNumber) + ": " + line);
-                        }
-                        break;
-                    case AgentCountSetting:
-                        agentCount = std::stoi(line);
-                        break;
-                    case QtableFilenameSetting:
-                        qtableFilename = line;
-                        break;
-                    case DrawGraphicsSetting:
-                        if (line == "true") {
-                            drawGraphics = true;
-                        } else if (line == "false") {
-                            drawGraphics = false;
-                        } else {
-                            throw std::runtime_error("FAULTY LINE:"
-                                + std::to_string(lineNumber) + ": " + line);
-                        }
-                        break;
-
-                    }
-                } else {
-                    throw std::runtime_error("FAULTY LINE:"
-                        + std::to_string(lineNumber) + ": " + line);
+                            break;
+                    } // end of switch
                 }
             }
-        }
+        } // end of while
         configFile.close();
+    } else {
+        throw std::runtime_error("Unable to open file: " + agentConfigFilename);
     }
-    else std::cout << "Unable to open file";
 }

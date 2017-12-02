@@ -18,7 +18,7 @@ void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
 {
     std::cout << "Thread started!" << std::endl;
 
-    Agent agent(actors, sensors);
+    Agent agent(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
     // The learning and simulation parts communicate.
