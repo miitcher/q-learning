@@ -10,11 +10,12 @@
 void printHello();
 
 /**
-Function for the threads task, that runs the learning and simulation of
-one agent.
+Task for a threads, where the learning and simulation of one agent is done.
+maxLoopCount = 0 makes the task run forever.
 */
-void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-    AgentShape& agentShape, std::string const& qtableFilename);
+void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
+    AgentShape agentShape, std::string qtableFilename,
+    bool drawGraphics, unsigned maxLoopCount);
 
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
@@ -55,7 +56,6 @@ private:
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
-    // TODO: Find out how to handle threads
     std::vector<std::thread> agentThreads;
 };
 
@@ -71,10 +71,11 @@ public:
     std::vector<ResponsePacket> simulateAction(
         std::vector<ActionPacket> actionMessage)
     {
-        int i = actionMessage[0].first;
-        std::pair<int, SensorInput> rp1(i, 3.2);
-        std::pair<int, SensorInput> rp2(2, 31.2);
-        return {rp1, rp2};
+        // Dummy
+        ResponsePacket responsePacket0(actionMessage[0].first, 1.2);
+        ResponsePacket responsePacket1(1, 2.6);
+        ResponsePacket responsePacket2(2, 5.3);
+        return {responsePacket0, responsePacket1, responsePacket2};
     };
 private:
     std::vector<Actor> actors;

@@ -32,12 +32,10 @@ int main() {
             << e.what() << std::endl;
     }
 
-    /*
     // Set AgentManager
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
         qtableFilename, drawGraphics);
 
     // Start learning
-    agentManager.initRun();
-    */
+    //agentManager.initRun();
 }

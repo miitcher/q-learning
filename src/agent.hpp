@@ -41,10 +41,19 @@ public:
 
     // Unpack the response - use convertSensorInputToInteger
     void receiveSimulationResponse(
-        std::vector<ResponsePacket> responseMessage);
+        std::vector<ResponsePacket> responseMessage) {
+        // Dummy
+        currentState += responseMessage[0].first;
+    };
 
-    /* This function communicates the action to the simulation. */
-    ActionMessage doAction(std::vector<ActionPacket> actionMessage);
+    /* This function communicates the choosen action to the simulation. */
+    ActionMessage doAction() {
+        // Dummy
+        ActionPacket actionPacket0(0, Clockwise);
+        ActionPacket actionPacket1(1, Counterclockwise);
+        //ActionMessage actionMessage = {actionPacket0, actionPacket1};
+        return {actionPacket0, actionPacket1};
+    };
 
     /* Acces functions */
     const int& getNumberOfStates() const { return numOfStates; };

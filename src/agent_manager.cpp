@@ -5,55 +5,72 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <algorithm> // for_each
+#include <mutex>
+#include <utility>
+#include <math.h> // pow
 
+//std::mutex cout_mutex;
+
+void do_join(std::thread& t) { t.join(); }
+
+void join_all(std::vector<std::thread>& v) {
+    std::for_each(v.begin(), v.end(), do_join);
+}
+
+// Remove later
 void printHello() {
+    //cout_mutex.lock();
     std::cout << "A thread started!" << std::endl;
+    //cout_mutex.unlock();
     std::this_thread::sleep_for (std::chrono::seconds(1));
     std::cout << "A thread is done!" << std::endl;
 }
 
-void agentThreadTask(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-    AgentShape& agentShape, std::string const& qtableFilename,
-    bool drawGraphics)
+void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
+    AgentShape agentShape, std::string qtableFilename,
+    bool drawGraphics, unsigned maxLoopCount)
 {
-    std::cout << "Thread started!" << std::endl;
+    //std::cout << "AgentTask started." << std::endl;
 
     Agent agent(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
+    unsigned count = 0;
     // The learning and simulation parts communicate.
-    /*
     while (true) {
-        std::vector<ActionPacket> actionMessage = agent.doAction();
-        std::vector<ResponsePacket> responseMessage
-            = simulation.simulateAction(actionMessage);
+        ActionMessage actionMessage = agent.doAction();
+        ResponseMessage responseMessage = simulation.simulateAction(
+            actionMessage);
         agent.receiveSimulationResponse(responseMessage);
-    }
-    */
 
-    std::cout << "Thread is done!" << std::endl;
+        count++;
+        if (maxLoopCount != 0 && count > maxLoopCount)
+            break;
+
+        // Debug
+        if (count % int(pow(10, 5)) == 0) {
+            std::cout << count / int(pow(10, 5)) << std::endl;
+        }
+
+        // Here would be a good place to have a listener that
+        // can do stuff.
+    }
+
+    //std::cout << "AgentTask is done." << std::endl;
 }
 
 void AgentManager::initRun() {
-    /*
-    for ( auto i = 0; i == agentCount; i++) {
-        agentThreads.push_back(
-            std::thread(printHello)
-        );
+    agentCount = 3;
+    for ( unsigned i = 0; i != agentCount; i++) {
+        //agentThreads.emplace_back(printHello); // WORKED
+        agentThreads.emplace_back(agentTask, actors, sensors,
+            agentShape, qtableFilename, drawGraphics, 0);
     }
-
-    //std::vector<std::thread> agentThreads[agentCount] = std::thread(
-    //    printHello); //, actors, sensors, agentShape, qtableFilename);
 
     std::cout << agentCount << " threads executing." << std::endl;
 
-    // Waiting on user input.
-    std::string uin;
-    std::cin >> uin;
+    std::this_thread::sleep_for (std::chrono::seconds(5));
 
-    for (auto t : agentThreads) {
-        t.join();
-        std::cout << "Thread joined." << std::endl;
-    }
-    */
+    join_all(agentThreads);
 }

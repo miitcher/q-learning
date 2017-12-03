@@ -1,27 +1,50 @@
 #include <gtest/gtest.h>
 #include "../src/agent_manager.hpp"
+#include <vector>
+#include <string>
 
-// TODO: Mikael - These tests should be refined.
-/*
-TEST(test_agentManager, test_threads1) {
+TEST(test_agentManager, test_agentTask) {
+    // Smoketest
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
     (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
-    Actor a2 = Actor
-    (23, "generic actor", 33, 1, 200, {Still, Counterclockwise});
 
-    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
+    Sensor b0 = Sensor(20, "sensor1", 13, 11, 200);
     Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
 
-    std::vector<Actor> actorVec = {a0, a1, a2};
-    std::vector<Sensor> sensorVec = {b, b1};
+    std::vector<Actor> actors = {a0, a1};
+    std::vector<Sensor> sensors = {b0, b1};
+    AgentShape agentShape = 42;
+    std::string qtableFilename = "";
+    bool drawGraphics = false;
+    unsigned maxLoopCount = 100;
 
-    AgentShape as = 42;
+    agentTask(actors, sensors, agentShape, qtableFilename,
+        drawGraphics, maxLoopCount);
+}
 
-    AgentManager am(actorVec, sensorVec, as, 3, "");
+/*
+TEST(test_agentManager, test_initRun) {
+    Actor a0 = Actor
+    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    Actor a1 = Actor
+    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
 
-    //am.initRun();
+    Sensor b0 = Sensor(20, "sensor1", 13, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 12, 10, 200);
+
+    std::vector<Actor> actors = {a0, a1};
+    std::vector<Sensor> sensors = {b0, b1};
+    AgentShape agentShape = 42;
+    unsigned agentCount = 3;
+    std::string qtableFilename = "";
+    bool drawGraphics = false;
+
+    AgentManager agentManager(actors, sensors, agentShape, agentCount,
+        qtableFilename, drawGraphics);
+
+    agentManager.initRun();
 }
 
 TEST(test_agentManager, test_threads2) {
