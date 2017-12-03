@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-TEST(test_agentManager, test_agentTask) {
+TEST(test_agentManager, test_agentTask_smoketest) {
     // Smoketest
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
@@ -24,8 +24,8 @@ TEST(test_agentManager, test_agentTask) {
         drawGraphics, maxLoopCount);
 }
 
-/*
-TEST(test_agentManager, test_initRun) {
+TEST(test_agentManager, test_initRun_smoketest) {
+    // Smoketest
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
@@ -44,17 +44,5 @@ TEST(test_agentManager, test_initRun) {
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
         qtableFilename, drawGraphics);
 
-    agentManager.initRun();
+    agentManager.initRun(0); // Runs threads for 100 milliseconds.
 }
-
-TEST(test_agentManager, test_threads2) {
-    // Mikael - Code for testing threading and CMake
-    printHello();
-    std::thread t1(printHello);
-    std::cout << "Main thread is executing." << std::endl;
-    t1.join();
-    std::cout << "Thread joined." << std::endl;
-
-    EXPECT_EQ(1,1);
-}
-*/
