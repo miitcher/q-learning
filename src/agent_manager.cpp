@@ -32,6 +32,9 @@ When saveQtableInThread is true, then one thread will save its Qtable to file.
 A threads Qtable can be saved if canSaveQtable is true.
 */
 std::atomic_bool saveQtableInThread(false);
+// If only on Agent is used, then no goal is used, but otherwise it is used.
+std::atomic_bool useEvolutionGoal(true);
+std::atomic_bool agentHasReachedGoal(false);
 
 void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
@@ -39,16 +42,32 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 {
     //std::thread::id thisThreadId(std::this_thread::get_id());
 
+    float agentXAxisLocationOfGoal = 30; // Simulation units ???
+
     Agent agent(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
     unsigned count = 0;
-    // The learning and simulation parts communicate.
     while (true) {
+        // The learning and simulation parts communicate.
         ActionMessage actionMessage = agent.doAction();
         ResponseMessage responseMessage = simulation.simulateAction(
             actionMessage);
         agent.receiveSimulationResponse(responseMessage);
+
+        /* If an Agent has reached the goal its the fittest of the Agents
+        that are running, and will "teach" the other Agents. The "teaching"
+        is done by having the other Agents copy the fittest Agents
+        Qtable. The modified Agents form the next generation.
+        */
+        if (useEvolutionGoal && !agentHasReachedGoal
+            && agent.getXAxisLocation() > agentXAxisLocationOfGoal)
+        {
+            agentHasReachedGoal = true;
+            // Now we know that this thread contains the fittest Agent.
+            // TODO: Implement the copying of the Qtable and all that
+            // is connected to the evolution of a generation.
+        }
 
         count++;
         if (maxLoopCount != 0 && count > maxLoopCount)
@@ -142,7 +161,7 @@ void AgentManager::stop_threads() {
     }
 }
 
-void AgentManager::initRun(unsigned runMode) {
+void AgentManager::createAndStartThreads() {
     unsigned maxLoopCount = 0;
     bool canSaveQtable;
 
@@ -159,23 +178,18 @@ void AgentManager::initRun(unsigned runMode) {
             maxLoopCount, canSaveQtable);
     }
 
+    // Evolution is used with generating new generations of Agents
+    // if there is more than one Agent thread.
+    if (agentCount == 1)
+        useEvolutionGoal = false;
+}
+
+void AgentManager::initRun(unsigned runMode) {
+    this->createAndStartThreads();
+
     // Every runMode controls the cleanup of threads.
     switch (runMode)
     {
-    case 0: // Smoketest
-        //useLogging = true; // Debug
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
-        this->pause_threads();
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
-        this->resume_threads();
-        std::this_thread::sleep_for (std::chrono::milliseconds(700));
-        this->saveQtable();
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
-        this->resume_threads();
-        std::this_thread::sleep_for (std::chrono::milliseconds(700));
-        this->stop_threads();
-        this->stop_threads();
-        break;
     case 1: // Controll from command line.
     { // Separate the switch-statements.
         useLogging = true;
@@ -214,8 +228,12 @@ void AgentManager::initRun(unsigned runMode) {
         }
     }
         break;
-    case 2: // Controll from graphical (Not implemented)
+    case 2: // Controll from GUI (Not implemented)
         this->stop_threads();
+        break;
+    default:
+        this->stop_threads();
+        std::cout << "Invalid runMode: " << runMode << std::endl;
         break;
     }
 }
@@ -244,5 +262,7 @@ void AgentManager::saveQtable() {
 }
 
 void AgentManager::evolveAgents() {
-
+    // TODO
+    // Implement after the big change of the types, and after the
+    // most of the rest of the program has been implemented.
 }

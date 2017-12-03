@@ -64,6 +64,16 @@ public:
 
     /* Write Qtable to - an external file */
     void saveQtable() { _Qtable->saveToFile(); };
+
+    /*
+    Returns the Agents location on the x-axis in the simulation in
+    the simulations units. This function is called after the Agent
+    has resieved a response from the simulation.
+    */
+    float getXAxisLocation() {
+        // Dummy
+        return 10.0;
+    }
 private:
     FRIEND_TEST(test_Agent, test_agents_actor);
     FRIEND_TEST(test_Agent, test_constructor);

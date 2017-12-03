@@ -7,6 +7,10 @@
 #include <string>
 #include <thread>
 
+// For access to private methods in AgentManager from googletest.
+#define FRIEND_TEST(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
+
 /**
 Task for a threads, where the learning and simulation of one agent is done.
 maxLoopCount = 0 makes the task run forever, but otherwise it limits how
@@ -30,12 +34,15 @@ public:
     Creates and runs threads that contain an agent and its simulation.
     The threads use agentTask as their task.
     runMode has modes:
-        0: Smoketest
         1: Controll from command line.
-        2: Controll from graphical (Not implemented)
+        2: Controll from GUI (Not implemented)
     */
     void initRun(unsigned runMode);
 private:
+    // For access to private methods in AgentManager from googletest.
+    FRIEND_TEST(test_agentManager, test_initRun_smoketest);
+
+    void createAndStartThreads();
     // Puts all Agent threads on pause.
     void pause_threads();
     // Resumes regular execution of Agent threads, from e.g. a paused state.

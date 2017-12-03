@@ -28,6 +28,8 @@ TEST(test_agentManager, test_agentTask_smoketest) {
 TEST(test_agentManager, test_initRun_smoketest) {
     // Smoketest
     // The basic running of the program while the treads communicate.
+    // The communication is done with the private functions in
+    // the AgentManager class.
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
@@ -46,5 +48,18 @@ TEST(test_agentManager, test_initRun_smoketest) {
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
         qtableFilename, drawGraphics);
 
-    agentManager.initRun(0);
+    agentManager.createAndStartThreads();
+
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    agentManager.pause_threads();
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    agentManager.resume_threads();
+    std::this_thread::sleep_for (std::chrono::milliseconds(700));
+    agentManager.saveQtable();
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    agentManager.resume_threads();
+    std::this_thread::sleep_for (std::chrono::milliseconds(700));
+    agentManager.stop_threads();
+    // Check that it does not break from stopping twice.
+    agentManager.stop_threads();
 }
