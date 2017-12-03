@@ -19,13 +19,15 @@ TEST(test_agentManager, test_agentTask_smoketest) {
     std::string qtableFilename = "";
     bool drawGraphics = false;
     unsigned maxLoopCount = 100;
+    bool canSaveQtable = false;
 
     agentTask(actors, sensors, agentShape, qtableFilename,
-        drawGraphics, maxLoopCount);
+        drawGraphics, maxLoopCount, canSaveQtable);
 }
 
 TEST(test_agentManager, test_initRun_smoketest) {
     // Smoketest
+    // The basic running of the program while the treads communicate.
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
@@ -44,5 +46,5 @@ TEST(test_agentManager, test_initRun_smoketest) {
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
         qtableFilename, drawGraphics);
 
-    agentManager.initRun(0); // Runs threads for 100 milliseconds.
+    agentManager.initRun(0);
 }

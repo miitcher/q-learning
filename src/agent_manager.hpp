@@ -12,10 +12,12 @@ Task for a threads, where the learning and simulation of one agent is done.
 maxLoopCount = 0 makes the task run forever, but otherwise it limits how
 long the run will take (used in e.g. testing).
 The function is called in AgentManager::initRun().
+canSaveQtable states if the Qtable can be saved in a thread. Only one
+thread can save its Qtable.
 */
 void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
-    bool drawGraphics, unsigned maxLoopCount);
+    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable);
 
 // TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
@@ -28,7 +30,7 @@ public:
     Creates and runs threads that contain an agent and its simulation.
     The threads use agentTask as their task.
     runMode has modes:
-        0: Smoketest for 100 milliseconds.
+        0: Smoketest
         1: Controll from command line.
         2: Controll from graphical (Not implemented)
     */
@@ -40,10 +42,19 @@ private:
     void resume_threads();
     // Waits on the compleation of the Agent tasks.
     // Removes also the joined threads in agentThreads.
+    // Because an Agent task generally runs forever, this function
+    // should not be called outside the stop_threads(), if it is not
+    // known that the tasks will finish.
     void join_threads();
     // Ends cleanly the execution of the Agent tasks.
     // stop_threads() also joins the threads.
     void stop_threads();
+    /**
+    Makes the first agent save its Qtable to file.
+    There is no need to differentiate witch ones Qtable is saved,
+    because we do not know witch Agent in one generation is the best.
+    */
+    void saveQtable();
     /**
     Has the fittest agent teach the other agents, when multiple agents
     are learning. The learning is done by copying the Q-values of the
@@ -52,12 +63,6 @@ private:
     modified.
     */
     void evolveAgents();
-    /**
-    Makes the first agent save its Qtable to file.
-    There is no need to differentiate witch ones Qtable is saved,
-    because we do not know witch Agent in one generation is the best.
-    */
-    void saveQvalues();
 
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;

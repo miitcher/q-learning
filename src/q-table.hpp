@@ -42,7 +42,9 @@ public:
 
     void printQtable();
 
-    void saveToFile();
+    void saveToFile() {
+        std::cout << "Dummy save of Qtable." << std::endl;
+    };
 private:
     // Load Q-Table from the file: qtableFilename.
     void loadFromFile();

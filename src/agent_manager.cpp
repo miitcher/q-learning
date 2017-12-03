@@ -15,18 +15,29 @@
 // Controlls the use of cout between threads.
 std::mutex cout_mutex;
 
-/*
-Atomic booleans are thread safe, and they are used here to communicate
+/**
+Enable logging with treads. There is more information on the screen
+when this is true.
+*/
+std::atomic_bool useLogging(false);
+
+/**
+Atomics are thread safe, and they are used here to communicate
 between threads.
 */
 std::atomic_bool endThreads(false);
 std::atomic_bool pauseThreads(false);
+/**
+When saveQtableInThread is true, then one thread will save its Qtable to file.
+A threads Qtable can be saved if canSaveQtable is true.
+*/
+std::atomic_bool saveQtableInThread(false);
 
 void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
-    bool drawGraphics, unsigned maxLoopCount)
+    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable)
 {
-    //std::cout << "AgentTask started." << std::endl;
+    //std::thread::id thisThreadId(std::this_thread::get_id());
 
     Agent agent(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
@@ -45,22 +56,31 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 
         /*
         // Debug
-        if (count % int(pow(10, 5)) == 0) {
+        if (count % int(pow(10, 3)) == 0) {
             cout_mutex.lock();
-            std::cout << count / int(pow(10, 5)) << std::endl;
+            std::cout << count / int(pow(10, 3)) << std::endl;
             cout_mutex.unlock();
         }
+        cout_mutex.lock();
         std::cout << count << std::endl;
+        cout_mutex.unlock();
         */
 
-        // Listen to commands from the main thread.
-        while (pauseThreads)
-            std::this_thread::sleep_for (std::chrono::seconds(1));
+        /*
+        Listen to commands from the main thread.
+        Actions that can be requested:
+            pause self; resume self; end self; save Qtable
+        */
+        while (pauseThreads) {
+            std::this_thread::sleep_for (std::chrono::milliseconds(500));
+            if (canSaveQtable && saveQtableInThread) {
+                agent.saveQtable();
+                saveQtableInThread = false;
+            }
+        }
         if (endThreads)
             break;
     }
-
-    //std::cout << "AgentTask is done." << std::endl;
 }
 
 AgentManager::AgentManager(std::vector<Actor>& actors,
@@ -73,12 +93,20 @@ AgentManager::AgentManager(std::vector<Actor>& actors,
 
 void AgentManager::pause_threads() {
     pauseThreads = true;
-    //std::cout << "Paused" << std::endl; // Debug
+    if (useLogging) {
+        cout_mutex.lock();
+        std::cout << "Paused" << std::endl;
+        cout_mutex.unlock();
+    }
 }
 
 void AgentManager::resume_threads() {
     pauseThreads = false;
-    //std::cout << "Resumed" << std::endl; // Debug
+    if (useLogging) {
+        cout_mutex.lock();
+        std::cout << "Resumed" << std::endl;
+        cout_mutex.unlock();
+    }
 }
 
 // Helper function for AgentManager::join_threads().
@@ -96,45 +124,76 @@ void AgentManager::join_threads() {
             << std::endl;
         cout_mutex.unlock();
     }
-    //std::cout << "Joined" << std::endl; // Debug
+    /*
+    cout_mutex.lock();
+    std::cout << "Joined" << std::endl; // Debug
+    cout_mutex.unlock();
+    */
 }
 
 void AgentManager::stop_threads() {
     pauseThreads = false;
     endThreads = true;
     this->join_threads();
-    //std::cout << "Stopped" << std::endl; // Debug
+    if (useLogging) {
+        cout_mutex.lock();
+        std::cout << "Stopped" << std::endl; // Debug
+        cout_mutex.unlock();
+    }
 }
 
 void AgentManager::initRun(unsigned runMode) {
+    unsigned maxLoopCount = 0;
+    bool canSaveQtable;
+
+    // Create threads in vector agentThreads.
     for ( unsigned i = 0; i != agentCount; i++) {
+        // Only one thread can have its Qtable saved; the first one.
+        if (i == 0) {
+            canSaveQtable = true;
+        } else {
+            canSaveQtable = false;
+        }
         agentThreads.emplace_back(agentTask, actors, sensors,
-            agentShape, qtableFilename, drawGraphics, 0);
+            agentShape, qtableFilename, drawGraphics,
+            maxLoopCount, canSaveQtable);
     }
 
+    // Every runMode controls the cleanup of threads.
     switch (runMode)
     {
-    case 0:
-        // Smoketest for 100 milliseconds.
+    case 0: // Smoketest
+        //useLogging = true; // Debug
         std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        this->pause_threads();
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        this->resume_threads();
+        std::this_thread::sleep_for (std::chrono::milliseconds(700));
+        this->saveQtable();
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        this->resume_threads();
+        std::this_thread::sleep_for (std::chrono::milliseconds(700));
+        this->stop_threads();
         this->stop_threads();
         break;
-    case 1:
+    case 1: // Controll from command line.
     { // Separate the switch-statements.
-        // Controll from command line.
+        useLogging = true;
+
         cout_mutex.lock();
-        std::cout   << "# " << agentCount << " Agents learning\n"
+        std::cout   << " " << agentCount << " Agents learning\n"
                     << "--------------------------------------\n"
                     << "Do things by typing a command and pressing enter.\n"
                     << "Unrecognized commands will be ignored.\n"
-                    << "p: pause; r: resume; s: stop\n"
-                    << "--------------------------------------" << std::endl;
+                    << "p: pause; s: save Qtable; r: resume; q: stop\n"
+                    << "---------------------------------------------"
+                    << std::endl;
         cout_mutex.unlock();
 
         // Take user input from commandline.
         std::string userInput;
         char command;
-        while (command != 's') {
+        while (command != 'q') {
             std::cin >> userInput;
             command = userInput[0];
             switch (command)
@@ -142,27 +201,48 @@ void AgentManager::initRun(unsigned runMode) {
                 case 'p':
                     this->pause_threads();
                     break;
+                case 's':
+                    this->saveQtable();
+                    break;
                 case 'r':
                     this->resume_threads();
                     break;
-                case 's':
+                case 'q':
                     this->stop_threads();
                     break;
             }
         }
     }
         break;
-    case 2:
-        // Controll from graphical (Not implemented)
+    case 2: // Controll from graphical (Not implemented)
         this->stop_threads();
         break;
     }
 }
 
-void AgentManager::evolveAgents() {
+void AgentManager::saveQtable() {
+    // Saving is done when all the threads are paused.
+    this->pause_threads();
 
+    // Check that threre is some Agent threads.
+    if (agentThreads.empty())
+        throw std::runtime_error("There excists no Agent threads.");
+
+    // Save the first agents Qtable.
+    saveQtableInThread = true;
+
+    // Wait untill the Qtable has been saved.
+    while (saveQtableInThread) {
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    }
+
+    if (useLogging) {
+        cout_mutex.lock();
+        std::cout << "Saved\nPaused" << std::endl; // Debug
+        cout_mutex.unlock();
+    }
 }
 
-void AgentManager::saveQvalues() {
+void AgentManager::evolveAgents() {
 
 }
