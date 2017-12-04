@@ -17,12 +17,15 @@ enum Move {
     Clockwise
 };
 
+// SensorInput is unquantisized.
 typedef double SensorInput;
 typedef std::pair<int, Move> ActorAction;
     // (actorID, Move)
+// ResponsePacket is unquantisized.
 typedef std::pair<int, SensorInput> ResponsePacket;
     // (sensorID, SensorInput)
 typedef std::vector<ActorAction> Action;
+// State is unquantisized.
 typedef std::vector<ResponsePacket> State;
 
 /**

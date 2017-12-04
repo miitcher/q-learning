@@ -70,10 +70,6 @@ private:
     modified.
     */
     void evolveAgents();
-
-    // Terminate threads
-    void endSimulation();
-
 private:
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;

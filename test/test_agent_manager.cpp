@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-TEST(test_agentManager, test_agentTask) {
+TEST(test_agentManager, test_agentTask_smoketest) {
     // Smoketest
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});

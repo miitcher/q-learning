@@ -30,6 +30,7 @@ int main() {
     } catch (std::runtime_error& e) {
         std::cout << "An error occured, while reading the config file: "
             << e.what() << std::endl;
+        return -1;
     }
 
     // Set AgentManager
@@ -37,5 +38,8 @@ int main() {
         qtableFilename, drawGraphics);
 
     // Start learning
-    //agentManager.initRun();
+    unsigned runMode = 1;
+    agentManager.initRun(runMode);
+
+    return 0;
 }
