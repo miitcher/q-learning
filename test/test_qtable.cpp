@@ -3,15 +3,31 @@
 #include <iostream>
 
 TEST(test_Qtable, test_constructor) {
-    Qtable t(2,2);
-    EXPECT_EQ(t.getNumberOfStates(), 2);
-    EXPECT_EQ(t.getNumberOfMoves(), 2);
+    std::vector<int> stateKeys = {2,55,66,7,2};
+    std::vector<int> actionKeys = {3,88,99,8};
+    std::string str = "asd";
+    Qtable t(stateKeys, actionKeys, str);
+    Qtable t1(stateKeys, actionKeys);
+    // std::cout << t;
+    EXPECT_EQ(t.getStateKeys()[0], 2);
+    EXPECT_EQ(t.getActionKeys()[0], 3);
+    EXPECT_EQ(t.getQtableFilename(), "asd");
+    EXPECT_EQ(t1.getQtableFilename(), "");
 }
 
 TEST(test_Qtable, test_functions) {
-    Qtable t(4,4);
+    std::vector<int> stateKeys = {2,55,66,7,2};
+    std::vector<int> actionKeys = {3,88,99,8};
+    std::string str = "asd";
+    Qtable t(stateKeys, actionKeys, str);
+    Qtable t1(stateKeys, actionKeys);
 
-    // test updateQvalue
+    // test getQvalue
+    int sKey = 2;
+    t.getQvalue(2,3);
+
+/*
+  // test updateQvalue
     int x = 0;
     int y = 0;
     QValue z = 0.122;
@@ -46,4 +62,6 @@ TEST(test_Qtable, test_functions) {
 
     // test getRandomMove
     EXPECT_EQ(true, (t.getRandomMove() < 4) && (t.getRandomMove() >= 0));
+ */
 }
+

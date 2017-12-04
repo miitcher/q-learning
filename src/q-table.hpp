@@ -5,20 +5,22 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <map>
 
 typedef float QValue;
 
 // This class contains the Q-table and manages the acces to it.
 class Qtable {
 public:
-    Qtable(int stateDimension, int actionDimension,
-        std::string const& qtableFilename);
+    Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
+    std::string const& qtableFilename);
 
     // Construct Qtable with qtableFilename as "".
-    Qtable(int stateDimension, int actionDimension);
+    Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys);
 
-    const QValue& getQvalue(const int& stateIndex,
-        const int& actionIndex) const;
+    // to do anssi: make this const
+    QValue& getQvalue(int stateKey,
+                            int actionKey);
 
     void updateQvalue(const int& stateIndex, const int& actionIndex,
                         QValue& qValue);
@@ -30,15 +32,16 @@ public:
     /* Generates a random integer (=index)
      * from the range 0 to numberOfMoves-1
      */
-    int getRandomMove(){ return (rand() % numberOfMoves); };
+    //int getRandomMove(){ return (rand() % numberOfMoves); };
 
     /* Compares actions
      * and returns the action with the largest Q-value.
      */
     int getBestMove(int stateIndex);
 
-    const int& getNumberOfStates() const {return numberOfStates;};
-    const int& getNumberOfMoves() const {return numberOfMoves;};
+    const std::vector<int>& getStateKeys() const {return stateKeys;};
+    const std::vector<int>& getActionKeys() const {return actionKeys;};
+    const std::string getQtableFilename() const {return qtableFilename;};
 
     void printQtable();
 
@@ -52,10 +55,12 @@ private:
     // The size of the matrix doesn't change so the std::vector's ability of
     // size changing is redundant. Is there a better container? Array?
 
-    std::vector<std::vector<QValue>> qValues; // qValues[state][action]
-    int numberOfStates;
-    int numberOfMoves;
+    std::map<int, std::map<int, QValue>> qValues; // qValues[state][action]
+    std::vector<int> stateKeys;
+    std::vector<int> actionKeys;
     std::string qtableFilename;
 };
+
+std::ostream& operator<<(std::ostream& os, Qtable const& table) ;
 
 #endif

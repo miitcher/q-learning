@@ -1,26 +1,44 @@
 #include "q-table.hpp"
 #include <iostream>
+#include <iostream>
+#include <vector>
+#include <sstream>
 #include <iomanip>
+#include <map>
 
-Qtable::Qtable(int s, int a, std::string const& qtableFilename)
-    : numberOfStates(s), numberOfMoves(a), qtableFilename(qtableFilename)
+Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
+    std::string const& qtableFilename)
+    : stateKeys(stateKeys), actionKeys(actionKeys),
+    qtableFilename(qtableFilename)
 {
     QValue initial = 0; // initial Q-value
-    std::vector<QValue> actionVector(numberOfMoves, initial);
-    std::vector<QValue>& ref = actionVector;
-    for(int i = 0; i < numberOfStates; i++){
-        qValues.push_back(ref);
+
+    std::map<int, QValue> actionMap;
+    for(auto key : actionKeys){
+        actionMap.insert(std::pair<int, QValue>(key, initial));
+    }
+    std::map<int, QValue>& ref = actionMap;
+    for(auto key : stateKeys){
+        qValues.insert(std::pair<int,std::map<int, QValue>>(key, ref));
     }
 }
 
-Qtable::Qtable(int s, int a) : Qtable(s, a, "") {}
+Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys)
+                : Qtable(stateKeys, actionKeys, "") {}
 
-const QValue& Qtable::getQvalue(const int& stateIndex,
-        const int& actionIndex) const{
-    QValue const& ref = qValues[stateIndex][actionIndex];
-    return ref;
+std::ostream& operator<<(std::ostream& os, Qtable const& table) {
+    os << "Qtable keys: " << table.getStateKeys()[0] << std::endl
+         << table.getActionKeys()[0] << std::endl
+         << "Qtable filename: " << table.getQtableFilename();
+    return os;
 }
 
+QValue& Qtable::getQvalue(int stateKey,
+        int actionKey){
+    QValue& ref = qValues[stateKey][actionKey];
+    return ref;
+}
+/*
 
 void Qtable::updateQvalue(const int& stateIndex, const int& actionIndex,
                              QValue& qValue){
@@ -62,3 +80,4 @@ void Qtable::printQtable(){
     }
     std::cout << std::endl;
 }
+*/

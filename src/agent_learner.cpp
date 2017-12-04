@@ -19,8 +19,8 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         numOfMoves = numOfMoves * (*it).getQuantizationSteps();
     }
     // Initialize the Q-table
-    Qtable newQ(numOfStates, numOfMoves, qtableFilename);
-    Qtable _Qtable = newQ;
+    //Qtable newQ(numOfStates, numOfMoves, qtableFilename);
+    //Qtable _Qtable = newQ;
 }
 
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,
