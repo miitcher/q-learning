@@ -55,7 +55,6 @@ public:
         return {actionPacket0, actionPacket1};
     };
 
-
     /* Acces functions */
     const int& getNumberOfStates() const { return numOfStates; };
     const int& getNumberOfMoves() const { return numOfMoves; };
@@ -100,6 +99,11 @@ private:
      */
     int quantiziseSensorInput(Sensor& sensor, SensorInput sInput);
 
+    /* Converts a vector of states of individual sensors
+     * to a single state of the agent which is an index to the Q-table.
+     */
+    int convertStateToIndex(const State& state);
+
     /* Calculates the updated Q-value using the reward, discoutFactor,
      * learningRate and the maximum Q-value of the next state's actions.
 
@@ -134,12 +138,6 @@ private:
 
     int convertMoveToIndex(
         const std::vector<ActorAction>& actionMessage);
-
-    Converts a vector of states of individual sensors
-     * to a single state of the agent which is an index to the Q-table.
-
-    int convertResponseToIndex(
-        const std::vector<ResponsePacket>& responseMessage);
 */
 };
 

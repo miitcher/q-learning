@@ -8,7 +8,7 @@ TEST(test_Qtable, test_constructor) {
     std::string str = "asd";
     Qtable t(stateKeys, actionKeys, str);
     Qtable t1(stateKeys, actionKeys);
-    // std::cout << t;
+    //std::cout << t;
     EXPECT_EQ(t.getStateKeys()[0], 2);
     EXPECT_EQ(t.getActionKeys()[0], 3);
     EXPECT_EQ(t.getQtableFilename(), "asd");
@@ -23,45 +23,32 @@ TEST(test_Qtable, test_functions) {
     Qtable t1(stateKeys, actionKeys);
 
     // test getQvalue
-    int sKey = 2;
-    t.getQvalue(2,3);
+    EXPECT_EQ(t.getQvalue(55, 99), 0);
 
-/*
+
   // test updateQvalue
-    int x = 0;
-    int y = 0;
+    int x = 7;
+    int y = 8;
     QValue z = 0.122;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getQvalue(x,y), z);
 
-    x = 0; y = 1; z = 0.1224;
-    t.updateQvalue(x,y,z);
+    x = 55; y = 99; z = 0.164;
+    EXPECT_EQ(t.updateQvalue(x,y,z), true);
     EXPECT_EQ(t.getQvalue(x,y), z);
 
-    // test getMaxQvalue and getBestMove
-    x = 0; y = 3; z = 0.15;
-    t.updateQvalue(x,y,z);
-    EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestMove(x), y);
-    x = 1; y = 1; z = 0.15665;
-    t.updateQvalue(x,y,z);
-    EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestMove(x), y);
-    x = 2; y = 2; z = 0.9155;
-    t.updateQvalue(x,y,z);
-    EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestMove(x), y);
-    x = 3; y = 0; z = 0.1655;
-    t.updateQvalue(x,y,z);
-    EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestMove(x), y);
+    x = 0; y = 3;
+    EXPECT_EQ(t.updateQvalue(x,y,z), false);
 
-    // test printQtable
-    // std::cout << "test printQtable" << std::endl;
-    // t.printQtable();
 
-    // test getRandomMove
-    EXPECT_EQ(true, (t.getRandomMove() < 4) && (t.getRandomMove() >= 0));
- */
+    // test getMaxQvalue
+    EXPECT_FLOAT_EQ(t.getMaxQvalue(7), 0.122);
+    EXPECT_FLOAT_EQ(t.getMaxQvalue(55), 0.164);
+    EXPECT_FLOAT_EQ(t.getMaxQvalue(2), 0);
+
+    // TEST getBestAction
+    EXPECT_EQ(t.getBestAction(7), 8);
+    EXPECT_EQ(t.getBestAction(55), 99);
+    // when equal, returns the first
+    EXPECT_EQ(t.getBestAction(2), 3);
 }
-

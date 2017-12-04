@@ -11,7 +11,7 @@ Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     : stateKeys(stateKeys), actionKeys(actionKeys),
     qtableFilename(qtableFilename)
 {
-    QValue initial = 0; // initial Q-value
+    QValue initial = 0; // initial Q-value of every state-action element
 
     std::map<int, QValue> actionMap;
     for(auto key : actionKeys){
@@ -27,57 +27,76 @@ Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys)
                 : Qtable(stateKeys, actionKeys, "") {}
 
 std::ostream& operator<<(std::ostream& os, Qtable const& table) {
-    os << "Qtable keys: " << table.getStateKeys()[0] << std::endl
-         << table.getActionKeys()[0] << std::endl
-         << "Qtable filename: " << table.getQtableFilename();
+    os << "Qtable state dimension: " << table.getStateKeys().size()
+        << std::endl
+        << "Qtable action dimension: " << table.getActionKeys().size()
+        << std::endl
+        << "Qtable filename: " << table.getQtableFilename()
+        << std::endl;
+
+        // debug
+        for(auto state : table.getStateKeys()){
+            for(auto action : table.getActionKeys()){
+                os << std::fixed;
+                os << std::setprecision(4);
+                os << table.getQvalue(state, action) << " ";
+            }
+            os << std::endl;
+        }
+        os << std::endl;
     return os;
 }
 
-QValue& Qtable::getQvalue(int stateKey,
-        int actionKey){
-    QValue& ref = qValues[stateKey][actionKey];
+QValue const& Qtable::getQvalue(int stateKey,
+        int actionKey) const {
+    // find(key) doesn't discard const qualifiers, operator [] does
+    QValue const& ref = qValues.find(stateKey)->second.find(actionKey)->second;
     return ref;
 }
-/*
 
-void Qtable::updateQvalue(const int& stateIndex, const int& actionIndex,
-                             QValue& qValue){
-    qValues[stateIndex][actionIndex] = qValue;
+int Qtable::updateQvalue(const int& stateKey, const int& actionKey,
+                        QValue& qValue){
+    // returns now 1 when stateKey exists and 0 when it doesn't -> make better?
+    for (auto action: qValues[stateKey]){
+        if (action.first == actionKey){
+            qValues[stateKey][actionKey] = qValue;
+            return 1;
+        }
+    }
+    return 0;
 }
 
-QValue Qtable::getMaxQvalue(int stateIndex){
-    QValue zero = 0;
+QValue Qtable::getMaxQvalue(int stateKey){
+    QValue empty = -1;
     size_t one = 1;
-    if (qValues[stateIndex].size() < one) return zero;
-              //returns 0 from empty --> to do Anssi: make better
+    if (qValues[stateKey].size() < one) return empty;
+              //returns -1 from empty --> to do Anssi: make better
 
-    QValue max = getQvalue(0, 0);
-    for (auto it : qValues[stateIndex]){
-        if (it > max){
-            max = it;
+    QValue max = getQvalue(stateKey, getActionKeys()[0]);
+
+    for (auto it : qValues[stateKey]){
+        if (it.second > max){
+            max = it.second;
         }
     }
     return max;
 }
 
-int Qtable::getBestMove(int stateIndex){
-    int best = 0;
-    for (int i = 0; i < getNumberOfMoves(); i++){
-        if (getQvalue(stateIndex, i) > getQvalue(stateIndex, best)){
-            best = i;
-        }
-    }
-    return best;
-}
+int Qtable::getBestAction(int stateKey){
+    QValue empty = -1;
+    size_t one = 1;
+    if (qValues[stateKey].size() < one) return empty;
+              //returns -1 from empty --> to do Anssi: make better
 
-void Qtable::printQtable(){
-    for (int i = 0; i < getNumberOfMoves(); i++){
-        for (int j = 0; j < getNumberOfStates(); j++){
-            std::cout << std::fixed;
-            std::cout << std::setprecision(4) << getQvalue(i, j) << " ";
+    // initializes values as the first action
+    int bestActionKey = getActionKeys()[0];
+    QValue max = getQvalue(stateKey, bestActionKey);
+
+    for (auto it : getActionKeys()){
+        if (getQvalue(stateKey, it) > max){
+            bestActionKey = it;
+            max = getQvalue(stateKey, it);
         }
-        std::cout << std::endl;
     }
-    std::cout << std::endl;
+    return bestActionKey;
 }
-*/

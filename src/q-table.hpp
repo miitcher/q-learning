@@ -18,11 +18,11 @@ public:
     // Construct Qtable with qtableFilename as "".
     Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys);
 
-    // to do anssi: make this const
-    QValue& getQvalue(int stateKey,
-                            int actionKey);
+    QValue const& getQvalue(int stateKey,
+                            int actionKey) const ;
 
-    void updateQvalue(const int& stateIndex, const int& actionIndex,
+    // returns now 1 when stateKey exists and 0 when it doesn't -> make better?
+    int updateQvalue(const int& stateKey, const int& actionKey,
                         QValue& qValue);
 
     /* Compares actions of a state and returns the largest Q-value.
@@ -35,9 +35,9 @@ public:
     //int getRandomMove(){ return (rand() % numberOfMoves); };
 
     /* Compares actions
-     * and returns the action with the largest Q-value.
+     * and returns the actionKey with the largest Q-value.
      */
-    int getBestMove(int stateIndex);
+    int getBestAction(int stateIndex);
 
     const std::vector<int>& getStateKeys() const {return stateKeys;};
     const std::vector<int>& getActionKeys() const {return actionKeys;};

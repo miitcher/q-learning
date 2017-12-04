@@ -18,9 +18,26 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
             actors.end(); it++ ){
         numOfMoves = numOfMoves * (*it).getQuantizationSteps();
     }
-    // Initialize the Q-table
-    //Qtable newQ(numOfStates, numOfMoves, qtableFilename);
-    //Qtable _Qtable = newQ;
+    // Initialize the Q-table:
+    // Create stateKeys for each state
+ /*   for (size_t i = 0; i < sensors.size(); i++ ){
+        for(size_t j = 0; j < sensors.size(); j++ ){
+            if (sensor
+        }
+    }
+
+
+    std::vector<int> stateKeys;
+    int stateKey;
+    for (auto sensor : sensors){
+        for(int input = 0; input < sensor.getQuantizationSteps(); input++){
+            stateKey = quantiziseSensorInput(sensor, input)
+        }
+    }
+
+
+    Qtable newQ(numOfStates, numOfMoves, qtableFilename);
+    Qtable _Qtable = newQ;*/
 }
 
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,
@@ -48,6 +65,7 @@ int AgentLearner::convertStateToKey(State const& state){
     int factor = 1;
     int key = 0;
     for (auto packet : state){
+       // int quantisized = quantiziseSensorInput(packet.first, packet.second)
         key += factor * (packet.second +1);
         factor = factor *100;
     }
@@ -76,6 +94,42 @@ int AgentLearner::quantiziseSensorInput(Sensor& sensor, SensorInput sInput){
                         (sensor.getMaxAngle() - sensor.getMinAngle());
     return static_cast<int>(scaled);
 }
+
+int AgentLearner::convertStateToIndex (const State& state){
+
+    // At the moment, this function assumes that all sensors contribute to the
+    // aggregate state of the actual agent. Should be changed (todoAnssi)
+    std::vector<int> indeces = {};
+    int incr = 0;
+    for (auto packet : state){
+        for (auto sensor : getSensors()){
+            if (packet.first == sensor.getID()){
+                for (int state = 0; state < sensor.getQuantizationSteps()
+                                        ; state++){
+                    if(state != quantiziseSensorInput(sensor, packet.second)){
+                        incr++;
+                    }else{
+                        indeces.push_back(incr);
+                        incr = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    std::vector<int> numsOfStates = {};
+    for (auto sensor : getSensors()){
+        numsOfStates.push_back(sensor.getQuantizationSteps());
+    }
+    int index = 0;
+    int factor = 1;
+    for (size_t i = 0; i < indeces.size(); i++){
+        index += factor * indeces[i];
+        factor = factor * numsOfStates[i];
+    }
+    return index;
+}
+
 /*
 int AgentLearner::convertMoveToIndex
     (const std::vector<ActorAction>& actionPacs){
@@ -123,42 +177,6 @@ int AgentLearner::convertMoveToIndex
         std::cout << std::endl << "factor: " << factor<< std::endl <<"index: "
                                             << index << std::endl;
 
-    }
-    return index;
-}
-
-int AgentLearner::convertResponseToIndex
-    (const std::vector<ResponsePacket>& responsePacs){
-
-    // At the moment, this function assumes that all sensors contribute to the
-    // aggregate state of the actual agent. Should be changed (todoAnssi)
-    std::vector<int> indeces = {};
-    int incr = 0;
-    for (auto packet : responsePacs){
-        for (auto sensor : getSensors()){
-            if (packet.first == sensor.getID()){
-                for (int state = 0; state < sensor.getQuantizationSteps()
-                                        ; state++){
-                    if(state != quantiziseSensorInput(sensor, packet.second)){
-                        incr++;
-                    }else{
-                        indeces.push_back(incr);
-                        incr = 0;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    std::vector<int> numsOfStates = {};
-    for (auto sensor : getSensors()){
-        numsOfStates.push_back(sensor.getQuantizationSteps());
-    }
-    int index = 0;
-    int factor = 1;
-    for (size_t i = 0; i < indeces.size(); i++){
-        index += factor * indeces[i];
-        factor = factor * numsOfStates[i];
     }
     return index;
 }
