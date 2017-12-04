@@ -1,4 +1,4 @@
-#include "agent.hpp"
+#include "agent_learner.hpp"
 #include "interactor.hpp"
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@
 #include <sys/stat.h> // stat
 #include <stdexcept> // std::runtime_error
 
-// Enumerator used by the readAgentConfigFile.
+// Enumerator used by the readAgentLearnerConfigFile.
 enum setting {
     Nothing,
     ActorSetting,
@@ -32,7 +32,7 @@ std::vector<std::string> commaSplitString(std::string str) {
     return result;
 }
 
-void readAgentConfigFile(std::string& agentConfigFilename,
+void readAgentLearnerConfigFile(std::string& agentConfigFilename,
     std::vector<Actor>& actors,
     std::vector<Sensor>& sensors,
     AgentShape& agentShape,

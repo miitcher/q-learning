@@ -12,7 +12,7 @@ TEST(test_config_reader, test_readAgentConfigFile) {
     std::string qtableFilename;
     bool drawGraphics;
 
-    readAgentConfigFile(agentConfigFilename,
+    readAgentLearnerConfigFile(agentConfigFilename,
         actors, sensors, agentShape, agentCount, qtableFilename, drawGraphics);
 
     // Actor 0
@@ -57,7 +57,7 @@ TEST(test_config_reader, test_readAgentConfigFile_wrong_filename) {
     bool drawGraphics;
 
     try {
-        readAgentConfigFile(agentConfigFilename, actors, sensors,
+        readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
             agentShape, agentCount, qtableFilename, drawGraphics);
     } catch (std::runtime_error& e) {
         EXPECT_STREQ(e.what(),
@@ -76,7 +76,7 @@ TEST(test_config_reader, test_readAgentConfigFile_faulty_file) {
     bool drawGraphics;
 
     try {
-        readAgentConfigFile(agentConfigFilename, actors, sensors,
+        readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
             agentShape, agentCount, qtableFilename, drawGraphics);
     } catch (std::runtime_error& e) {
         EXPECT_STREQ(e.what(),

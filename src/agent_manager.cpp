@@ -1,5 +1,5 @@
 #include "agent_manager.hpp"
-#include "agent.hpp"
+#include "agent_learner.hpp"
 #include "interactor.hpp"
 #include <vector>
 #include <thread>
@@ -44,16 +44,15 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 
     float agentXAxisLocationOfGoal = 30; // Simulation units ???
 
-    Agent agent(actors, sensors, qtableFilename);
+    AgentLearner agent(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
     unsigned count = 0;
     while (true) {
         // The learning and simulation parts communicate.
-        ActionMessage actionMessage = agent.doAction();
-        ResponseMessage responseMessage = simulation.simulateAction(
-            actionMessage);
-        agent.receiveSimulationResponse(responseMessage);
+        Action action = agent.doAction();
+        State state = simulation.simulateAction(action);
+        agent.receiveSimulationResponse(state);
 
         /* If an Agent has reached the goal its the fittest of the Agents
         that are running, and will "teach" the other Agents. The "teaching"
@@ -266,3 +265,4 @@ void AgentManager::evolveAgents() {
     // Implement after the big change of the types, and after the
     // most of the rest of the program has been implemented.
 }
+

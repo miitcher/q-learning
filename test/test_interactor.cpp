@@ -20,10 +20,10 @@ TEST(test_interactor, test_Actor) {
     EXPECT_EQ(a.getQuantizationSteps(), 126);
     EXPECT_EQ(a.getMinAngle(), float(1));
     EXPECT_EQ(a.getMaxAngle(), float(2));
-    EXPECT_EQ(a.getNumberOfActions(), 2);
+    EXPECT_EQ(a.getNumberOfMoves(), 2);
 
-    auto actions = a.getActions();
-    //for (auto i : actions) { std::cout << "Action: " << i << std::endl; }
+    auto actions = a.getMoves();
+    //for (auto i : actions) { std::cout << "Move: " << i << std::endl; }
     EXPECT_EQ(actions[0], Still);
     EXPECT_EQ(actions[1], Clockwise);
 }
@@ -46,7 +46,7 @@ TEST(test_interactor, test_JointActor) {
     EXPECT_EQ(a.getQuantizationSteps(), 456);
     EXPECT_EQ(a.getMinAngle(), float(0));
     EXPECT_EQ(a.getMaxAngle(), float(0));
-    EXPECT_EQ(a.getNumberOfActions(), 3);
+    EXPECT_EQ(a.getNumberOfMoves(), 3);
 }
 
 TEST(test_interactor, test_JointSensor) {
@@ -63,7 +63,7 @@ TEST(test_interactor, test_XAxisSensor) {
     XAxisSensor a(6);
 
     EXPECT_EQ(a.getID(), 6);
-    EXPECT_EQ(a.getDescription(), "Sensor of Agents position on the x-axis.");
+    EXPECT_EQ(a.getDescription(), "Sensor of AgentLearners position on the x-axis.");
     EXPECT_EQ(a.getQuantizationSteps(), 0);
     EXPECT_EQ(a.getMinAngle(), float(0));
     EXPECT_EQ(a.getMaxAngle(), float(0));

@@ -11,19 +11,19 @@ Possible moves for an Actor. The enumerators are integers, so
 they can be used as keys in the Q-table.
 If other actions are possible, then they need to be added to the enum.
 */
-enum Action {
+enum Move {
     Still,
     Counterclockwise,
     Clockwise
 };
 
 typedef double SensorInput;
-typedef std::pair<int, Action> ActionPacket;
-    // (actorID, Action)
+typedef std::pair<int, Move> ActorAction;
+    // (actorID, Move)
 typedef std::pair<int, SensorInput> ResponsePacket;
     // (sensorID, SensorInput)
-typedef std::vector<ActionPacket> ActionMessage;
-typedef std::vector<ResponsePacket> ResponseMessage;
+typedef std::vector<ActorAction> Action;
+typedef std::vector<ResponsePacket> State;
 
 /**
 An interactor is the parent class for the actor and the sensor. An agent can
@@ -71,11 +71,11 @@ class Actor : public Interactor {
 public:
     Actor(int ID, std::string const& description,
         int quantizationSteps, float minAngle, float maxAngle,
-        std::vector<Action> actions);
-    const std::vector<Action>& getActions() const { return actions; }
-    int getNumberOfActions() const { return actions.size(); }
+        std::vector<Move> actions);
+    const std::vector<Move>& getMoves() const { return actions; }
+    int getNumberOfMoves() const { return actions.size(); }
 private:
-    std::vector<Action> actions;
+    std::vector<Move> actions;
 };
 
 class Sensor : public Interactor {
@@ -97,7 +97,7 @@ public:
         float minAngle, float maxAngle);
 };
 
-/* Sensor that senses the Agents position in the x-axis. This can be used
+/* Sensor that senses the AgentLearners position in the x-axis. This can be used
 for calculating the revard when the goal is to travel to the right.
 */
 class XAxisSensor : public Sensor {

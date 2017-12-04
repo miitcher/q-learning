@@ -20,7 +20,7 @@ add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread)
 set(SOURCES
     src/interactor.hpp src/interactor.cpp
     src/q-table.hpp src/q-table.cpp
-    src/agent.hpp src/agent.cpp
+    src/agent_learner.hpp src/agent_learner.cpp
     src/agent_manager.hpp src/agent_manager.cpp
     src/config_reader.hpp src/config_reader.cpp)
 
@@ -37,7 +37,7 @@ ADD_EXECUTABLE(qtests
     test/test_config_reader.cpp
     test/test_agent_manager.cpp
     test/test_qtable.cpp
-    test/test_agent.cpp
+    test/test_agent_learner.cpp
     ${SOURCES})
 target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )

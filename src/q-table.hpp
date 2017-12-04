@@ -28,17 +28,17 @@ public:
     QValue getMaxQvalue(int stateIndex);
 
     /* Generates a random integer (=index)
-     * from the range 0 to numberOfActions-1
+     * from the range 0 to numberOfMoves-1
      */
-    int getRandomAction(){ return (rand() % numberOfActions); };
+    int getRandomMove(){ return (rand() % numberOfMoves); };
 
     /* Compares actions
      * and returns the action with the largest Q-value.
      */
-    int getBestAction(int stateIndex);
+    int getBestMove(int stateIndex);
 
     const int& getNumberOfStates() const {return numberOfStates;};
-    const int& getNumberOfActions() const {return numberOfActions;};
+    const int& getNumberOfMoves() const {return numberOfMoves;};
 
     void printQtable();
 
@@ -54,7 +54,7 @@ private:
 
     std::vector<std::vector<QValue>> qValues; // qValues[state][action]
     int numberOfStates;
-    int numberOfActions;
+    int numberOfMoves;
     std::string qtableFilename;
 };
 

@@ -5,7 +5,7 @@
 TEST(test_Qtable, test_constructor) {
     Qtable t(2,2);
     EXPECT_EQ(t.getNumberOfStates(), 2);
-    EXPECT_EQ(t.getNumberOfActions(), 2);
+    EXPECT_EQ(t.getNumberOfMoves(), 2);
 }
 
 TEST(test_Qtable, test_functions) {
@@ -22,28 +22,28 @@ TEST(test_Qtable, test_functions) {
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getQvalue(x,y), z);
 
-    // test getMaxQvalue and getBestAction
+    // test getMaxQvalue and getBestMove
     x = 0; y = 3; z = 0.15;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestAction(x), y);
+    EXPECT_EQ(t.getBestMove(x), y);
     x = 1; y = 1; z = 0.15665;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestAction(x), y);
+    EXPECT_EQ(t.getBestMove(x), y);
     x = 2; y = 2; z = 0.9155;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestAction(x), y);
+    EXPECT_EQ(t.getBestMove(x), y);
     x = 3; y = 0; z = 0.1655;
     t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getMaxQvalue(x), z);
-    EXPECT_EQ(t.getBestAction(x), y);
+    EXPECT_EQ(t.getBestMove(x), y);
 
     // test printQtable
-    std::cout << "test printQtable" << std::endl;
-    t.printQtable();
+    // std::cout << "test printQtable" << std::endl;
+    // t.printQtable();
 
-    // test getRandomAction
-    EXPECT_EQ(true, (t.getRandomAction() < 4) && (t.getRandomAction() >= 0));
+    // test getRandomMove
+    EXPECT_EQ(true, (t.getRandomMove() < 4) && (t.getRandomMove() >= 0));
 }

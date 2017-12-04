@@ -3,10 +3,10 @@
 #include <iomanip>
 
 Qtable::Qtable(int s, int a, std::string const& qtableFilename)
-    : numberOfStates(s), numberOfActions(a), qtableFilename(qtableFilename)
+    : numberOfStates(s), numberOfMoves(a), qtableFilename(qtableFilename)
 {
     QValue initial = 0; // initial Q-value
-    std::vector<QValue> actionVector(numberOfActions, initial);
+    std::vector<QValue> actionVector(numberOfMoves, initial);
     std::vector<QValue>& ref = actionVector;
     for(int i = 0; i < numberOfStates; i++){
         qValues.push_back(ref);
@@ -42,9 +42,9 @@ QValue Qtable::getMaxQvalue(int stateIndex){
     return max;
 }
 
-int Qtable::getBestAction(int stateIndex){
+int Qtable::getBestMove(int stateIndex){
     int best = 0;
-    for (int i = 0; i < getNumberOfActions(); i++){
+    for (int i = 0; i < getNumberOfMoves(); i++){
         if (getQvalue(stateIndex, i) > getQvalue(stateIndex, best)){
             best = i;
         }
@@ -53,7 +53,7 @@ int Qtable::getBestAction(int stateIndex){
 }
 
 void Qtable::printQtable(){
-    for (int i = 0; i < getNumberOfActions(); i++){
+    for (int i = 0; i < getNumberOfMoves(); i++){
         for (int j = 0; j < getNumberOfStates(); j++){
             std::cout << std::fixed;
             std::cout << std::setprecision(4) << getQvalue(i, j) << " ";

@@ -1,5 +1,5 @@
 #include "interactor.hpp"
-#include "agent.hpp"
+#include "agent_learner.hpp"
 #include "agent_manager.hpp"
 #include "config_reader.hpp"
 #include <iostream>
@@ -11,7 +11,7 @@
 int main() {
     std::cout << "--- q-learning-9 ---" << std::endl;
 
-    // File that dictates the learning Agent.
+    // File that dictates the learning AgentLearner.
     std::string agentConfigFilename = "../test/files/configAgent_test.config";
 
     // Initialize variables
@@ -25,12 +25,11 @@ int main() {
     // Set variables. This is error prone, because the user can modify the
     // configuration file.
     try {
-        readAgentConfigFile(agentConfigFilename, actors, sensors,
+        readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
             agentShape, agentCount, qtableFilename, drawGraphics);
     } catch (std::runtime_error& e) {
         std::cout << "An error occured, while reading the config file: "
             << e.what() << std::endl;
-        return -1;
     }
 
     // Set AgentManager
@@ -38,8 +37,5 @@ int main() {
         qtableFilename, drawGraphics);
 
     // Start learning
-    unsigned runMode = 1;
-    agentManager.initRun(runMode);
-
-    return 0;
+    //agentManager.initRun();
 }

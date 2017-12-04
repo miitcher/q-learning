@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& os, Interactor const& p) {
 
 Actor::Actor(int ID, std::string const& description,
     int quantizationSteps, float minAngle, float maxAngle,
-    std::vector<Action> actions)
+    std::vector<Move> actions)
     : Interactor(ID, description, quantizationSteps, minAngle, maxAngle),
     actions(actions) {}
 
@@ -32,4 +32,4 @@ JointSensor::JointSensor(int ID, int quantizationSteps,
     quantizationSteps, minAngle, maxAngle) {}
 
 XAxisSensor::XAxisSensor(int ID)
-    : Sensor(ID, "Sensor of Agents position on the x-axis.", 0, 0, 0) {}
+    : Sensor(ID, "Sensor of AgentLearners position on the x-axis.", 0, 0, 0) {}

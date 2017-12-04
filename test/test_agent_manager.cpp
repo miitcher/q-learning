@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-TEST(test_agentManager, test_agentTask_smoketest) {
+TEST(test_agentManager, test_agentTask) {
     // Smoketest
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
@@ -30,6 +30,7 @@ TEST(test_agentManager, test_initRun_smoketest) {
     // The basic running of the program while the treads communicate.
     // The communication is done with the private functions in
     // the AgentManager class.
+
     Actor a0 = Actor
     (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
