@@ -24,7 +24,7 @@
 #else
 	#include "freeglut/freeglut.h"
 #endif
-/*
+
 #include "AddPair.h"
 #include "ApplyForce.h"
 #include "BodyTypes.h"
@@ -73,13 +73,13 @@
 #include "VaryingFriction.h"
 #include "VaryingRestitution.h"
 #include "VerticalStack.h"
-#include "Web.h"*/
+#include "Web.h"
 #include "TestCrawler.h"
 
 TestEntry g_testEntries[] =
 {
 	{"TestCrawler", TestCrawler::Create},
-	/*{"Ray-Cast", RayCast::Create},
+	{"Ray-Cast", RayCast::Create},
 	{"Dump Shell", DumpShell::Create},
 	{"Convex Hull", ConvexHull::Create},
 	{"Apply Force", ApplyForce::Create},
@@ -127,6 +127,6 @@ TestEntry g_testEntries[] =
 	{"Sensor Test", SensorTest::Create},
 	{"Slider Crank", SliderCrank::Create},
 	{"Varying Friction", VaryingFriction::Create},
-	{"Add Pair Stress Test", AddPair::Create},*/
+	{"Add Pair Stress Test", AddPair::Create},
 	{NULL, NULL}
 };

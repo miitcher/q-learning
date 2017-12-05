@@ -78,8 +78,8 @@
 
 TestEntry g_testEntries[] =
 {
-	{"TestCrawler", TestCrawler::Create},
-	/*{"Ray-Cast", RayCast::Create},
+	{"TestCrawler", TestCrawler::Create}/*,
+	{"Ray-Cast", RayCast::Create},
 	{"Dump Shell", DumpShell::Create},
 	{"Convex Hull", ConvexHull::Create},
 	{"Apply Force", ApplyForce::Create},
