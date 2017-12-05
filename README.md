@@ -18,11 +18,15 @@ Directory structure:
   * `build/` -- Here the project is built.
 
 
-## Compiling the project and its tests ##
+## Compiling the project and tests ##
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
 * Install cmake if it's not installed already
 `sudo apt install cmake`
+
+* Install packages if you do not have them (worked on Debian; for Box2D):
+`freeglut3-dev`
+`libxi-dev`
 
 * Move to the build folder in the q-learning-9 folder.
 `cd q-learning-9/build/`
@@ -30,13 +34,13 @@ Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 * Create Makefile.
 `cmake ..`
 
-* Compile everything.
-`make` or `make all`
-
-Build targets can be listed, built separately and removed:
+Build targets can be listed, built together, built separately and removed:
 
 * List targets that can be built.
 `make help`
+
+* Compile everything.
+`make` or `make all`
 
 * Compile main.
 `make main`
@@ -44,8 +48,16 @@ Build targets can be listed, built separately and removed:
 * Compile tests.
 `make qtests`
 
+* Compile Testbed.
+`make Testbed`
+
 * Remove compiled targets.
 `make clean`
 
 The executable compiled targets will be in the build folder as:
-`main` and `qtests`.
+`main`, `qtests` and `src/Box2D_v2.3.0/Box2D/Testbed/Testbed`.
+
+
+### Guides that may help if packages are missing ###
+https://superuser.com/questions/1099227/installing-opengl-in-linux
+https://stackoverflow.com/questions/5299989/x11-xlib-h-not-found-in-ubuntu

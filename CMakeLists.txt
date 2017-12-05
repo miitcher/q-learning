@@ -41,3 +41,6 @@ ADD_EXECUTABLE(qtests
     ${SOURCES})
 target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )
+
+# Add Simulation and Box2D
+add_subdirectory(src/Box2D_v2.3.0/Box2D)
