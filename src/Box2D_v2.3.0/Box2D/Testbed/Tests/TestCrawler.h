@@ -43,59 +43,64 @@
   				crawler->CreateFixture(&boxFixtureDef);
 
 				// create arm1
-				b2Body* arm1 = NULL;
+				b2Body* upperArm = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
 	  			myBodyDef.position.Set(4, 2); //set the starting position
 	  			myBodyDef.angle = 0; //set the starting angle
-				arm1 = m_world->CreateBody(&myBodyDef);
+				upperArm = m_world->CreateBody(&myBodyDef);
 				
 	  			boxShape.SetAsBox(1.5,0.1);
 	  
 	  			boxFixtureDef.shape = &boxShape;
 	  			boxFixtureDef.density = 1;
 				boxFixtureDef.friction = 100;
-  				arm1->CreateFixture(&boxFixtureDef);
+  				upperArm->CreateFixture(&boxFixtureDef);
 
                                 // create arm2
-				b2Body* arm2 = NULL;
+				b2Body* forearm = NULL;
 				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
   				myBodyDef.position.Set(7, 2); //set the starting position
   				myBodyDef.angle = 0; //set the starting angle
 				
-				arm2 = m_world->CreateBody(&myBodyDef);
+				forearm = m_world->CreateBody(&myBodyDef);
 				
 	  			boxShape.SetAsBox(1.5,0.1);
 	  
 	  			boxFixtureDef.shape = &boxShape;
 	  			boxFixtureDef.density = 1;
-	  			arm2->CreateFixture(&boxFixtureDef);
+	  			forearm->CreateFixture(&boxFixtureDef);
 
 				// set joint to arms
 				b2RevoluteJointDef revoluteJointDef;
  				revoluteJointDef.bodyA = crawler;
-				revoluteJointDef.bodyB = arm1;
+				revoluteJointDef.bodyB = upperArm;
 				revoluteJointDef.collideConnected = false;
 				revoluteJointDef.enableMotor = true;
   				revoluteJointDef.maxMotorTorque = 500;
 				revoluteJointDef.localAnchorA.Set(3,1);  //the top right corner of the box
 				revoluteJointDef.localAnchorB.Set(-1.5,0);  //
-				m_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
+				shoulder = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 				
 				
-				revoluteJointDef.bodyA = arm2;
-				revoluteJointDef.bodyB = arm1;
+				revoluteJointDef.bodyA = forearm;
+				revoluteJointDef.bodyB = upperArm;
 				revoluteJointDef.collideConnected = false;
 				revoluteJointDef.localAnchorA.Set(-1.5,0);
 				revoluteJointDef.localAnchorB.Set(1.5,0);
-  				n_joint = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
+  				elbow = (b2RevoluteJoint*)m_world->CreateJoint( &revoluteJointDef );
 				
-
-				m_button = false;
-				n_button = false;
 			}
    		}
 		
-		
+		void rotateArm(float speed)
+		{
+			shoulder->SetMotorSpeed(speed);
+		}
+
+		void rotateForearm(float speed)
+		{
+			elbow->SetMotorSpeed(speed);
+		}
 
         void Step(Settings* settings)
         {
@@ -114,19 +119,19 @@
 			switch (key)
 			{
 			case 'a':
-				m_joint->SetMotorSpeed(2.0f);
+				rotateArm(2.0f);
 				break;
 
 			case 'd':
-				m_joint->SetMotorSpeed(-2.0f);
+				rotateArm(-2.0f);
 				break;
 			
 			case 's':
-				n_joint->SetMotorSpeed(-2.0f);
+				rotateForearm(-2.0f);
 				break;
 
 			case 'w':
-				n_joint->SetMotorSpeed(2.0f);
+				rotateForearm(2.0f);
 				break;
 			}
 		}
@@ -136,19 +141,19 @@
 			switch (key)
 			{
 			case 'a':
-				m_joint->SetMotorSpeed(0);
+				rotateArm(0);
 				break;
 
 			case 'd':
-				m_joint->SetMotorSpeed(0);
+				rotateArm(0);
 				break;
 			
 			case 's':
-				n_joint->SetMotorSpeed(0);
+				rotateForearm(0);
 				break;
 
 			case 'w':
-				n_joint->SetMotorSpeed(0);
+				rotateForearm(0);
 				break;
 			}
 		}
@@ -157,10 +162,8 @@
         {
             return new TestCrawler;
         }
-		b2RevoluteJoint* m_joint;
-		b2RevoluteJoint* n_joint;
-		bool m_button;
-		bool n_button;
+		b2RevoluteJoint* shoulder;
+		b2RevoluteJoint* elbow;
     };
   
   #endif
