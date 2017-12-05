@@ -10,8 +10,9 @@
 *test/interactor_test
 *tmc_test_results.xml
 
-# Build files with CMake in separate directory
-*build_Makefile*
+# Files from building project
+build/*
+!build/Readme.txt
 
 # Local TODO-list
 *TODO

@@ -15,25 +15,28 @@ Directory structure:
 
   * `test/` -- Here are the tests.
 
+  * `build/` -- Here the project is built.
+
 
 ## Compiling the project and its tests ##
+Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
 * Install cmake if it's not installed already
 `sudo apt install cmake`
 
-* Create build folder in the q-learning-9 folder.
-`mkdir build_Makefile`
-
-* Move to build folder.
+* Move to the build folder in the q-learning-9 folder.
+`cd q-learning-9/build/`
 
 * Create Makefile.
 `cmake ..`
 
-* List targets that can be built.
-`make help`
-
 * Compile everything.
 `make` or `make all`
+
+Build targets can be listed, built separately and removed:
+
+* List targets that can be built.
+`make help`
 
 * Compile main.
 `make main`
@@ -44,4 +47,5 @@ Directory structure:
 * Remove compiled targets.
 `make clean`
 
-* Executable compiled targets will be in the build folder.
+The executable compiled targets will be in the build folder as:
+`main` and `qtests`.

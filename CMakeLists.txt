@@ -1,6 +1,6 @@
 # Check that the build does not happen in the source tree
 IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-   MESSAGE(FATAL_ERROR "Prevented in-tree built. This is bad practice.")
+   MESSAGE(FATAL_ERROR "Prevented in-tree built. Try again using CMake in the build folder.")
 ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 
 # Project wide settings
