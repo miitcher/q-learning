@@ -16,3 +16,23 @@ build/*
 
 # Local TODO-list
 *TODO
+
+# Files generated from compiling box2d
+src/Box2D_v2.3.0/Box2D/Build/Box2D/
+src/Box2D_v2.3.0/Box2D/Build/CMakeCache.txt
+src/Box2D_v2.3.0/Box2D/Build/CMakeFiles/
+src/Box2D_v2.3.0/Box2D/Build/HelloWorld/
+src/Box2D_v2.3.0/Box2D/Build/Makefile
+src/Box2D_v2.3.0/Box2D/Build/Testbed/
+src/Box2D_v2.3.0/Box2D/Build/cmake_install.cmake
+src/Box2D_v2.3.0/Box2D/Build/freeglut/
+src/Box2D_v2.3.0/Box2D/Build/glui/
+src/Box2D_v2.3.0/Box2D/Testbed/Box2D/
+src/Box2D_v2.3.0/Box2D/Testbed/CMakeCache.txt
+src/Box2D_v2.3.0/Box2D/Testbed/CMakeFiles/
+src/Box2D_v2.3.0/Box2D/Testbed/HelloWorld/
+src/Box2D_v2.3.0/Box2D/Testbed/Makefile
+src/Box2D_v2.3.0/Box2D/Testbed/Testbed/
+src/Box2D_v2.3.0/Box2D/Testbed/cmake_install.cmake
+src/Box2D_v2.3.0/Box2D/Testbed/freeglut/
+src/Box2D_v2.3.0/Box2D/Testbed/glui/
