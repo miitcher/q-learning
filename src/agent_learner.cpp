@@ -90,6 +90,24 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors)
         : AgentLearner(actors, sensors, "") {}
 
+
+// to do Anssi
+std::ostream& operator<<(std::ostream& os, AgentLearner const& agent){
+    os << "Actor IDs ";
+    for (auto i : agent.getActors()){
+        os << i.getID() << "; ";
+    }
+    os << std::endl;
+    os << "Sensor IDs ";
+    for (auto i : agent.getSensors()){
+        os << i.getID() << "; ";
+    }
+    os << std::endl;
+    os << "Location: " << agent.getXAxisLocation() << std::endl;
+    os << "Key of the Current State: " << agent.getState() << std::endl;
+    return os;
+}
+
 std::vector<int> AgentLearner::createStateKeys1
             (std::vector<Sensor> const& sensors) {
     std::vector<int> keys;
@@ -174,12 +192,12 @@ Action AgentLearner::convertKeyToAction(int key){
     return m;
 }
 
-/* to do anssi : the rest
-std::vector<ActorAction> AgentLearner::chooseMove(){
+/*
+int AgentLearner::chooseAction(){
 
 }
 
-
+to do anssi : the rest
 void AgentLearner::updateQtable(QState state,
         Move action, QState nextState){
 

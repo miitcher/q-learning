@@ -35,23 +35,23 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
         << std::endl;
 
         // debug
-        for(auto state : table.getStateKeys()){
-            for(auto action : table.getActionKeys()){
-                os << std::fixed;
-                os << std::setprecision(4);
-                os << table.getQvalue(state, action) << " ";
-            }
-            os << std::endl;
-        }
-        os << std::endl;
+        // for(auto state : table.getStateKeys()){
+        //     for(auto action : table.getActionKeys()){
+        //         os << std::fixed;
+        //         os << std::setprecision(4);
+        //         os << table.getQvalue(state, action) << " ";
+        //     }
+        //     os << std::endl;
+        // }
+        // os << std::endl;
     return os;
 }
 
 QValue const& Qtable::getQvalue(int stateKey,
         int actionKey) const {
-    // flower_bound finds the first key that is not less than the given.
-    QValue const& ref = qValues.lower_bound(stateKey)->second.
-                                lower_bound(actionKey)->second;
+    // find doesn't discard const qualifiers
+    QValue const& ref = qValues.find(stateKey)->second.
+                                find(actionKey)->second;
     return ref;
 }
 
@@ -67,28 +67,19 @@ int Qtable::updateQvalue(const int& stateKey, const int& actionKey,
     return 0;
 }
 
-QValue Qtable::getMaxQvalue(int stateKey){
-    QValue empty = -1;
-    size_t one = 1;
-    if (qValues[stateKey].size() < one) return empty;
-              //returns -1 from empty --> to do Anssi: make better
-
+QValue const& Qtable::getMaxQvalue(int const& stateKey) const{
     QValue max = getQvalue(stateKey, getActionKeys()[0]);
 
-    for (auto it : qValues[stateKey]){
-        if (it.second > max){
-            max = it.second;
+    for (auto it : getActionKeys()){
+        if (getQvalue(stateKey, it) > max){
+            max = getQvalue(stateKey, it);
         }
     }
-    return max;
+    QValue const& ref = max;
+    return ref;
 }
 
-int Qtable::getBestAction(int stateKey){
-    QValue empty = -1;
-    size_t one = 1;
-    if (qValues[stateKey].size() < one) return empty;
-              //returns -1 from empty --> to do Anssi: make better
-
+int Qtable::getBestAction(int const& stateKey) const{
     // initializes values as the first action
     int bestActionKey = getActionKeys()[0];
     QValue max = getQvalue(stateKey, bestActionKey);

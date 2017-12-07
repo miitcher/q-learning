@@ -39,11 +39,8 @@ public:
     AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
-    // Unpack the response - use quantisizeSensorInput
-    void receiveSimulationResponse(
-        std::vector<ResponsePacket>& state) {
-        // Dummy
-        currentState += state[0].first;
+    void receiveSimulationResponse(State& state) {
+        currentState = convertStateToKey(state);
     };
 
     // Communicates the choosen action to the simulation.
@@ -52,7 +49,10 @@ public:
         ActorAction actionPacket0(0, Clockwise);
         ActorAction actionPacket1(1, Counterclockwise);
         //Action actionMessage = {actionPacket0, actionPacket1};
-        return {actionPacket0, actionPacket1};
+         return {actionPacket0, actionPacket1};
+        //int const& key = _Qtable->getBestAction(currentState);
+        //return convertKeyToAction(key);
+
     };
 
     /* Acces functions */
@@ -60,7 +60,7 @@ public:
     const int& getNumberOfMoves() const { return numOfMoves; };
     const std::vector<Actor>& getActors() const { return actors; };
     const std::vector<Sensor>& getSensors() const { return sensors; };
-    const QState& getState() const { return currentState; };
+    const int& getState() const { return currentState; };
 
     /* Write Qtable to an external file */
     void saveQtable() { _Qtable->saveToFile(); };
@@ -70,9 +70,10 @@ public:
     the simulations units. This function is called after the Agent
     has resieved a response from the simulation.
     */
-    float getXAxisLocation() {
+    const float& getXAxisLocation() const{
         // Dummy
-        return 10.0;
+        const float& ref = 10;
+        return ref;
     }
 
 private:
@@ -121,16 +122,16 @@ private:
 
      The response is the result of an action in the simulation.
     QReward& calcReward(std::vector<ResponsePacket> responseMessage);
+*/
+    // Chooses the best or a random action depending on the explorationFactor
+    int chooseAction();
 
-     Chooses the best or a random action depending on the explorationFactor
-    std::vector<Actor> chooseMove();
-    */
 
     int ID;
     double discountFactor;      // range 0...1, e.g. 0.9, increase
     double learningRate;        // range: 0...1, e.g. 0.1
     double explorationFactor;   // range: 0...1, e.g. 0.5, decrease
-    QState currentState;
+    int currentState;           // key to the current state
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;
@@ -139,5 +140,7 @@ private:
     int numOfMoves;
     Qtable* _Qtable;
 };
+
+std::ostream& operator<<(std::ostream& os, AgentLearner const& agent) ;
 
 #endif

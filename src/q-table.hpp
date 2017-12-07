@@ -27,7 +27,7 @@ public:
 
     /* Compares actions of a state and returns the largest Q-value.
      */
-    QValue getMaxQvalue(int stateIndex);
+    QValue const& getMaxQvalue(int const& stateKey)const;
 
     /* Generates a random integer (=index)
      * from the range 0 to numberOfMoves-1
@@ -37,7 +37,7 @@ public:
     /* Compares actions
      * and returns the actionKey with the largest Q-value.
      */
-    int getBestAction(int stateIndex);
+    int getBestAction (int const& stateIndex) const;
 
     const std::vector<int>& getStateKeys() const {return stateKeys;};
     const std::vector<int>& getActionKeys() const {return actionKeys;};
