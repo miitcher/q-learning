@@ -49,8 +49,9 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
 
 QValue const& Qtable::getQvalue(int stateKey,
         int actionKey) const {
-    // find(key) doesn't discard const qualifiers, operator [] does
-    QValue const& ref = qValues.find(stateKey)->second.find(actionKey)->second;
+    // flower_bound finds the first key that is not less than the given.
+    QValue const& ref = qValues.lower_bound(stateKey)->second.
+                                lower_bound(actionKey)->second;
     return ref;
 }
 
