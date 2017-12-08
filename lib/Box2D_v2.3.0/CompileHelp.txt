@@ -1,0 +1,23 @@
+* Install packages if you do not have them (worked on Debian):
+freeglut3-dev
+libxi-dev
+
+* Go to folder:
+q-learning-9/src/Box2D_v2.3.0/Box2D/Build/
+
+* Create Makefiles:
+cmake ..
+
+* Build project:
+make
+
+* Run Testbed (file Testbed in folder Testbed):
+Testbed/Testbed
+
+
+###########################
+
+
+* Guides that may help if packages still are missing:
+https://superuser.com/questions/1099227/installing-opengl-in-linux
+https://stackoverflow.com/questions/5299989/x11-xlib-h-not-found-in-ubuntu
