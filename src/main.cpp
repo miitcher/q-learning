@@ -2,7 +2,8 @@
 #include "agent_learner.hpp"
 #include "agent_manager.hpp"
 #include "config_reader.hpp"
-#include "Testbed/Framework/TestbedMain.cpp"
+
+#include "Testbed/Framework/TestbedMain.h"
 #include "Testbed/Framework/Test.h"
 #include "Testbed/Tests/TestCrawler.h"
 #include <iostream>

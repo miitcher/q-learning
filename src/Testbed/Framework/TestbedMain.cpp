@@ -19,7 +19,7 @@
 #include "Render.h"
 #include "Test.h"
 #include "glui/glui.h"
-
+#include "TestbedMain.h"
 #include <stdio.h>
 
 namespace
