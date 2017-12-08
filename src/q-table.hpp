@@ -12,6 +12,8 @@ typedef float QValue;
 // This class contains the Q-table and manages the acces to it.
 class Qtable {
 public:
+    Qtable() {}; // Default constructor
+
     Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     std::string const& qtableFilename);
 

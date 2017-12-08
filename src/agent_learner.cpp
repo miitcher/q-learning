@@ -88,8 +88,7 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
     // or 3 actors
 
     // Initialize the Q-table
-    Qtable newQ(stateKeys, actionKeys, qtableFilename);
-    Qtable _Qtable = newQ;
+    qtable = Qtable(stateKeys, actionKeys, qtableFilename);
 }
 
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,
@@ -170,7 +169,7 @@ int AgentLearner::convertStateToKey(State const& state){
 
     // create the lowest key, e.g. 10101 if there's three
     int key = 0;
-    for (int i = 0; i < state.size(); i++){
+    for (unsigned i = 0; i < state.size(); i++){
         key += pow(100, i);
     }
 
@@ -231,7 +230,7 @@ Action AgentLearner::doAction() {
     } else {
         return this->chooseBestAction();
     }
-};
+}
 
 /*
 to do anssi : the rest

@@ -46,18 +46,6 @@ public:
     // Chooses the best or a random action depending on the explorationFactor.
     // Communicates the choosen action to the simulation.
     Action doAction();
-    /*
-    {
-        // Dummy
-        ActorAction actionPacket0(0, Clockwise);
-        ActorAction actionPacket1(1, Counterclockwise);
-        //Action actionMessage = {actionPacket0, actionPacket1};
-         return {actionPacket0, actionPacket1};
-        //int const& key = _Qtable->getBestAction(currentState);
-        //return convertKeyToAction(key);
-
-    };
-    */
 
     /* Acces functions */
     const int& getNumberOfStates() const { return numOfStates; };
@@ -75,7 +63,7 @@ public:
     void setExplorationFactor(double val) { explorationFactor = val; };
 
     /* Write Qtable to an external file */
-    void saveQtable() { _Qtable->saveToFile(); };
+    void saveQtable() { qtable.saveToFile(); };
 
     /*
     Returns the Agents location on the x-axis in the simulation in
@@ -153,7 +141,7 @@ private:
     std::vector<int> actionKeys;
     int numOfStates;
     int numOfMoves;
-    Qtable* _Qtable;
+    Qtable qtable;
 };
 
 std::ostream& operator<<(std::ostream& os, AgentLearner const& agent) ;
