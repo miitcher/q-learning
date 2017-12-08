@@ -24,9 +24,51 @@ set(SOURCES
     src/agent_manager.hpp src/agent_manager.cpp
     src/config_reader.hpp src/config_reader.cpp)
 
+# Define the framework files.
+set(Testbed_Framework_SRCS
+    src/Testbed/Framework/TestbedMain.cpp
+    src/Testbed/Framework/Render.cpp
+    src/Testbed/Framework/Render.h
+    src/Testbed/Framework/Test.cpp
+    src/Testbed/Framework/Test.h
+)
+
+# Define the Simulation source files.
+set(Testbed_Tests_SRCS
+    src/Testbed/Tests/TestEntries.cpp
+)
+
+# The Box2D library.
+add_subdirectory(lib/Box2D_v2.3.0)
+
+include_directories(
+    ${OPENGL_INCLUDE_DIR}
+    ${Box2D_SOURCE_DIR}
+)
+
+# Add dependencies (for graphics)
+find_package(OpenGL REQUIRED)
+add_subdirectory(lib/Box2D_v2.3.0/freeglut)
+add_subdirectory(lib/Box2D_v2.3.0/glui)
+
+# Some flags for Freeglut and GLUI.
+add_definitions( -DFREEGLUT_EXPORTS -DFREEGLUT_STATIC -D_CRT_SECURE_NO_WARNINGS )
+
 # Add main
-ADD_EXECUTABLE(main src/main.cpp ${SOURCES})
-target_link_libraries(main pthread)
+include_directories(src/Testbed)
+ADD_EXECUTABLE(
+	main src/main.cpp ${SOURCES}
+    ${Testbed_Framework_SRCS}
+    ${Testbed_Tests_SRCS})
+target_link_libraries(
+	main
+	pthread
+    Box2D
+    freeglut_static
+    glui
+    ${ADDITIONAL_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    X11)
 
 # Add tests that use googletest
 enable_testing()
@@ -44,37 +86,6 @@ add_test( qtests qtests )
 
 
 ## Add Simulation (old Testbed in Box2D)
-
-# The Box2D library.
-add_subdirectory(lib/Box2D_v2.3.0)
-
-# Add dependencies (for graphics)
-find_package(OpenGL REQUIRED)
-add_subdirectory(lib/Box2D_v2.3.0/freeglut)
-add_subdirectory(lib/Box2D_v2.3.0/glui)
-
-# Some flags for Freeglut and GLUI.
-add_definitions( -DFREEGLUT_EXPORTS -DFREEGLUT_STATIC -D_CRT_SECURE_NO_WARNINGS )
-
-# Define the framework files.
-set(Testbed_Framework_SRCS
-    src/Testbed/Framework/Main.cpp
-    src/Testbed/Framework/Render.cpp
-    src/Testbed/Framework/Render.h
-    src/Testbed/Framework/Test.cpp
-    src/Testbed/Framework/Test.h
-)
-
-# Define the Simulation source files.
-set(Testbed_Tests_SRCS
-    src/Testbed/Tests/TestEntries.cpp
-)
-
-include_directories (
-    ${OPENGL_INCLUDE_DIR}
-    ${Box2D_SOURCE_DIR}
-)
-
 add_executable(Testbed
     ${Testbed_Framework_SRCS}
     ${Testbed_Tests_SRCS}

@@ -380,7 +380,7 @@ static void SingleStep(int)
 	settings.singleStep = 1;
 }
 
-int main(int argc, char** argv)
+int TestbedMain(int argc, char** argv)
 {
 	testCount = 0;
 	while (g_testEntries[testCount].createFcn != NULL)
