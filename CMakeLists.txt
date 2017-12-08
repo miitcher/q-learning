@@ -85,7 +85,11 @@ target_link_libraries(qtests gtest gtest_main pthread)
 add_test( qtests qtests )
 
 
-## Add Simulation (old Testbed in Box2D)
+# Testbed is used in the main.cpp for graphics.
+# make will not compile both main and Testbed separately in their current forms.
+if(FALSE) # fake a block comment
+
+## Add Testbed
 add_executable(Testbed
     ${Testbed_Framework_SRCS}
     ${Testbed_Tests_SRCS}
@@ -100,3 +104,5 @@ target_link_libraries (
     ${OPENGL_LIBRARIES}
     X11
 )
+
+endif() # fake a block comment
