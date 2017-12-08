@@ -112,17 +112,18 @@
             m_debugDraw.DrawString(5, m_textLine, "Crawler test, w,a,s,d to move joints");
             m_textLine += 15;
 						
-						//display angle of joints and location of body for debug
-						//b2Vec2 pos = forearm->GetPosition();
+						//display location of body for debug, causes segmentation fault
+						//b2Vec2 crawlerposition = crawler->GetWorldPoint(b2Vec2(0.0f,0.0f));
 
 						//Angle of joints in RAD
-            float elbowangle = elbow->GetJointAngle();
+						float elbowangle = elbow->GetJointAngle();
 						float shoulderangle = shoulder->GetJointAngle();
 
+						//Display angles
 						m_debugDraw.DrawString(5, m_textLine, "Elbow angle: %.2f RAD",float(elbowangle));
-            m_textLine += 15;
+						m_textLine += 15;
 						m_debugDraw.DrawString(5, m_textLine, "Shoulder angle: %.2f RAD",float(shoulderangle));
-            m_textLine += 15;
+						m_textLine += 15;
 
 
         }
