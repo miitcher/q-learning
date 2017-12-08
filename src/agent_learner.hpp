@@ -43,8 +43,11 @@ public:
         currentState = convertStateToKey(state);
     };
 
+    // Chooses the best or a random action depending on the explorationFactor.
     // Communicates the choosen action to the simulation.
-    Action doAction() {
+    Action doAction();
+    /*
+    {
         // Dummy
         ActorAction actionPacket0(0, Clockwise);
         ActorAction actionPacket1(1, Counterclockwise);
@@ -54,6 +57,7 @@ public:
         //return convertKeyToAction(key);
 
     };
+    */
 
     /* Acces functions */
     const int& getNumberOfStates() const { return numOfStates; };
@@ -61,6 +65,14 @@ public:
     const std::vector<Actor>& getActors() const { return actors; };
     const std::vector<Sensor>& getSensors() const { return sensors; };
     const int& getState() const { return currentState; };
+
+    const double& getDiscountFactor() const { return discountFactor; };
+    const double& getLearningRate() const { return learningRate; };
+    const double& getExplorationFactor() const { return explorationFactor; };
+
+    void setDiscountFactor(double val) { discountFactor = val; };
+    void setLearningRate(double val) { learningRate = val; };
+    void setExplorationFactor(double val) { explorationFactor = val; };
 
     /* Write Qtable to an external file */
     void saveQtable() { _Qtable->saveToFile(); };
@@ -83,6 +95,7 @@ private:
     FRIEND_TEST(test_AgentLearner, test_actionkeys) ;
     FRIEND_TEST(test_AgentLearner, test_agents_sensor);
     FRIEND_TEST(test_AgentLearner, test_quantizise);
+    FRIEND_TEST(test_AgentLearner, test_doAction_and_chooseRandomAction);
 
     /* Next two methods initialize the statekeys*/
 
@@ -122,16 +135,18 @@ private:
 
      The response is the result of an action in the simulation.
     QReward& calcReward(std::vector<ResponsePacket> responseMessage);
-*/
-    // Chooses the best or a random action depending on the explorationFactor
-    int chooseAction();
+    */
 
+    Action chooseBestAction();
+    Action chooseRandomAction();
 
     int ID;
-    double discountFactor;      // range 0...1, e.g. 0.9, increase
-    double learningRate;        // range: 0...1, e.g. 0.1
-    double explorationFactor;   // range: 0...1, e.g. 0.5, decrease
-    int currentState;           // key to the current state
+
+    double discountFactor      = 0.9;  // range 0...1, e.g. 0.9, increase
+    double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
+    double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
+
+    int currentState = 0;           // key to the current state
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;

@@ -1,15 +1,21 @@
 #include "agent_learner.hpp"
 #include "q-table.hpp"
 #include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors,
         std::string const& qtableFilename)
         : actors(actors), sensors(sensors)
     {
+    // Seed random number generator. Used when picking action (random or best).
+    std::srand(std::time(0));
+
+    // Calculate the total number of states
     numOfStates = 1;
     numOfMoves = 1;
-    // Calculate the total number of states
     for (std::vector<Sensor>::const_iterator it = sensors.begin(); it <
             sensors.end(); it++ ){
         numOfStates = numOfStates * (*it).getQuantizationSteps();
@@ -192,11 +198,42 @@ Action AgentLearner::convertKeyToAction(int key){
     return m;
 }
 
-/*
-int AgentLearner::chooseAction(){
-
+// TODO: Mikael
+Action AgentLearner::chooseBestAction() {
+    // Dummy
+    ActorAction actionPacket0(0, Clockwise);
+    ActorAction actionPacket1(1, Counterclockwise);
+    return {actionPacket0, actionPacket1};
 }
 
+Action AgentLearner::chooseRandomAction() {
+    Action action;
+    for (auto actor : actors) {
+        // Pick a random Move for every Actor.
+        auto moves = actor.getMoves();
+        Move randomMove = Move(std::rand() % moves.size());
+        action.emplace_back(actor.getID(), randomMove);
+        // Debug
+        //std::cout<< actor << "\n\trandomMove: " << randomMove << std::endl;
+    }
+    return action;
+}
+
+Action AgentLearner::doAction() {
+    // Generate random number from 0 to 1.
+    float randomFloat = float(std::rand()) / float(RAND_MAX);
+    // Debug
+    //std::cout << "randomFloat: " << randomFloat
+    //    << "\nexplorationFactor: " << explorationFactor << std::endl;
+
+    if (explorationFactor < randomFloat) {
+        return this->chooseRandomAction();
+    } else {
+        return this->chooseBestAction();
+    }
+};
+
+/*
 to do anssi : the rest
 void AgentLearner::updateQtable(QState state,
         Move action, QState nextState){

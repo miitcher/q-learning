@@ -171,3 +171,54 @@ TEST(test_AgentLearner, test_public_methods) {
     //std::cout << act[0].first;
 
 }
+
+TEST(test_AgentLearner, test_doAction_and_chooseRandomAction ) {
+    // Create agentLearner
+    Actor a1 = JointActor(1, 256, 0, 0);
+    Actor a2 = JointActor(2, 256, 0, 0);
+    Sensor b0 = XAxisSensor(0);
+    Sensor b1 = JointSensor(1, 256, 0, 0);
+    Sensor b2 = JointSensor(2, 256, 0, 0);
+    std::vector<Actor> actorVec = {a1, a2};
+    std::vector<Sensor> sensorVec = {b0, b1, b2};
+    AgentLearner agentLearner(actorVec, sensorVec);
+
+    EXPECT_EQ(agentLearner.getState(), 0); // Default
+
+    Action action = agentLearner.doAction();
+    EXPECT_EQ(action.size(), 2);
+
+    action = agentLearner.chooseRandomAction();
+    EXPECT_EQ(action.size(), 2);
+
+    action = agentLearner.chooseRandomAction();
+    EXPECT_EQ(action.size(), 2);
+
+    /*
+    // Debug
+    std::cout << "ACTIONS: " << action[0].second << " "
+        << action[1].second << std::endl;
+    */
+}
+
+/*
+// TODO: Mikael
+TEST(test_AgentLearner, test_chooseBestAction ) {
+    // Create agentLearner
+    Actor a1 = JointActor(1, 256, 0, 0);
+    Sensor b0 = XAxisSensor(0);
+    Sensor b1 = JointSensor(1, 256, 0, 0);
+    std::vector<Actor> actorVec = {a1};
+    std::vector<Sensor> sensorVec = {b0, b1};
+    AgentLearner agentLearner(actorVec, sensorVec);
+
+    EXPECT_EQ(agentLearner.getState(), 0); // Default
+
+    Action action = agentLearner.chooseBestAction();
+    EXPECT_EQ(action.size(), 2);
+
+    // Debug
+    //std::cout << "ACTIONS: " << action[0].second << " "
+    //    << action[1].second << std::endl;
+}
+*/
