@@ -57,12 +57,12 @@ add_definitions( -DFREEGLUT_EXPORTS -DFREEGLUT_STATIC -D_CRT_SECURE_NO_WARNINGS 
 # Add main
 include_directories(src/Testbed)
 ADD_EXECUTABLE(
-	main src/main.cpp ${SOURCES}
+    main src/main.cpp ${SOURCES}
     ${Testbed_Framework_SRCS}
     ${Testbed_Tests_SRCS})
 target_link_libraries(
-	main
-	pthread
+    main
+    pthread
     Box2D
     freeglut_static
     glui
