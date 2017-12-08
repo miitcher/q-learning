@@ -42,17 +42,17 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 {
     //std::thread::id thisThreadId(std::this_thread::get_id());
 
-    float agentXAxisLocationOfGoal = 30; // Simulation units ???
+    SensorInput agentXAxisLocationOfGoal = 3000; // Simulation units ???
 
-    AgentLearner agent(actors, sensors, qtableFilename);
+    AgentLearner actionLearner(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
     unsigned count = 0;
     while (true) {
         // The learning and simulation parts communicate.
-        Action action = agent.doAction();
+        Action action = actionLearner.doAction();
         State state = simulation.simulateAction(action);
-        agent.receiveSimulationResponse(state);
+        actionLearner.receiveSimulationResponse(state);
 
         /* If an Agent has reached the goal its the fittest of the Agents
         that are running, and will "teach" the other Agents. The "teaching"
@@ -60,7 +60,7 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
         Qtable. The modified Agents form the next generation.
         */
         if (useEvolutionGoal && !agentHasReachedGoal
-            && agent.getXAxisLocation() > agentXAxisLocationOfGoal)
+            && actionLearner.getXAxisLocation() > agentXAxisLocationOfGoal)
         {
             agentHasReachedGoal = true;
             // Now we know that this thread contains the fittest Agent.
@@ -92,7 +92,7 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
         while (pauseThreads) {
             std::this_thread::sleep_for (std::chrono::milliseconds(500));
             if (canSaveQtable && saveQtableInThread) {
-                agent.saveQtable();
+                actionLearner.saveQtable();
                 saveQtableInThread = false;
             }
         }
@@ -152,7 +152,7 @@ void AgentManager::join_threads() {
 void AgentManager::stop_threads() {
     pauseThreads = false;
     endThreads = true;
-    this->join_threads();
+    join_threads();
     if (useLogging) {
         cout_mutex.lock();
         std::cout << "Stopped" << std::endl; // Debug
@@ -184,7 +184,7 @@ void AgentManager::createAndStartThreads() {
 }
 
 void AgentManager::initRun(unsigned runMode) {
-    this->createAndStartThreads();
+    createAndStartThreads();
 
     // Every runMode controls the cleanup of threads.
     switch (runMode)
@@ -212,26 +212,26 @@ void AgentManager::initRun(unsigned runMode) {
             switch (command)
             {
                 case 'p':
-                    this->pause_threads();
+                    pause_threads();
                     break;
                 case 's':
-                    this->saveQtable();
+                    saveQtable();
                     break;
                 case 'r':
-                    this->resume_threads();
+                    resume_threads();
                     break;
                 case 'q':
-                    this->stop_threads();
+                    stop_threads();
                     break;
             }
         }
     }
         break;
     case 2: // Controll from GUI (Not implemented)
-        this->stop_threads();
+        stop_threads();
         break;
     default:
-        this->stop_threads();
+        stop_threads();
         std::cout << "Invalid runMode: " << runMode << std::endl;
         break;
     }
@@ -239,7 +239,7 @@ void AgentManager::initRun(unsigned runMode) {
 
 void AgentManager::saveQtable() {
     // Saving is done when all the threads are paused.
-    this->pause_threads();
+    pause_threads();
 
     // Check that threre is some Agent threads.
     if (agentThreads.empty())

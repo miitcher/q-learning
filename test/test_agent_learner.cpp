@@ -183,8 +183,6 @@ TEST(test_AgentLearner, test_doAction_and_chooseRandomAction ) {
     std::vector<Sensor> sensorVec = {b0, b1, b2};
     AgentLearner agentLearner(actorVec, sensorVec);
 
-    EXPECT_EQ(agentLearner.getState(), 0); // Default
-
     Action action = agentLearner.doAction();
     EXPECT_EQ(action.size(), 2);
 

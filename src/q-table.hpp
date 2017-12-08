@@ -20,21 +20,16 @@ public:
     // Construct Qtable with qtableFilename as "".
     Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys);
 
-    QValue const& getQvalue(int stateKey,
-                            int actionKey) const ;
+    QValue const& getQvalue(int stateKey, int actionKey) const;
 
-    // returns now 1 when stateKey exists and 0 when it doesn't -> make better?
+    // TODO: returns now 1 when stateKey exists and 0 when it doesn't
+    //      -> make better?
     int updateQvalue(const int& stateKey, const int& actionKey,
                         QValue& qValue);
 
     /* Compares actions of a state and returns the largest Q-value.
      */
     QValue const& getMaxQvalue(int const& stateKey)const;
-
-    /* Generates a random integer (=index)
-     * from the range 0 to numberOfMoves-1
-     */
-    //int getRandomMove(){ return (rand() % numberOfMoves); };
 
     /* Compares actions
      * and returns the actionKey with the largest Q-value.
@@ -45,17 +40,12 @@ public:
     const std::vector<int>& getActionKeys() const {return actionKeys;};
     const std::string getQtableFilename() const {return qtableFilename;};
 
-    void printQtable();
-
     void saveToFile() {
         std::cout << "Dummy save of Qtable." << std::endl;
     };
 private:
     // Load Q-Table from the file: qtableFilename.
     void loadFromFile();
-    // The QTable is now a vector of vectors (= two dimensional matrix).
-    // The size of the matrix doesn't change so the std::vector's ability of
-    // size changing is redundant. Is there a better container? Array?
 
     std::map<int, std::map<int, QValue>> qValues; // qValues[state][action]
     std::vector<int> stateKeys;

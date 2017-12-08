@@ -39,15 +39,15 @@ public:
     AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
-    void receiveSimulationResponse(State& state) {
-        currentState = convertStateToKey(state);
-    };
+    // Receive what the "analog"-state of the AgentLearner is in the simulation.
+    // This function sets the AgentLearner:s internal values accordingly.
+    void receiveSimulationResponse(State& state);
 
     // Chooses the best or a random action depending on the explorationFactor.
     // Communicates the choosen action to the simulation.
     Action doAction();
 
-    /* Acces functions */
+    /* Access functions */
     const int& getNumberOfStates() const { return numOfStates; };
     const int& getNumberOfMoves() const { return numOfMoves; };
     const std::vector<Actor>& getActors() const { return actors; };
@@ -62,7 +62,7 @@ public:
     void setLearningRate(double val) { learningRate = val; };
     void setExplorationFactor(double val) { explorationFactor = val; };
 
-    /* Write Qtable to an external file */
+    /* Has the Qtable save itself to file.*/
     void saveQtable() { qtable.saveToFile(); };
 
     /*
@@ -70,11 +70,7 @@ public:
     the simulations units. This function is called after the Agent
     has resieved a response from the simulation.
     */
-    const float& getXAxisLocation() const{
-        // Dummy
-        const float& ref = 10;
-        return ref;
-    }
+    SensorInput getXAxisLocation();
 
 private:
     FRIEND_TEST(test_AgentLearner, test_agents_actor);
@@ -114,16 +110,8 @@ private:
      */
     int quantiziseSensorInput(int sensorID, SensorInput sInput);
 
-    // to do anssi: the rest
-
-    /* Calculates the updated Q-value using the reward, discoutFactor,
-     * learningRate and the maximum Q-value of the next state's actions.
-
+    // Uses the Q-learning algorithm.
     void updateQtable(QState state, Move action, QState nextState);
-
-     The response is the result of an action in the simulation.
-    QReward& calcReward(std::vector<ResponsePacket> responseMessage);
-    */
 
     Action chooseBestAction();
     Action chooseRandomAction();
@@ -134,7 +122,8 @@ private:
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
     double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
 
-    int currentState = 0;           // key to the current state
+    State currentAnalogState;
+    int currentState = 0;           // key to the current state, TODO: bad name
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;

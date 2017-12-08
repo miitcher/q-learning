@@ -105,39 +105,4 @@ private:
     bool drawGraphics;
 };
 
-/* AgentLearnerManager behavior:
-Create agent threads, and give them the q-value source (null or filename).
-*/
-
-/* TODO: Mikael - THOUGHTS ABOUT THREADING (connected to AgentManager threads)
-Use mutex on q-table when copying it between generations.
-The mutex locks the resours. The mutex would be in the copy function of the
-q-table.
-
-The copying of a q-table from one thread to many threads could be done
-by giving the other threads a reference or pointer to the q-table
-
-When a agent gets to the goal, all agents will stop moving and then some
-signal/event happens
-that tells all the agents to move to the beginning (change state in
-learning and in simulation) and copying the q-table.
-
-
-Alternatively all but the winer would survive between generations, and
-the other new AgentLearners for the next generation would be created from scratch.
-Thus the new AgentLearners Q-table would be made by the copy constructor.
-
-Could always create one AgentLearner, and then copy it. This would be done
-in the beginning of the run and between every genereation.
-With only one AgentLearner the only difference would be not copying and
-that there is no goal.
-
-condition_variable could be used to have the thread communicate with each
-other.
-
-
-Is the method of discarding all but the winners Q-values effective
-computatively?
-*/
-
 #endif

@@ -95,20 +95,44 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors)
         : AgentLearner(actors, sensors, "") {}
 
+// TODO
+void AgentLearner::receiveSimulationResponse(State& state) {
+    currentState = convertStateToKey(state);
+    State oldAnalogState = currentAnalogState;
+    currentAnalogState = state;
 
-// to do Anssi
+    float revard = float(currentState ) / 10.0;
+
+}
+
+SensorInput AgentLearner::getXAxisLocation() {
+    // The XAxisSensor has the id 0.
+    for (auto responsePacket : currentAnalogState) {
+        if (responsePacket.first == 0) {
+            return responsePacket.second;
+        }
+    }
+
+}
+
+// TODO
+void AgentLearner::updateQtable(QState state, Move action, QState nextState) {
+
+}
+
+// TODO Anssi
 std::ostream& operator<<(std::ostream& os, AgentLearner const& agent){
     os << "Actor IDs ";
     for (auto i : agent.getActors()){
-        os << i.getID() << "; ";
+        os << i.getID() << "; " << i;
     }
     os << std::endl;
     os << "Sensor IDs ";
     for (auto i : agent.getSensors()){
-        os << i.getID() << "; ";
+        os << i.getID() << "; " << i;
     }
     os << std::endl;
-    os << "Location: " << agent.getXAxisLocation() << std::endl;
+    //os << "Location: " << agent.getXAxisLocation() << std::endl;
     os << "Key of the Current State: " << agent.getState() << std::endl;
     return os;
 }
@@ -197,7 +221,7 @@ Action AgentLearner::convertKeyToAction(int key){
     return m;
 }
 
-// TODO: Mikael
+// TODO
 Action AgentLearner::chooseBestAction() {
     // Dummy
     ActorAction actionPacket0(0, Clockwise);
@@ -226,33 +250,8 @@ Action AgentLearner::doAction() {
     //    << "\nexplorationFactor: " << explorationFactor << std::endl;
 
     if (explorationFactor < randomFloat) {
-        return this->chooseRandomAction();
+        return chooseRandomAction();
     } else {
-        return this->chooseBestAction();
+        return chooseBestAction();
     }
 }
-
-/*
-to do anssi : the rest
-void AgentLearner::updateQtable(QState state,
-        Move action, QState nextState){
-
-}
-
-void AgentLearner::doAction(std::vector<ActorAction> actionMessage){
-
-}
-
-QReward& AgentLearner::calcReward
-    (std::vector<ResponsePacket> responseMessage){
-
-}
-
-void AgentLearner::saveQtable() { _Qtable->saveToFile(){
-
-}
-
-void AgentLearner::loadQtable(std::string const& qtableFilename){
-
-}
-*/
