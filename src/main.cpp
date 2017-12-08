@@ -2,6 +2,7 @@
 #include "agent_learner.hpp"
 #include "agent_manager.hpp"
 #include "config_reader.hpp"
+#include "Testbed/Framework/TestbedMain.cpp"
 #include "Testbed/Framework/Test.h"
 #include "Testbed/Tests/TestCrawler.h"
 #include <iostream>
@@ -23,6 +24,8 @@ int main() {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+	char* argv[] = {"Hello"};
+	TestbedMain(1, argv);
     // Set variables. This is error prone, because the user can modify the
     // configuration file.
     try {
