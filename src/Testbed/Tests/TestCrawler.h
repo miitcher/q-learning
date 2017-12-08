@@ -111,6 +111,19 @@
             //show some text in the main screen
             m_debugDraw.DrawString(5, m_textLine, "Crawler test, w,a,s,d to move joints");
             m_textLine += 15;
+						
+						//display angle of joints and location of body for debug
+						//b2Vec2 pos = forearm->GetPosition();
+
+						//Angle of joints in RAD
+            float elbowangle = elbow->GetJointAngle();
+						float shoulderangle = shoulder->GetJointAngle();
+
+						m_debugDraw.DrawString(5, m_textLine, "Elbow angle: %.2f RAD",float(elbowangle));
+            m_textLine += 15;
+						m_debugDraw.DrawString(5, m_textLine, "Shoulder angle: %.2f RAD",float(shoulderangle));
+            m_textLine += 15;
+
 
         }
     
@@ -162,6 +175,7 @@
         {
             return new TestCrawler;
         }
+		b2Body* crawler;
 		b2RevoluteJoint* shoulder;
 		b2RevoluteJoint* elbow;
     };
