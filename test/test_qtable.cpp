@@ -23,7 +23,7 @@ TEST(test_Qtable, test_functions) {
     Qtable t1(stateKeys, actionKeys);
 
     // test getQvalue
-    EXPECT_EQ(t.getQvalue(55, 99), 0);
+    EXPECT_FLOAT_EQ(t.getQvalue(55, 99), 0.0001);
 
 
   // test updateQvalue
@@ -34,17 +34,13 @@ TEST(test_Qtable, test_functions) {
     EXPECT_EQ(t.getQvalue(x,y), z);
 
     x = 55; y = 99; z = 0.164;
-    EXPECT_EQ(t.updateQvalue(x,y,z), true);
+    t.updateQvalue(x,y,z);
     EXPECT_EQ(t.getQvalue(x,y), z);
-
-    x = 0; y = 3;
-    EXPECT_EQ(t.updateQvalue(x,y,z), false);
-
 
     // test getMaxQvalue
     EXPECT_FLOAT_EQ(t.getMaxQvalue(7), 0.122);
     EXPECT_FLOAT_EQ(t.getMaxQvalue(55), 0.164);
-    EXPECT_FLOAT_EQ(t.getMaxQvalue(2), 0);
+    EXPECT_FLOAT_EQ(t.getMaxQvalue(2), 0.0001);
 
     // TEST getBestAction
     EXPECT_EQ(t.getBestAction(7), 8);

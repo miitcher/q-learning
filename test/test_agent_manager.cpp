@@ -10,7 +10,7 @@ TEST(test_agentManager, test_agentTask_smoketest) {
     Actor a1 = Actor
     (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
 
-    Sensor b0 = XAxisSensor(0);
+    Sensor b0 = Sensor(999, "xaxissensor", 100, 0, 30);
     Sensor b1 = Sensor(1, "sensor1", 13, 11, 200);
     Sensor b2 = JointSensor(2, 12, 10, 200);
 
@@ -24,6 +24,7 @@ TEST(test_agentManager, test_agentTask_smoketest) {
 
     agentTask(actors, sensors, agentShape, qtableFilename,
         drawGraphics, maxLoopCount, canSaveQtable);
+
 }
 
 TEST(test_agentManager, test_initRun_smoketest) {
@@ -37,9 +38,9 @@ TEST(test_agentManager, test_initRun_smoketest) {
     Actor a1 = Actor
     (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
 
-    Sensor b0 = XAxisSensor(0);
-    Sensor b1 = Sensor(20, "sensor1", 13, 11, 200);
-    Sensor b2 = Sensor(21, "sensor2", 12, 10, 200);
+    Sensor b0 = Sensor(999, "xaxissensor", 100, 0, 30);
+    Sensor b1 = Sensor(2, "sensor1", 13, 11, 200);
+    Sensor b2 = Sensor(1, "sensor2", 12, 10, 200);
 
     std::vector<Actor> actors = {a0, a1};
     std::vector<Sensor> sensors = {b0, b1, b2};

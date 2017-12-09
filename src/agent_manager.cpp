@@ -50,9 +50,15 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     unsigned count = 0;
     while (true) {
         // The learning and simulation parts communicate.
-        Action action = actionLearner.doAction();
-        State state = simulation.simulateAction(action);
-        actionLearner.receiveSimulationResponse(state);
+        try{
+            Action action = actionLearner.doAction();
+            State state = simulation.simulateAction(action);
+            actionLearner.receiveSimulationResponse(state);
+
+        }catch(std::exception& e){
+            std::cerr << "exception caught in agentTask: "
+                        << e.what() << '\n';
+        }
 
         /* If an Agent has reached the goal its the fittest of the Agents
         that are running, and will "teach" the other Agents. The "teaching"
@@ -243,7 +249,7 @@ void AgentManager::saveQtable() {
 
     // Check that threre is some Agent threads.
     if (agentThreads.empty())
-        throw std::runtime_error("There excists no Agent threads.");
+        throw std::runtime_error("There exists no Agent threads.");
 
     // Save the first agents Qtable.
     saveQtableInThread = true;

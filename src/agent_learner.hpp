@@ -52,6 +52,7 @@ public:
     const std::vector<Actor>& getActors() const { return actors; };
     const std::vector<Sensor>& getSensors() const { return sensors; };
     const int& getState() const { return currentStateKey; };
+    const int& getPreviousState() const { return previousStateKey; };
 
     const double& getDiscountFactor() const { return discountFactor; };
     const double& getLearningRate() const { return learningRate; };
@@ -79,7 +80,7 @@ private:
     FRIEND_TEST(test_AgentLearner, test_agents_sensor);
     FRIEND_TEST(test_AgentLearner, test_quantizise);
     FRIEND_TEST(test_AgentLearner, test_choosing_action);
-    FRIEND_TEST(test_AgentLearner, test_recieve_simulation_response) ;
+    FRIEND_TEST(test_AgentLearner, test_receive_simulation_response) ;
     FRIEND_TEST(test_AgentLearner, test_doAction_and_chooseRandomAction);
     FRIEND_TEST(test_AgentLearner, test_update_qtable) ;
 
@@ -89,7 +90,7 @@ private:
      * state is represented by two digits (14, 13, 15). Sensors' states are
      * in the range 1...quantizationSteps.
      */
-    std::vector<int> createStateKeys1(std::vector<Sensor> const& sensors);
+    std::vector<int> createStateKeys1(Sensor const& sensor);
 
     /* actionKeys are in the format int actionKey = 30302 where each sensors
      * state is represented by two digits (3, 3, 2). Actors' actions are
@@ -113,7 +114,7 @@ private:
     int quantiziseSensorInput(int sensorID, SensorInput sInput);
 
     /* Calculates the reward according to simulation input */
-    QReward calculateReward(SensorInput const& distanceTravelled) const;
+    QReward calculateReward(SensorInput distanceTravelled) const;
 
     // Uses the Q-learning algorithm.
     void updateQtable(QReward const& reward, int const& actionKey);
@@ -126,11 +127,17 @@ private:
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
     double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
 
+    // might not need this
     State currentAnalogState;
-    int currentStateKey = 0;           // key to the current state
-    int previousStateKey;              // key to the previous state
-    SensorInput location;
-    SensorInput previousLocation;
+
+    // key to the current state
+    int currentStateKey;
+
+    // key to the previous state
+    int previousStateKey;
+
+    SensorInput location = 0;
+    SensorInput previousLocation = 0;
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;

@@ -89,13 +89,12 @@ public:
         : actors(actors), sensors(sensors), agentShape(agentShape),
         drawGraphics(drawGraphics) {}
 
-    std::vector<ResponsePacket> simulateAction(
-        std::vector<ActorAction> actionMessage)
+    std::vector<ResponsePacket> simulateAction(Action action)
     {
         // Dummy
-        ResponsePacket responsePacket0(actionMessage[0].first, 1.2);
-        ResponsePacket responsePacket1(1, 2.6);
-        ResponsePacket responsePacket2(2, 5.3);
+        ResponsePacket responsePacket0(999, 1.2);
+        ResponsePacket responsePacket1(1, 22.6);
+        ResponsePacket responsePacket2(2, 52.3);
         return {responsePacket0, responsePacket1, responsePacket2};
     };
 private:

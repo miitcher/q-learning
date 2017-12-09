@@ -5,13 +5,18 @@
 #include <sstream>
 #include <iomanip>
 #include <map>
+#include <exception>
 
 Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     std::string const& qtableFilename)
     : stateKeys(stateKeys), actionKeys(actionKeys),
     qtableFilename(qtableFilename)
 {
-    QValue initial = 0; // initial Q-value of every state-action element
+    if ( stateKeys.size() < 1 || actionKeys.size() < 1){
+        throw std::invalid_argument("invalid initialization of Q-table");
+    }
+// initial value is non-zero because it's used as a factor in the calculations
+    QValue initial = 0.0001; // initial Q-value of every state-action element
 
     std::map<int, QValue> actionMap;
     for(auto key : actionKeys){
@@ -52,48 +57,89 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
     return os;
 }
 
-QValue const& Qtable::getQvalue(int stateKey,
-        int actionKey) const {
-    // find doesn't discard const qualifiers
-    QValue const& ref = qValues.find(stateKey)->second.
-                                find(actionKey)->second;
-    return ref;
+QValue const& Qtable::getQvalue(int stateKey, int actionKey)  const{
+
+    std::map<int, std::map<int, QValue>>::const_iterator
+                                    stateElement  = qValues.find(stateKey);
+
+   // If statekey not found, iterator will be at the end, so throw an exception
+    if (qValues.end() == stateElement){
+
+        std::string stri = "getQValue called with an invalid state key: "
+                                                                + stateKey;
+        throw std::out_of_range(stri);
+    }
+
+    std::map<int, QValue>::const_iterator qVal
+            = stateElement->second.find(actionKey);
+
+    if (stateElement->second.end() == qVal){
+        std::string stri = "getQValue called with an invalid action key: "
+                                                                + actionKey;
+        throw std::out_of_range(stri);
+    }
+
+    return qVal->second;
 }
 
-int Qtable::updateQvalue(const int& stateKey, const int& actionKey,
+void Qtable::updateQvalue(const int& stateKey, const int& actionKey,
                         QValue& qValue){
-    // returns now 1 when stateKey exists and 0 when it doesn't -> make better?
+
+    std::map<int, std::map<int, QValue>>::const_iterator
+                                    stateElement  = qValues.find(stateKey);
+
+    if (qValues.end() == stateElement){
+        throw std::out_of_range(
+            "updateQvalue called with an invalid state key");
+    }
+    std::map<int, QValue>::const_iterator qVal
+            = stateElement->second.find(actionKey);
+
+    if (stateElement->second.end() == qVal){
+        throw std::out_of_range(
+            "updateQvalue called with an invalid action key");
+    }
+
     for (auto action: qValues[stateKey]){
         if (action.first == actionKey){
             qValues[stateKey][actionKey] = qValue;
-            return 1;
         }
     }
-    return 0;
 }
 
 QValue const& Qtable::getMaxQvalue(int const& stateKey) const{
-    QValue max = getQvalue(stateKey, getActionKeys()[0]);
-
-    for (auto it : getActionKeys()){
-        if (getQvalue(stateKey, it) > max){
-            max = getQvalue(stateKey, it);
+    try{
+        QValue max = getQvalue(stateKey, getActionKeys()[0]);
+        for (auto it : getActionKeys()){
+            if (getQvalue(stateKey, it) > max){
+                max = getQvalue(stateKey, it);
+            }
         }
+        QValue const& ref = max;
+        return ref;
+    }catch(std::exception& e){
+        std::cerr << "exception caught in getMaxQvalue: " << e.what() << '\n';
+        QValue const& ref = 0;
+        return ref;
     }
-    QValue const& ref = max;
-    return ref;
 }
 
 int Qtable::getBestAction(int const& stateKey) const{
-    // initializes values as the first action
-    int bestActionKey = getActionKeys()[0];
-    QValue max = getQvalue(stateKey, bestActionKey);
+    try{
+        // initializes values as the first action
+        int bestActionKey = getActionKeys()[0];
+        QValue max = getQvalue(stateKey, bestActionKey);
 
-    for (auto it : getActionKeys()){
-        if (getQvalue(stateKey, it) > max){
-            bestActionKey = it;
-            max = getQvalue(stateKey, it);
+        for (auto it : getActionKeys()){
+            if (getQvalue(stateKey, it) > max){
+                bestActionKey = it;
+                max = getQvalue(stateKey, it);
+            }
         }
+        return bestActionKey;
+    }catch(std::exception& e){
+        std::cerr << "exception caught in getBestAction: " << e.what() << '\n';
+        QValue const& ref = 0;
+        return ref;
     }
-    return bestActionKey;
 }

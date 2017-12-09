@@ -24,7 +24,7 @@ public:
 
     // TODO: returns now 1 when stateKey exists and 0 when it doesn't
     //      -> make better?
-    int updateQvalue(const int& stateKey, const int& actionKey,
+    void updateQvalue(const int& stateKey, const int& actionKey,
                         QValue& qValue);
 
     /* Compares actions of a state and returns the largest Q-value.
