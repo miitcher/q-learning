@@ -41,7 +41,7 @@ public:
 
     // Receive what the "analog"-state of the AgentLearner is in the simulation.
     // This function sets the AgentLearner:s internal values accordingly.
-    void receiveSimulationResponse(State& state);
+    void receiveSimulationResponse(State const& state);
 
     // Chooses the best or a random action depending on the explorationFactor.
     // Communicates the choosen action to the simulation.
@@ -49,11 +49,9 @@ public:
 
     /* Access functions */
     const int& getID() const {return ID; };
-    const int& getNumberOfStates() const { return numOfStates; };
-    const int& getNumberOfMoves() const { return numOfMoves; };
     const std::vector<Actor>& getActors() const { return actors; };
     const std::vector<Sensor>& getSensors() const { return sensors; };
-    const int& getState() const { return currentState; };
+    const int& getState() const { return currentStateKey; };
 
     const double& getDiscountFactor() const { return discountFactor; };
     const double& getLearningRate() const { return learningRate; };
@@ -71,7 +69,7 @@ public:
     the simulations units. This function is called after the Agent
     has resieved a response from the simulation.
     */
-    SensorInput getXAxisLocation();
+    SensorInput getXAxisLocation() const {return location;};
 
 private:
     FRIEND_TEST(test_AgentLearner, test_agents_actor);
@@ -81,7 +79,9 @@ private:
     FRIEND_TEST(test_AgentLearner, test_agents_sensor);
     FRIEND_TEST(test_AgentLearner, test_quantizise);
     FRIEND_TEST(test_AgentLearner, test_choosing_action);
+    FRIEND_TEST(test_AgentLearner, test_recieve_simulation_response) ;
     FRIEND_TEST(test_AgentLearner, test_doAction_and_chooseRandomAction);
+    FRIEND_TEST(test_AgentLearner, test_update_qtable) ;
 
     /* Next two methods initialize the statekeys*/
 
@@ -112,26 +112,29 @@ private:
      */
     int quantiziseSensorInput(int sensorID, SensorInput sInput);
 
+    /* Calculates the reward according to simulation input */
+    QReward calculateReward(SensorInput const& distanceTravelled) const;
+
     // Uses the Q-learning algorithm.
-    void updateQtable(QState state, Move action, QState nextState);
+    void updateQtable(QReward const& reward, int const& actionKey);
 
     Action chooseBestAction();
     Action chooseRandomAction();
 
     int ID;
-
     double discountFactor      = 0.9;  // range 0...1, e.g. 0.9, increase
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
     double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
 
     State currentAnalogState;
-    int currentState = 0;           // key to the current state, TODO: bad name
+    int currentStateKey = 0;           // key to the current state
+    int previousStateKey;              // key to the previous state
+    SensorInput location;
+    SensorInput previousLocation;
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;
     std::vector<int> actionKeys;
-    int numOfStates;
-    int numOfMoves;
     Qtable qtable;
 };
 

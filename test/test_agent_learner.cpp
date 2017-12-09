@@ -13,8 +13,6 @@ TEST(test_AgentLearner, test_constructor) {
     std::vector<Sensor> sensorVec = {b, b1};
 
     AgentLearner a(actorVec, sensorVec);
-    EXPECT_EQ(a.getNumberOfStates(), 13 * 12);
-    EXPECT_EQ(a.getNumberOfMoves(), 15 * 33);
     EXPECT_EQ(a.getActors()[0].getID(), a1.getID());
     EXPECT_EQ(a.getSensors()[0].getID(), b.getID());
     EXPECT_EQ(a.getActors()[1].getID(), a2.getID());
@@ -189,6 +187,73 @@ TEST(test_AgentLearner, test_choosing_action) {
     EXPECT_EQ(action[1].second, Clockwise);
 
     Action act = a.doAction();
+    //std::cout << act[0].first;
+}
+
+
+TEST(test_AgentLearner, test_recieve_simulation_response) {
+    Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
+    Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
+    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 5, 10, 200);
+    Sensor xaxis = Sensor(0, "x axis sensor", 100, 0, 30);
+    std::vector<Actor> actorVec = {a1, a2};
+    std::vector<Sensor> sensorVec = {b, b1};
+    AgentLearner a(actorVec, sensorVec);
+
+    QValue v = 0.22;
+    a.qtable.updateQvalue(501, 301, v);
+    v = 0.3;
+    a.qtable.updateQvalue(501, 101, v);
+    v = 0.66;
+    a.qtable.updateQvalue(501, 303, v);
+    v = 0.11;
+    a.qtable.updateQvalue(501, 103, v);
+    v = 0.99;
+    a.qtable.updateQvalue(502, 301, v);
+    v = 0.001;
+    a.qtable.updateQvalue(401, 301, v);
+    v = 0.05;
+    a.qtable.updateQvalue(101, 301, v);
+
+    //std::cout << a;
+    //std::cout << a.qtable;
+
+    SensorInput si0 = 11;
+    SensorInput si1 = 199.99;
+    SensorInput x = 10;
+    ResponsePacket rp0(20, si0);
+    ResponsePacket rp1(21, si1);
+    ResponsePacket rpxaxis(0, x);
+    State state = {rp0, rp1, rpxaxis};
+    a.receiveSimulationResponse(state);
+
+    EXPECT_EQ(a.currentStateKey, 501);
+    EXPECT_EQ(a.previousStateKey, 0);
+    EXPECT_EQ(a.location, 10);
+
+    si0 = 115;
+    si1 = 100.99;
+    x = 8;
+    rp0 = std::make_pair(20, si0);
+    rp1 = std::make_pair(21, si1);
+    rpxaxis = std::make_pair(0, x);
+    state = {rp0, rp1, rpxaxis};
+    a.receiveSimulationResponse(state);
+
+    EXPECT_EQ(a.currentStateKey, 303);
+    EXPECT_EQ(a.previousStateKey, 501);
+    EXPECT_EQ(a.location, 8);
+    EXPECT_EQ(a.previousLocation, 10);
+
+    //std::cout << a.qtable;
+    EXPECT_EQ(a.getState(), 303);
+
+    Action action = a.chooseBestAction();
+    //EXPECT_EQ(action[0].second, Clockwise);
+    //EXPECT_EQ(action[1].second, Clockwise);
+
+    //Action act = a.doAction();
     //std::cout << act[0].first;
 }
 

@@ -13,32 +13,29 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
     // Seed random number generator. Used when picking action (random or best).
     std::srand(std::time(0));
 
-    // Calculate the total number of states
-    numOfStates = 1;
-    numOfMoves = 1;
-    for (std::vector<Sensor>::const_iterator it = sensors.begin(); it <
-            sensors.end(); it++ ){
-        numOfStates = numOfStates * (*it).getQuantizationSteps();
-    }
-    // Calculate the total number of actions for each state
-    for (std::vector<Actor>::const_iterator it = actors.begin(); it <
-            actors.end(); it++ ){
-        numOfMoves = numOfMoves * (*it).getQuantizationSteps();
+    // Differentiate the Location sensor from the state-detecting sensors.
+    // Location sensor ID is 0
+    std::vector<Sensor> stateDetectingSensors(sensors);
+    for (std::vector<Sensor>::iterator it = stateDetectingSensors.begin(); it <
+            stateDetectingSensors.end(); it++ ){
+        if ((*it).getID() == 0){
+            it = stateDetectingSensors.erase(it);
+            break;
+        }
     }
 
     // Initialize the Q-table:
     // Create stateKeys for each state
 
-    // to do: exclude x axis sensor here
-    int numOfSensors = sensors.size();
+    int numOfstateDetectingSensors = stateDetectingSensors.size();
 
     // stateKeys for an agent with one state-detecting sensor
-    if(numOfSensors == 1){
+    if(numOfstateDetectingSensors == 1){
         stateKeys = createStateKeys1(sensors);
     }
 
     // stateKeys for an agent with two state-detecting sensors
-    else if(numOfSensors == 2){
+    else if(numOfstateDetectingSensors == 2){
         stateKeys = createStateKeys2(sensors);
     }
 
@@ -84,8 +81,8 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         }
     }
 
-    // to to Anssi: implement compatibility for agents with more than 2 sensors
-    // or 3 actors
+    // to to if needed: implement compatibility
+    // for agents with more than 2 sensors or 3 actors
 
     // Initialize the Q-table
     qtable = Qtable(stateKeys, actionKeys, qtableFilename);
@@ -94,33 +91,6 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors)
         : AgentLearner(actors, sensors, "") {}
-
-// TODO
-void AgentLearner::receiveSimulationResponse(State& state) {
-
-
-    currentState = convertStateToKey(state);
-    State oldAnalogState = currentAnalogState;
-    currentAnalogState = state;
-
-    float revard = float(currentState ) / 10.0;
-
-}
-
-SensorInput AgentLearner::getXAxisLocation() {
-    // The XAxisSensor has the id 0.
-    for (auto responsePacket : currentAnalogState) {
-        if (responsePacket.first == 0) {
-            return responsePacket.second;
-        }
-    }
-
-}
-
-// TODO
-void AgentLearner::updateQtable(QState state, Move action, QState nextState) {
-
-}
 
 // TODO Anssi
 std::ostream& operator<<(std::ostream& os, AgentLearner const& agent){
@@ -225,8 +195,42 @@ Action AgentLearner::convertKeyToAction(int key){
     return m;
 }
 
+void AgentLearner::receiveSimulationResponse(State const& state){
+    State copyState = state;
+    previousLocation = location;
+    for (State::iterator it = copyState.begin(); it < copyState.end(); it++ ){
+        if ((*it).first == 0){
+            location = (*it).second;
+            it = copyState.erase(it);
+            break;
+        }
+    }
+    SensorInput distanceTravelled = (location - previousLocation);
+    QReward reward = calculateReward(distanceTravelled);
+    previousStateKey = currentStateKey;
+    currentStateKey = convertStateToKey(copyState);
+    int actionKey = qtable.getBestAction(currentStateKey);
+    updateQtable(reward, actionKey);
+}
+
+void AgentLearner::updateQtable(QReward const& reward, int const& actionKey) {
+    QValue oldQValue = qtable.getQvalue(previousStateKey, actionKey);
+    QValue maxQvalueForCurrentState = qtable.getMaxQvalue(currentStateKey);
+
+    QValue newQValue = ( ( 1- learningRate ) * oldQValue ) + learningRate *
+                        ( reward * discountFactor * maxQvalueForCurrentState);
+    qtable.updateQvalue(previousStateKey, actionKey, newQValue);
+}
+
+QReward AgentLearner::calculateReward
+            (SensorInput const& distanceTravelled) const{
+    SensorInput copyDistance = distanceTravelled;
+    QReward casted =  static_cast<QReward>(copyDistance);
+    return casted;
+}
+
 Action AgentLearner::chooseBestAction() {
-    int actionKey = qtable.getBestAction(currentState);
+    int actionKey = qtable.getBestAction(currentStateKey);
     return convertKeyToAction(actionKey);
 }
 
