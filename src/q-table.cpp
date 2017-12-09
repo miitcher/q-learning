@@ -1,11 +1,11 @@
 #include "q-table.hpp"
 #include <iostream>
-#include <iostream>
 #include <vector>
 #include <sstream>
 #include <iomanip>
 #include <map>
 #include <exception>
+#include <fstream>
 
 Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     std::string const& qtableFilename)
@@ -16,7 +16,7 @@ Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
         throw std::invalid_argument("invalid initialization of Q-table");
     }
 // initial value is non-zero because it's used as a factor in the calculations
-    QValue initial = 0.0001; // initial Q-value of every state-action element
+    QValue initial = 0.1; // initial Q-value of every state-action element
 
     std::map<int, QValue> actionMap;
     for(auto key : actionKeys){
@@ -41,9 +41,9 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
 
 
     // debug
-    std::cout << "ActionKeys : "<< std::endl;
-    for (auto i: table.getActionKeys()){std::cout << i << std::endl;}
-    std::cout << "StateKeys : "<< std::endl;
+    std::cout << "ActionKeys: "<< std::endl;
+    for (auto i: table.getActionKeys()){std::cout << i << "; " << std::endl;}
+    std::cout << "StateKeys: "<< std::endl;
     for (auto i: table.getStateKeys()){std::cout << i << std::endl;}
     for(auto state : table.getStateKeys()){
         for(auto action : table.getActionKeys()){
@@ -141,5 +141,47 @@ int Qtable::getBestAction(int const& stateKey) const{
         std::cerr << "exception caught in getBestAction: " << e.what() << '\n';
         QValue const& ref = 0;
         return ref;
+    }
+}
+
+void Qtable::saveToFile()
+{
+    std::ofstream file(qtableFilename, std::ios_base::binary);
+    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+
+    try {
+        std::cout << "saving to file: " << qtableFilename << std::endl;
+        for(auto state : stateKeys){
+            for (auto action : actionKeys){
+                QValue value = qValues[state][action];
+                file.write( (char *)& value, sizeof(QValue));
+            }
+        }
+        file.close();
+    }
+    catch (std::ifstream::failure e) {
+        std::cerr << "Could not save to file";
+    }
+}
+
+void Qtable::loadFromFile(){
+    std::ifstream file(qtableFilename, std::ios_base::binary);
+    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+
+    QValue value;
+    try {
+        std::cout << "loading from file: " << qtableFilename << std::endl;
+        for(auto state : stateKeys){
+            for (auto action : actionKeys){
+                file.read((char *)& value, sizeof(QValue));
+                //std::cout   << "Reading value from file: "
+                  //          << std::fixed << value << std::endl;
+                qValues[state][action] = value;
+            }
+        }
+        file.close();
+    }
+    catch (std::ifstream::failure e) {
+        std::cerr << "Could not load from file";
     }
 }

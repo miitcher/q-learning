@@ -227,9 +227,6 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     EXPECT_EQ(a.location, 8);
     EXPECT_EQ(a.previousLocation, 10);
 
-   // these will fail because I didn't calculate the correct values
-   // but can be used for assessing how the QValues change - print at the end
-/*
     si0 = 90;
     si1 = 160.99;
     x = 15;
@@ -238,11 +235,6 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     rpxaxis = std::make_pair(999, x);
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
-
-    EXPECT_EQ(a.currentStateKey, 444444);
-    EXPECT_EQ(a.previousStateKey, 303);
-    EXPECT_EQ(a.location, 5);
-    EXPECT_EQ(a.previousLocation, 8);
 
     si0 = 46;
     si1 = 64.99;
@@ -253,10 +245,6 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-    EXPECT_EQ(a.currentStateKey, 444444);
-    EXPECT_EQ(a.previousStateKey, 303);
-    EXPECT_EQ(a.location, 5);
-    EXPECT_EQ(a.previousLocation, 8);
 
     si0 = 45;
     si1 = 36.99;
@@ -267,11 +255,6 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-    EXPECT_EQ(a.currentStateKey, 444444);
-    EXPECT_EQ(a.previousStateKey, 303);
-    EXPECT_EQ(a.location, 5);
-    EXPECT_EQ(a.previousLocation, 8);
-
     si0 = 122;
     si1 = 167.99;
     x = 20;
@@ -281,13 +264,8 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-    EXPECT_EQ(a.currentStateKey, 444444);
-    EXPECT_EQ(a.previousStateKey, 303);
-    EXPECT_EQ(a.location, 5);
-    EXPECT_EQ(a.previousLocation, 8);
+    //std::cout << a.qtable;
 
-    std::cout << a.qtable;
-*/
 }
 
 TEST(test_AgentLearner, test_doAction_and_chooseRandomAction ) {

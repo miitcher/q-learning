@@ -7,6 +7,9 @@
 #include <iostream>
 #include <map>
 
+#define FRIEND_TEST(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
+
 typedef float QValue;
 
 // This class contains the Q-table and manages the acces to it.
@@ -40,10 +43,11 @@ public:
     const std::vector<int>& getActionKeys() const {return actionKeys;};
     const std::string getQtableFilename() const {return qtableFilename;};
 
-    void saveToFile() {
-        std::cout << "Dummy save of Qtable." << std::endl;
-    };
+    void saveToFile() ;//{
+       // std::cout << "Dummy save of Qtable." << std::endl;
+    //};
 private:
+    FRIEND_TEST(test_Qtable, test_save_and_load);
     // Load Q-Table from the file: qtableFilename.
     void loadFromFile();
 
