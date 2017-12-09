@@ -97,6 +97,8 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
 
 // TODO
 void AgentLearner::receiveSimulationResponse(State& state) {
+
+
     currentState = convertStateToKey(state);
     State oldAnalogState = currentAnalogState;
     currentAnalogState = state;
@@ -122,18 +124,20 @@ void AgentLearner::updateQtable(QState state, Move action, QState nextState) {
 
 // TODO Anssi
 std::ostream& operator<<(std::ostream& os, AgentLearner const& agent){
-    os << "Actor IDs ";
+    os << "AgentLearner, ID: " << agent.getID() << std::endl;
+    os << "Actors" << std::endl;
     for (auto i : agent.getActors()){
-        os << i.getID() << "; " << i;
+        os << i << std::endl;
     }
     os << std::endl;
-    os << "Sensor IDs ";
+    os << "Sensors " << std::endl;
     for (auto i : agent.getSensors()){
-        os << i.getID() << "; " << i;
+        os << i << std::endl;
     }
     os << std::endl;
     //os << "Location: " << agent.getXAxisLocation() << std::endl;
     os << "Key of the Current State: " << agent.getState() << std::endl;
+
     return os;
 }
 
@@ -221,12 +225,9 @@ Action AgentLearner::convertKeyToAction(int key){
     return m;
 }
 
-// TODO
 Action AgentLearner::chooseBestAction() {
-    // Dummy
-    ActorAction actionPacket0(0, Clockwise);
-    ActorAction actionPacket1(1, Counterclockwise);
-    return {actionPacket0, actionPacket1};
+    int actionKey = qtable.getBestAction(currentState);
+    return convertKeyToAction(actionKey);
 }
 
 Action AgentLearner::chooseRandomAction() {
@@ -249,7 +250,7 @@ Action AgentLearner::doAction() {
     //std::cout << "randomFloat: " << randomFloat
     //    << "\nexplorationFactor: " << explorationFactor << std::endl;
 
-    if (explorationFactor < randomFloat) {
+    if (explorationFactor > randomFloat) { // which way: < oder > ?
         return chooseRandomAction();
     } else {
         return chooseBestAction();

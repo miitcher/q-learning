@@ -48,6 +48,7 @@ public:
     Action doAction();
 
     /* Access functions */
+    const int& getID() const {return ID; };
     const int& getNumberOfStates() const { return numOfStates; };
     const int& getNumberOfMoves() const { return numOfMoves; };
     const std::vector<Actor>& getActors() const { return actors; };
@@ -79,6 +80,7 @@ private:
     FRIEND_TEST(test_AgentLearner, test_actionkeys) ;
     FRIEND_TEST(test_AgentLearner, test_agents_sensor);
     FRIEND_TEST(test_AgentLearner, test_quantizise);
+    FRIEND_TEST(test_AgentLearner, test_choosing_action);
     FRIEND_TEST(test_AgentLearner, test_doAction_and_chooseRandomAction);
 
     /* Next two methods initialize the statekeys*/

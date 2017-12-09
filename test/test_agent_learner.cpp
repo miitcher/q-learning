@@ -150,11 +150,11 @@ TEST(test_AgentLearner, test_quantizise) {
 
 }
 
-TEST(test_AgentLearner, test_public_methods) {
+TEST(test_AgentLearner, test_choosing_action) {
     Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
     Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
-    Sensor b = Sensor(20, "sensor1", 13, 11, 200);
-    Sensor b1 = Sensor(21, "sensor2", 15, 10, 200);
+    Sensor b = Sensor(20, "sensor1", 4, 11, 200);
+    Sensor b1 = Sensor(21, "sensor2", 5, 10, 200);
     std::vector<Actor> actorVec = {a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
     AgentLearner a(actorVec, sensorVec);
@@ -164,12 +164,32 @@ TEST(test_AgentLearner, test_public_methods) {
     ResponsePacket rp1(21, si1);
     State state = {rp0, rp1};
     a.receiveSimulationResponse(state);
-    EXPECT_EQ(a.getState(), 1501);
+    EXPECT_EQ(a.getState(), 501);
+
+    QValue v = 0.22;
+    a.qtable.updateQvalue(501, 301, v);
+    v = 0.3;
+    a.qtable.updateQvalue(501, 101, v);
+    v = 0.66;
+    a.qtable.updateQvalue(501, 303, v);
+    v = 0.11;
+    a.qtable.updateQvalue(501, 103, v);
+    v = 0.99;
+    a.qtable.updateQvalue(502, 301, v);
+    v = 0.001;
+    a.qtable.updateQvalue(401, 301, v);
+    v = 0.05;
+    a.qtable.updateQvalue(101, 301, v);
+
+    //std::cout << a;
+    //std::cout << a.qtable;
+
+    Action action = a.chooseBestAction();
+    EXPECT_EQ(action[0].second, Clockwise);
+    EXPECT_EQ(action[1].second, Clockwise);
 
     Action act = a.doAction();
-    //std::cout << a;
     //std::cout << act[0].first;
-
 }
 
 TEST(test_AgentLearner, test_doAction_and_chooseRandomAction ) {

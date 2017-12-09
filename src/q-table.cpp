@@ -34,16 +34,21 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
         << "Qtable filename: " << table.getQtableFilename()
         << std::endl;
 
-        // debug
-        // for(auto state : table.getStateKeys()){
-        //     for(auto action : table.getActionKeys()){
-        //         os << std::fixed;
-        //         os << std::setprecision(4);
-        //         os << table.getQvalue(state, action) << " ";
-        //     }
-        //     os << std::endl;
-        // }
-        // os << std::endl;
+
+    // debug
+    std::cout << "ActionKeys : "<< std::endl;
+    for (auto i: table.getActionKeys()){std::cout << i << std::endl;}
+    std::cout << "StateKeys : "<< std::endl;
+    for (auto i: table.getStateKeys()){std::cout << i << std::endl;}
+    for(auto state : table.getStateKeys()){
+        for(auto action : table.getActionKeys()){
+            os << std::fixed;
+            os << std::setprecision(4);
+            os << table.getQvalue(state, action) << " ";
+        }
+        os << std::endl;
+    }
+    os << std::endl;
     return os;
 }
 
