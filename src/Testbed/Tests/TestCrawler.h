@@ -2,8 +2,7 @@
   #define FOOTEST_H
 
 #include <unistd.h>
-
-
+//#include "b2Math.h"
 //crawler, which consists of body and two arms.
 //floor is also made in this file
 
@@ -28,9 +27,9 @@
 			{       
 				// create 'body'
 				b2BodyDef myBodyDef;
-	  			myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-	  			myBodyDef.position.Set(0, 1); //set the starting position
-	  			myBodyDef.angle = 0; //set the starting angle
+	  			myBodyDef.type = b2_dynamicBody;  //this will be a dynamic body
+	  			myBodyDef.position.Set(0, 1);     //set the starting position
+	  			myBodyDef.angle = 0;              //set the starting angle
 				crawler = m_world->CreateBody(&myBodyDef);
 				
 				b2PolygonShape boxShape;
@@ -42,11 +41,12 @@
 				boxFixtureDef.friction = 0.5f;
   				crawler->CreateFixture(&boxFixtureDef);
 
-				// create arm1
+				// create upperarm
 				b2Body* upperArm = NULL;
-				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-	  			myBodyDef.position.Set(4, 2); //set the starting position
-	  			myBodyDef.angle = 0; //set the starting angle
+				myBodyDef.type = b2_dynamicBody;   //this will be a dynamic body
+	  			myBodyDef.position.Set(4, 2);      //set the starting position
+	  			myBodyDef.angle = 0;               //set the starting angle
+
 				upperArm = m_world->CreateBody(&myBodyDef);
 				
 	  			boxShape.SetAsBox(1.5,0.1);
@@ -56,11 +56,11 @@
 				boxFixtureDef.friction = 100;
   				upperArm->CreateFixture(&boxFixtureDef);
 
-                                // create arm2
+                                // create forearm
 				b2Body* forearm = NULL;
-				myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-  				myBodyDef.position.Set(7, 2); //set the starting position
-  				myBodyDef.angle = 0; //set the starting angle
+				myBodyDef.type = b2_dynamicBody;  //this will be a dynamic body
+  				myBodyDef.position.Set(7, 2);     //set the starting position
+  				myBodyDef.angle = 0;              //set the starting angle
 				
 				forearm = m_world->CreateBody(&myBodyDef);
 				
@@ -121,25 +121,26 @@
         void Step(Settings* settings)
         {
 			
-          //run the default physics and rendering
-          Test::Step(settings); 
+			//run the default physics and rendering
+			Test::Step(settings); 
     
-          //show some text in the main screen
-          m_debugDraw.DrawString(5, m_textLine, "Crawler test, w,a,s,d to move joints");
-          m_textLine += 15;
+			//show some text in the main screen
+			m_debugDraw.DrawString(5, m_textLine, "Crawler test, w,a,s,d to move joints");
+			m_textLine += 15;
 						
-					//display location of body for debug, causes segmentation fault
-					//b2Vec2 crawlerposition = crawler->GetWorldPoint(b2Vec2(0.0f,0.0f));
+			//display location of body for debug, causes segmentation fault
+			//b2Vec2 crawlerposition = crawler->GetWorldPoint(b2Vec2(0.0f,0.0f));
+			//crawler->SetTransform(b2Vec2(10,20),1);
 
-					//Angle of joints in RAD
-					float elbowangle = elbow->GetJointAngle();
-					float shoulderangle = shoulder->GetJointAngle();
+			//Angle of joints in RAD
+			float elbowangle = elbow->GetJointAngle();
+			float shoulderangle = shoulder->GetJointAngle();
 
-					//Display angles
-					m_debugDraw.DrawString(5, m_textLine, "Elbow angle: %.2f RAD",float(elbowangle));
-					m_textLine += 15;
-					m_debugDraw.DrawString(5, m_textLine, "Shoulder angle: %.2f RAD",float(shoulderangle));
-					m_textLine += 15;
+			//Display angles
+			m_debugDraw.DrawString(5, m_textLine, "Elbow angle: %.2f RAD",float(elbowangle));
+			m_textLine += 15;
+			m_debugDraw.DrawString(5, m_textLine, "Shoulder angle: %.2f RAD",float(shoulderangle));
+			m_textLine += 15;
 
 
         }
