@@ -25,8 +25,6 @@ int main() {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
-	char* argv[] = {"Hello"};
-	TestbedMain(1, argv);
     // Set variables. This is error prone, because the user can modify the
     // configuration file.
     try {
@@ -45,6 +43,10 @@ int main() {
     // Start learning
     unsigned runMode = 1;
     agentManager.initRun(runMode);
+
+    // Testing out Simulation
+    //char* argv[] = {"Hello"};
+    //TestbedMain(1, argv);
 
     return 0;
 }
