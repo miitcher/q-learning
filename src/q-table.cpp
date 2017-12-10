@@ -13,7 +13,8 @@ Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     qtableFilename(qtableFilename)
 {
     if ( stateKeys.size() < 1 || actionKeys.size() < 1){
-        throw std::invalid_argument("invalid initialization of Q-table");
+        throw std::invalid_argument(
+                    "Invalid key vector for initialization of Q-table");
     }
 // initial value is non-zero because it's used as a factor in the calculations
     QValue initial = 0.1; // initial Q-value of every state-action element

@@ -54,6 +54,7 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
     // e.g. 3
     if(actors.size()  == 1){
         int key = 1;
+        currentActionKey = key;
         for (auto move : actors[0].getMoves()){
             actionKeys.push_back(key + move);
         }
@@ -71,6 +72,7 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
             }
             key -= 100*(move1 + 1);
         }
+        currentActionKey = actionKeys[0];
     }
 
     // actionKeys for an agent with three actors
@@ -88,6 +90,7 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
             }
             key -= 10000*(move1 + 1);
         }
+        currentActionKey = actionKeys[0];
     }
 
     // to to if needed: implement compatibility
@@ -167,11 +170,11 @@ int AgentLearner::quantiziseSensorInput(int sensorID, SensorInput sInput){
         }
     }
     if (!found){
-        throw std::invalid_argument("this sensor doesn't belong to this agent");
+        throw std::invalid_argument("Sensor ID does not belong to this agent");
     }
     // max angle is exclusive and min angle inclusive
     if(input < minAngle || input >= maxAngle){
-        throw std::invalid_argument("Sensor input is not within correct range");
+        throw std::out_of_range("Sensor input is not within correct range");
     }
     int scaled = (quantizationSteps*(input-minAngle)) / (maxAngle - minAngle);
     return scaled;
@@ -193,7 +196,8 @@ int AgentLearner::convertStateToKey(State const& state){
         try{
             quantizised = quantiziseSensorInput
                                 (sensorState.first, sensorState.second);
-        }catch(std::exception& e){
+        }
+        catch(std::exception& e){
             std::cerr << "exception caught in convertStateToKey: "
                                 << e.what() << '\n';
             quantizised = 1;
@@ -234,52 +238,61 @@ void AgentLearner::receiveSimulationResponse(State const& state){
                 break;
             }
         }
-        // Assess the location
-        SensorInput distanceTravelled = (location - previousLocation);
-        QReward reward = calculateReward(distanceTravelled);
+        // Calculate reward based on the distace travelled
+        //std::cout << "distance: " << location - previousLocation <<std::endl;
+        QReward reward = calculateReward( location - previousLocation );
+        //std::cout << "reward: " << reward << std::endl;
+
         previousStateKey = currentStateKey;
         currentStateKey = convertStateToKey(copyState);
 
-        // best possible QValue of current state is used to calculate the new
-        // Q-value of the previous state-action element
-        int actionKey = qtable.getBestAction(currentStateKey);
-        updateQtable(reward, actionKey);
-    }catch(std::exception& e){
-        std::cerr << "exception caught in updateQtable: "
+        updateQtable(reward);
+    }
+    catch(std::exception& e){
+        std::cerr << "exception caught in receiveSimulationResponse: "
                     << e.what() << '\n';
     }
 }
 
-void AgentLearner::updateQtable(QReward const& reward, int const& actionKey) {
+void AgentLearner::updateQtable(QReward const& reward) {
     try{
-        QValue oldQValue = qtable.getQvalue(previousStateKey, actionKey);
+        QValue oldQValue = qtable.getQvalue(previousStateKey, currentActionKey);
 
         QValue maxQvalueForCurrentState = qtable.getMaxQvalue(currentStateKey);
 
         QValue newQValue = ((1 - learningRate) * oldQValue) + learningRate *
                     ( reward * discountFactor * maxQvalueForCurrentState);
-        qtable.updateQvalue(previousStateKey, actionKey, newQValue);
-    }catch(std::exception& e){
+
+        qtable.updateQvalue(previousStateKey, currentActionKey, newQValue);
+
+ /*     // debug
+        std::cout   << "Old q-value: " << oldQValue << std::endl
+                    << "max q-value for the next state: "
+                    << maxQvalueForCurrentState << std::endl
+                    << "reward: " << reward << std::endl
+                    << "alpha, gamma: " << learningRate << ", "
+                    << discountFactor << std::endl
+                    << "new q-value: " << newQValue << std::endl<< std::endl;
+*/
+    }
+    catch(std::exception& e){
         std::cerr << "exception caught in updateQtable: "
                     << e.what() << '\n';
     }
 }
 
-QReward AgentLearner::calculateReward
-            (SensorInput distanceTravelled) const{
-
+QReward AgentLearner::calculateReward(SensorInput distanceTravelled){
     // This should be adjusted to yield a reasonable value.
     // At the moment does only a type conversion
-    SensorInput copyDistance = distanceTravelled;
-    QReward casted =  static_cast<QReward>(copyDistance);
-    return casted;
+    return static_cast<QReward>(distanceTravelled);
 }
 
 Action AgentLearner::chooseBestAction() {
     try{
-        int actionKey = qtable.getBestAction(currentStateKey);
-        return convertKeyToAction(actionKey);
-    }catch(std::exception& e){
+        currentActionKey = qtable.getBestAction(currentStateKey);
+        return convertKeyToAction(currentActionKey);
+    }
+    catch(std::exception& e){
         std::cerr << "exception caught in chooseBestAction: "
                     << e.what() << '\n';
         return convertKeyToAction(stateKeys[0]);
@@ -287,16 +300,9 @@ Action AgentLearner::chooseBestAction() {
 }
 
 Action AgentLearner::chooseRandomAction() {
-    Action action;
-    for (auto actor : actors) {
-        // Pick a random Move for every Actor.
-        auto moves = actor.getMoves();
-        Move randomMove = Move(std::rand() % moves.size());
-        action.emplace_back(actor.getID(), randomMove);
-        // Debug
-        //std::cout<< actor << "\n\trandomMove: " << randomMove << std::endl;
-    }
-    return action;
+    int randomIndex = std::rand() % actionKeys.size();
+    currentActionKey = actionKeys[randomIndex];
+    return convertKeyToAction(currentActionKey);
 }
 
 Action AgentLearner::doAction() {
@@ -306,7 +312,7 @@ Action AgentLearner::doAction() {
     //std::cout << "randomFloat: " << randomFloat
     //    << "\nexplorationFactor: " << explorationFactor << std::endl;
 
-    if (explorationFactor > randomFloat) { // which way: < oder > ?
+    if (explorationFactor > randomFloat){
         return chooseRandomAction();
     } else {
         return chooseBestAction();

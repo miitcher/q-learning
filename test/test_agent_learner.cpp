@@ -12,6 +12,9 @@ TEST(test_AgentLearner, test_constructor) {
     std::vector<Actor> actorVec = {a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
 
+    ASSERT_THROW(AgentLearner a ({}, sensorVec), std::invalid_argument);
+    ASSERT_THROW(AgentLearner a (actorVec, {}), std::invalid_argument);
+
     AgentLearner a(actorVec, sensorVec);
     EXPECT_EQ(a.getActors()[0].getID(), a1.getID());
     EXPECT_EQ(a.getSensors()[0].getID(), b.getID());
@@ -29,7 +32,6 @@ TEST(test_AgentLearner, test_statekeys) {
 
     // test create stateKeys for agent with 2 sensors
     AgentLearner a(actorVec, sensorVec);
-
     //std::cout << a;
 
     SensorInput si0 = 11;
@@ -88,9 +90,9 @@ TEST(test_AgentLearner, test_actionkeys) {
     EXPECT_EQ(am[0].second, Still);
     EXPECT_EQ(am[1].second, Clockwise);
 
+
     actorVec = {a0, a1, a2};
     AgentLearner agent(actorVec, sensorVec);
-
     //std::cout << std::endl;
     //for (auto i: agent.actionKeys){std::cout << i << std::endl;}
 
@@ -133,31 +135,22 @@ TEST(test_AgentLearner, test_quantizise) {
     EXPECT_EQ(a.quantiziseSensorInput(b.getID(), 150), 8);
     EXPECT_EQ(a.quantiziseSensorInput(b.getID(), 180), 10);
 
-    // this throws exception because maxangle is exclusive limit
-    //EXPECT_EQ(a.quantiziseSensorInput(b.getID(), 200), -1);
+    //this throws exception because maxangle is exclusive
+    // limit "input < maxAngle = 200"
+    ASSERT_THROW(a.quantiziseSensorInput(b.getID(), 200), std::out_of_range);
 
+    //this is ok because minAngle is inclusive limit "input >= minAngle = 15"
+    EXPECT_EQ(a.quantiziseSensorInput(b.getID(), 15), 0);
 }
 
-TEST(test_AgentLearner, test_choosing_action) {
+TEST(test_AgentLearner, test_chooseBestAction) {
     Actor a1 = Actor(22, "generic actor", 15, 1, 200, {Still, Clockwise});
     Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
     Sensor b = Sensor(20, "sensor1", 4, 11, 200);
     Sensor b1 = Sensor(21, "sensor2", 5, 10, 200);
-    Sensor xaxis = Sensor(999, "x axis sensor", 100, 0, 30);
     std::vector<Actor> actorVec = {a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
     AgentLearner a(actorVec, sensorVec);
-    SensorInput si0 = 11;
-    SensorInput si1 = 199.99;
-    SensorInput x = 10;
-    ResponsePacket rp0(20, si0);
-    ResponsePacket rp1(21, si1);
-    ResponsePacket rpxaxis(999, x);
-    State state = {rp0, rp1, rpxaxis};
-
-    //std::cout << a;
-    a.receiveSimulationResponse(state);
-    //EXPECT_EQ(a.getState(), 0);
 
     QValue v = 0.22;
     a.qtable.updateQvalue(501, 301, v);
@@ -167,22 +160,25 @@ TEST(test_AgentLearner, test_choosing_action) {
     a.qtable.updateQvalue(501, 303, v);
     v = 0.11;
     a.qtable.updateQvalue(501, 103, v);
-    v = 0.99;
-    a.qtable.updateQvalue(502, 301, v);
-    v = 0.001;
+
+    v = 0.22;
     a.qtable.updateQvalue(401, 301, v);
-    v = 0.05;
-    a.qtable.updateQvalue(101, 301, v);
+    v = 0.999;
+    a.qtable.updateQvalue(401, 101, v);
+    v = 0.2;
+    a.qtable.updateQvalue(401, 303, v);
+    v = 0.11;
+    a.qtable.updateQvalue(401, 103, v);
 
-    //std::cout << a;
-    //std::cout << a.qtable;
-
-    Action action = a.chooseBestAction();
+    a.currentStateKey = 501;
+    Action action = a.chooseBestAction();   // should be 303
     EXPECT_EQ(action[0].second, Clockwise);
     EXPECT_EQ(action[1].second, Clockwise);
 
-    //Action act = a.doAction();
-    //std::cout << act[0].first;
+    a.currentStateKey = 401;
+    action = a.chooseBestAction();          // should be 101
+    EXPECT_EQ(action[0].second, Still);
+    EXPECT_EQ(action[1].second, Still);
 }
 
 
@@ -191,7 +187,7 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     Actor a2 = Actor(23, "generic actor", 33, 1, 200, {Still, Clockwise});
     Sensor b = Sensor(20, "sensor1", 4, 11, 200);
     Sensor b1 = Sensor(21, "sensor2", 5, 10, 200);
-    Sensor xaxis = Sensor(999, "x axis sensor", 100, 0, 30);
+    Sensor xaxis = XAxisSensor(999);
     std::vector<Actor> actorVec = {a1, a2};
     std::vector<Sensor> sensorVec = {b, b1};
     AgentLearner a(actorVec, sensorVec);
@@ -227,37 +223,36 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     EXPECT_EQ(a.location, 8);
     EXPECT_EQ(a.previousLocation, 10);
 
-    si0 = 90;
-    si1 = 160.99;
-    x = 15;
+    si0 = 115;
+    si1 = 100.99;
+    x = 5;
     rp0 = std::make_pair(20, si0);
     rp1 = std::make_pair(21, si1);
     rpxaxis = std::make_pair(999, x);
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-    si0 = 46;
-    si1 = 64.99;
-    x = 4;
+    si0 = 115;
+    si1 = 100.99;
+    x = 2;
     rp0 = std::make_pair(20, si0);
     rp1 = std::make_pair(21, si1);
     rpxaxis = std::make_pair(999, x);
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-
-    si0 = 45;
-    si1 = 36.99;
-    x = 9;
+    si0 = 115;
+    si1 = 100.99;
+    x = 0;
     rp0 = std::make_pair(20, si0);
     rp1 = std::make_pair(21, si1);
     rpxaxis = std::make_pair(999, x);
     state = {rp0, rp1, rpxaxis};
     a.receiveSimulationResponse(state);
 
-    si0 = 122;
-    si1 = 167.99;
-    x = 20;
+    si0 = 115;
+    si1 = 100.99;
+    x = -10;
     rp0 = std::make_pair(20, si0);
     rp1 = std::make_pair(21, si1);
     rpxaxis = std::make_pair(999, x);
@@ -287,32 +282,4 @@ TEST(test_AgentLearner, test_doAction_and_chooseRandomAction ) {
 
     action = agentLearner.chooseRandomAction();
     EXPECT_EQ(action.size(), 2);
-
-    /*
-    // Debug
-    std::cout << "ACTIONS: " << action[0].second << " "
-        << action[1].second << std::endl;
-    */
 }
-
-/*
-// TODO: Mikael
-TEST(test_AgentLearner, test_chooseBestAction ) {
-    // Create agentLearner
-    Actor a1 = JointActor(1, 256, 0, 0);
-    Sensor b0 = XAxisSensor(0);
-    Sensor b1 = JointSensor(1, 256, 0, 0);
-    std::vector<Actor> actorVec = {a1};
-    std::vector<Sensor> sensorVec = {b0, b1};
-    AgentLearner agentLearner(actorVec, sensorVec);
-
-    EXPECT_EQ(agentLearner.getState(), 0); // Default
-
-    Action action = agentLearner.chooseBestAction();
-    EXPECT_EQ(action.size(), 2);
-
-    // Debug
-    //std::cout << "ACTIONS: " << action[0].second << " "
-    //    << action[1].second << std::endl;
-}
-*/

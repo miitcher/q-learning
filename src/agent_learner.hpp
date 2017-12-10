@@ -79,7 +79,7 @@ private:
     FRIEND_TEST(test_AgentLearner, test_actionkeys) ;
     FRIEND_TEST(test_AgentLearner, test_agents_sensor);
     FRIEND_TEST(test_AgentLearner, test_quantizise);
-    FRIEND_TEST(test_AgentLearner, test_choosing_action);
+    FRIEND_TEST(test_AgentLearner, test_chooseBestAction);
     FRIEND_TEST(test_AgentLearner, test_receive_simulation_response) ;
     FRIEND_TEST(test_AgentLearner, test_doAction_and_chooseRandomAction);
     FRIEND_TEST(test_AgentLearner, test_update_qtable) ;
@@ -114,10 +114,10 @@ private:
     int quantiziseSensorInput(int sensorID, SensorInput sInput);
 
     /* Calculates the reward according to simulation input */
-    QReward calculateReward(SensorInput distanceTravelled) const;
+    QReward calculateReward(SensorInput distanceTravelled);
 
     // Uses the Q-learning algorithm.
-    void updateQtable(QReward const& reward, int const& actionKey);
+    void updateQtable(QReward const& reward);
 
     Action chooseBestAction();
     Action chooseRandomAction();
@@ -135,6 +135,8 @@ private:
 
     // key to the previous state
     int previousStateKey;
+
+    int currentActionKey;
 
     SensorInput location = 0;
     SensorInput previousLocation = 0;
