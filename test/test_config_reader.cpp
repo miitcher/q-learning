@@ -23,12 +23,12 @@ TEST(test_config_reader, test_readAgentConfigFile) {
     // Sensor 1
     EXPECT_EQ(sensors[1].getID(), 1);
     EXPECT_EQ(sensors[1].getQuantizationSteps(), 512);
-    EXPECT_EQ(sensors[1].getMaxAngle(), float(3.14));
+    EXPECT_EQ(sensors[1].getMaxAngle(), float(200));
 
     // The other variables.
     EXPECT_EQ(agentShape, 2); // TODO: Define agentShape for Box2D.
     EXPECT_EQ(agentCount, unsigned(3));
-    EXPECT_EQ(qtableFilename, "");
+    EXPECT_EQ(qtableFilename, "qtabletestfile4.bin");
     EXPECT_EQ(drawGraphics, false);
 
     /* Debug code for printing the variables.
