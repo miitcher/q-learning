@@ -2,6 +2,8 @@
 #include "agent_learner.hpp"
 #include "agent_manager.hpp"
 #include "config_reader.hpp"
+
+#include "Testbed/Framework/TestbedMain.h"
 #include "Testbed/Framework/Test.h"
 #include "Testbed/Tests/TestCrawler.h"
 #include <iostream>
@@ -41,6 +43,10 @@ int main() {
     // Start learning
     unsigned runMode = 1;
     agentManager.initRun(runMode);
+
+    // Testing out Simulation
+    //char* argv[] = {"Hello"};
+    //TestbedMain(1, argv);
 
     return 0;
 }
