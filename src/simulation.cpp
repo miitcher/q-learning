@@ -12,14 +12,16 @@
         drawGraphics(drawGraphics) {}
 */
 
-
-	void createworld();{        //create world for crawler, drawgraphics goes possibly here
+//create world for crawler, drawgraphics goes possibly here
+void createworld();{        
 }
 
-	void createcrawler();{      //creates crawler in world
+//creates crawler in world
+void createcrawler();{      
 }
 
-ResponsePacket getcrawlerstate(int responseid){  //get current position og crawler joints and location
+//get current position of crawler joints and location
+ResponsePacket getcrawlerstate(int responseid){ 
 	float elbowangle = elbow->GetJointAngle();
 	float shoulderangle = shoulder->GetJointAngle();
 	float crawlerposition = 0; //TODO get crawler position working
@@ -40,14 +42,11 @@ ResponsePacket getcrawlerstate(int responseid){  //get current position og crawl
 	return ResponcePacket(0,0); //returns empty responsepacket if called wrong responceid
 	}
 }
-	 
 	
-	
-	return; // pointer, variable or..?
-} 
-
-	void setcrawlerstate(ActorAction);{  //set crawler to turn joints to desired position
+//set crawler to turn joints to desired position
+void setcrawlerstate(ActorAction);{  
 }
 
-	void runstep();{             	//run signle step in box2d simulation
+//run signle step in box2d simulation
+void runstep();{             	
 }
