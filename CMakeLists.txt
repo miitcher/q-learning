@@ -22,7 +22,8 @@ set(SOURCES
     src/q-table.hpp src/q-table.cpp
     src/agent_learner.hpp src/agent_learner.cpp
     src/agent_manager.hpp src/agent_manager.cpp
-    src/config_reader.hpp src/config_reader.cpp)
+    src/config_reader.hpp src/config_reader.cpp
+    src/simulation.hpp src/simulation.cpp)
 
 # Define the framework files.
 set(Testbed_Framework_SRCS

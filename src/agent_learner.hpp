@@ -16,8 +16,6 @@ friend class test_case_name##_##test_name##_Test
 // response.
 typedef int QState;
 typedef int QReward;
-typedef int AgentShape; // TODO: agentShape will be implemented according
-    // to the needs of the simulation. It will also be moved to an other file.
 
 class AgentLearner {
 public:

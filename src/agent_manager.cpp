@@ -1,6 +1,7 @@
 #include "agent_manager.hpp"
 #include "agent_learner.hpp"
 #include "interactor.hpp"
+#include "simulation.hpp"
 #include <vector>
 #include <thread>
 #include <chrono>

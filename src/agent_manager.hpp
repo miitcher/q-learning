@@ -1,7 +1,7 @@
 #ifndef QLEARNING_9_AGENT_MANAGER_H_
 #define QLEARNING_9_AGENT_MANAGER_H_
 
-#include "agent_learner.hpp"
+#include "simulation.hpp"
 #include "interactor.hpp"
 #include <vector>
 #include <string>
@@ -78,30 +78,6 @@ private:
     std::string qtableFilename;
     bool drawGraphics;
     std::vector<std::thread> agentThreads;
-};
-
-// Model-class used before the real Box2D simulation can be used.
-// Shows the wanted behaviour.
-class Simulation {
-public:
-    Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-        AgentShape& agentShape, bool drawGraphics)
-        : actors(actors), sensors(sensors), agentShape(agentShape),
-        drawGraphics(drawGraphics) {}
-
-    std::vector<ResponsePacket> simulateAction(Action action)
-    {
-        // Dummy
-        ResponsePacket responsePacket0(999, 1.2);
-        ResponsePacket responsePacket1(1, 22.6);
-        ResponsePacket responsePacket2(2, 52.3);
-        return {responsePacket0, responsePacket1, responsePacket2};
-    };
-private:
-    std::vector<Actor> actors;
-    std::vector<Sensor> sensors;
-    AgentShape& agentShape;
-    bool drawGraphics;
 };
 
 #endif
