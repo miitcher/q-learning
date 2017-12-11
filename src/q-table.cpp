@@ -6,6 +6,7 @@
 #include <map>
 #include <exception>
 #include <fstream>
+#include <ctime>
 
 Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     std::string const& qtableFilename)
@@ -147,11 +148,19 @@ int Qtable::getBestAction(int const& stateKey) const{
 
 void Qtable::saveToFile()
 {
+    // Create new qtableFilename, so the former one is not overwriten.
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S");
+    auto datetimeBuffer = oss.str();
+    qtableFilename = "saved_qtable_" + std::string(datetimeBuffer) + ".bin";
+
     std::ofstream file(qtableFilename, std::ios_base::binary);
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
 
     try {
-        std::cout << "saving to file: " << qtableFilename << std::endl;
+        std::cout << "Saving Q-table to file: " << qtableFilename << std::endl;
         for(auto state : stateKeys){
             for (auto action : actionKeys){
                 QValue value = qValues[state][action];
@@ -171,7 +180,7 @@ void Qtable::loadFromFile(){
 
     QValue value;
     try {
-        std::cout << "loading from file: " << qtableFilename << std::endl;
+        std::cout << "loading Q-table from file: " << qtableFilename << std::endl;
         for(auto state : stateKeys){
             for (auto action : actionKeys){
                 file.read((char *)& value, sizeof(QValue));

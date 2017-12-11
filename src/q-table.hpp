@@ -25,8 +25,6 @@ public:
 
     QValue const& getQvalue(int stateKey, int actionKey) const;
 
-    // TODO: returns now 1 when stateKey exists and 0 when it doesn't
-    //      -> make better?
     void updateQvalue(const int& stateKey, const int& actionKey,
                         QValue& qValue);
 
