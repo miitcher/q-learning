@@ -60,8 +60,14 @@ public:
     void setLearningRate(double val) { learningRate = val; };
     void setExplorationFactor(double val) { explorationFactor = val; };
 
-    /* Has the Qtable save itself to file.*/
+    // Has the Qtable save itself to file, with the given filename.
+    void saveQtable(std::string filename) { qtable.saveToFile(filename); };
+    // Has the Qtable save itself to file, with an generated unique filename.
     void saveQtable() { qtable.saveToFile(); };
+    // Has the Qtable load itself from the given filename.
+    void loadQtable(std::string filename) { qtable.loadFromFile(filename); };
+    // Has the Qtable load itself from the filename: Qtable.qtableFilename.
+    void loadQtable() { qtable.loadFromFile(); };
 
     /*
     Returns the Agents location on the x-axis in the simulation in

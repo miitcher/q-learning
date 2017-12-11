@@ -62,14 +62,6 @@ private:
     because we do not know witch Agent in one generation is the best.
     */
     void saveQtable();
-    /**
-    Has the fittest agent teach the other agents, when multiple agents
-    are learning. The learning is done by copying the Q-values of the
-    fittest agent to other agents from the previous generation.
-    The Q-learning function parameters (discountFactor, etc.) are also here
-    modified.
-    */
-    void evolveAgents();
 private:
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;

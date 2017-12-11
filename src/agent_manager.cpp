@@ -24,6 +24,11 @@ std::mutex evolutionFittestFile_mutex;
 // Controlls the use of cout between threads.
 std::mutex cout_mutex;
 
+// Counter that will keep track of how many Agents are waiting on to
+// update their Q-table with the fittest Q-table.
+// 0 means that no agents are waiting.
+std::atomic_uint agentsWaitingToEvolve_counter(0);
+
 /**
 Enable logging with treads. There is more information on the screen
 when this is true.
@@ -42,8 +47,8 @@ A threads Qtable can be saved if canSaveQtable is true.
 */
 std::atomic_bool saveQtableInThread(false);
 // If only on Agent is used, then no goal is used, but otherwise it is used.
-std::atomic_bool useEvolutionGoal(true);
-std::atomic_bool agentHasReachedGoal(false);
+std::atomic_bool useEvolution(true);
+std::atomic_bool anAgentHasReachedTheGoal(false);
 
 void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
@@ -54,34 +59,111 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     // TODO (if time): Take the goal location as an input parameter.
     SensorInput agentXAxisLocationOfGoal = 3000;
 
-    AgentLearner actionLearner(actors, sensors, qtableFilename);
+    // Create AgeneLearner and Simulation that makes the Agent.
+    AgentLearner agentLearner(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
+    // Have the Simulation:s and AgentLearner:s state at the beginning.
+    // TODO
+    State state; //= simulation.moveAgentToBegining();
+    //agentLearner.receiveStartingState(state);
+
+    // Initiate variable.
+    Action action;
+
+    // count used for debugging and testing.
     unsigned count = 0;
     while (true) {
         // The learning and simulation parts communicate.
         try{
-            Action action = actionLearner.doAction();
-            State state = simulation.simulateAction(action);
-            actionLearner.receiveSimulationResponse(state);
+            action = agentLearner.doAction();
+            state = simulation.simulateAction(action);
+            agentLearner.receiveSimulationResponse(state);
 
         }catch(std::exception& e){
             std::cerr << "exception caught in agentTask: "
                         << e.what() << '\n';
         }
 
+        /*
+        - About the evolution of the Agents, when multiple Agents are learning:
+
+        The fittest AgentLearner saves its Qtable to the filename:
+            evolutionFittestQtableFilename
+        This filename is reserved for the evulution.
+        An error is thrown if the mentioned file already exists.
+
+        The fittest Qtable file is then read by all the other AgentLearners,
+        thus updating all the AgentLearners Q-tables to the fittest Q-table.
+        The reading of the file is controlled with the mutex:
+            evolutionFittestFile_mutex
+        When the Q-tables have been set, the Agents bodyes will also move to the
+        starting position.
+        */
+
         /* If an Agent has reached the goal its the fittest of the Agents
         that are running, and will "teach" the other Agents. The "teaching"
-        is done by having the other Agents copy the fittest Agents
-        Qtable. The modified Agents form the next generation.
+        is done by having the other Agents copy the fittest Agents Qtable into
+        their Qtable. The modified Agents form the next generation.
         */
-        if (useEvolutionGoal && !agentHasReachedGoal
-            && actionLearner.getXAxisLocation() > agentXAxisLocationOfGoal)
+        if (// There is more than one Agent learning.
+            useEvolution
+            // No other Agent has reached the goal.
+            && !anAgentHasReachedTheGoal
+            // This Agent has reached the goal.
+            && agentLearner.getXAxisLocation() > agentXAxisLocationOfGoal)
         {
-            agentHasReachedGoal = true;
-            // Now we know that this thread contains the fittest Agent.
-            // TODO: Implement the copying of the Qtable and all that
-            // is connected to the evolution of a generation.
+            // This thread contains the fittest Agent this generation.
+            anAgentHasReachedTheGoal = true;
+
+            // Save the fittest Q-table to file, so the other Agents can copy it.
+            evolutionFittestFile_mutex.lock();
+            agentLearner.saveQtable(evolutionFittestQtableFilename);
+            evolutionFittestFile_mutex.unlock();
+
+            // Wait untill the other Agents have copied the fittest Q-table.
+            while (agentsWaitingToEvolve_counter != 0) {
+                std::this_thread::sleep_for (std::chrono::milliseconds(10));
+            }
+
+            // Remove the fittest Q-table file.
+            // TODO
+
+            // Resume the normal running of the learning.
+            pauseThreads = false;
+        }
+        /*
+        When an Agent has reached the goal, the other agent will wait until they
+        can read the saved Q-table.
+        */
+        if (anAgentHasReachedTheGoal) {
+            // Add this Agent to the Agents that are waiting on their turn to
+            // update its Q-table, by incrementing this counter:
+            agentsWaitingToEvolve_counter++;
+
+            // Let the fittest Agent take controll of evolutionFittestFile_mutex.
+            // TODO: MABY NOT NEEDED...
+            std::this_thread::sleep_for (std::chrono::milliseconds(100));
+
+            // Set the Q-table for all the Agents to the fittest agents Q-table.
+            evolutionFittestFile_mutex.lock();
+            agentLearner.loadQtable(evolutionFittestQtableFilename);
+            evolutionFittestFile_mutex.unlock();
+
+            // Have the Simulation:s and AgentLearner:s state at the beginning.
+            // TODO
+            //state = simulation.moveAgentToBegining();
+            //agentLearner.receiveStartingState(state);
+
+            // This thread, and the threads not containing the fittest Agent,
+            // will now pause until all the Agents are done updating
+            // their Q-tables. The paused thread is executing in the loop
+            // here under, in the while(pauseThreads)-loop.
+            pauseThreads = true;
+
+            // Remove this Agent from the Agents that are waiting on their turn
+            // to update their Q-table, by decreasing this counter:
+            agentsWaitingToEvolve_counter--;
         }
 
         count++;
@@ -108,7 +190,7 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
         while (pauseThreads) {
             std::this_thread::sleep_for (std::chrono::milliseconds(500));
             if (canSaveQtable && saveQtableInThread) {
-                actionLearner.saveQtable();
+                agentLearner.saveQtable();
                 saveQtableInThread = false;
             }
         }
@@ -196,7 +278,7 @@ void AgentManager::createAndStartThreads() {
     // Evolution is used with generating new generations of Agents
     // if there is more than one Agent thread.
     if (agentCount == 1)
-        useEvolutionGoal = false;
+        useEvolution = false;
 }
 
 void AgentManager::initRun(unsigned runMode) {
@@ -274,21 +356,4 @@ void AgentManager::saveQtable() {
         std::cout << "Saved\nPaused" << std::endl; // Debug
         cout_mutex.unlock();
     }
-}
-
-// TODO
-void AgentManager::evolveAgents() {
-    /*
-    The fittest AgentLearner saves its Qtable to the filename:
-        evolutionFittestQtableFilename
-    This filename is reserved for the evulution.
-    An error is thrown if the mentioned file already exists.
-
-    The fittest Qtable file is then read by all the other AgentLearners,
-    thus updating all the AgentLearners Q-tables to the fittest Q-table.
-    The reading of the file is controlled with the mutex:
-        evolutionFittestFile_mutex
-    When the Q-tables have been set, the Agents bodyes will also move to the
-    starting position.
-    */
 }
