@@ -12,6 +12,7 @@
         drawGraphics(drawGraphics) {}
 */
 
+/*
 //create world for crawler, drawgraphics goes possibly here
 void createworld();{        
 }
@@ -50,3 +51,4 @@ void setcrawlerstate(ActorAction);{
 //run signle step in box2d simulation
 void runstep();{             	
 }
+*/

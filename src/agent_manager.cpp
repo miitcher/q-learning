@@ -13,6 +13,14 @@
 #include <atomic>
 #include <system_error>
 
+// The filename for the fittest saved Q-table, that is used for the evolution
+// of the Agents, when multiple Agents are learning.
+std::string evolutionFittestQtableFilename
+    = "generations_fittest_qtable_in_evolution.bin";
+
+// Controlls the use of the "evolutionFittestQtableFilename" file.
+std::mutex evolutionFittestFile_mutex;
+
 // Controlls the use of cout between threads.
 std::mutex cout_mutex;
 
@@ -43,7 +51,8 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 {
     //std::thread::id thisThreadId(std::this_thread::get_id());
 
-    SensorInput agentXAxisLocationOfGoal = 3000; // Simulation units ???
+    // TODO (if time): Take the goal location as an input parameter.
+    SensorInput agentXAxisLocationOfGoal = 3000;
 
     AgentLearner actionLearner(actors, sensors, qtableFilename);
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
@@ -267,9 +276,19 @@ void AgentManager::saveQtable() {
     }
 }
 
+// TODO
 void AgentManager::evolveAgents() {
-    // TODO
-    // Implement after the big change of the types, and after the
-    // most of the rest of the program has been implemented.
-}
+    /*
+    The fittest AgentLearner saves its Qtable to the filename:
+        evolutionFittestQtableFilename
+    This filename is reserved for the evulution.
+    An error is thrown if the mentioned file already exists.
 
+    The fittest Qtable file is then read by all the other AgentLearners,
+    thus updating all the AgentLearners Q-tables to the fittest Q-table.
+    The reading of the file is controlled with the mutex:
+        evolutionFittestFile_mutex
+    When the Q-tables have been set, the Agents bodyes will also move to the
+    starting position.
+    */
+}

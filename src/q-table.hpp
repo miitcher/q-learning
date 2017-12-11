@@ -41,13 +41,17 @@ public:
     const std::vector<int>& getActionKeys() const {return actionKeys;};
     const std::string getQtableFilename() const {return qtableFilename;};
 
-    void saveToFile() ;//{
-       // std::cout << "Dummy save of Qtable." << std::endl;
-    //};
+    // Save Q-table to the given filename.
+    void saveToFile(std::string filename);
+    // Generate new unique filename for Qtable.qtableFilename,
+    // and save Q-table with that filename.
+    void saveToFile();
+    // Load Q-table from the given filename.
+    void loadFromFile(std::string filename);
+    // Load Q-table from the filename: Qtable.qtableFilename.
+    void loadFromFile();
 private:
     FRIEND_TEST(test_Qtable, test_save_and_load);
-    // Load Q-Table from the file: qtableFilename.
-    void loadFromFile();
 
     std::map<int, std::map<int, QValue>> qValues; // qValues[state][action]
     std::vector<int> stateKeys;

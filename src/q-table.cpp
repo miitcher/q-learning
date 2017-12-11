@@ -146,21 +146,13 @@ int Qtable::getBestAction(int const& stateKey) const{
     }
 }
 
-void Qtable::saveToFile()
-{
-    // Create new qtableFilename, so the former one is not overwriten.
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S");
-    auto datetimeBuffer = oss.str();
-    qtableFilename = "saved_qtable_" + std::string(datetimeBuffer) + ".bin";
-
-    std::ofstream file(qtableFilename, std::ios_base::binary);
+// Save Q-table to the given filename.
+void Qtable::saveToFile(std::string filename) {
+    std::ofstream file(filename, std::ios_base::binary);
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
 
     try {
-        std::cout << "Saving Q-table to file: " << qtableFilename << std::endl;
+        std::cout << "Saving Q-table to file: " << filename << std::endl;
         for(auto state : stateKeys){
             for (auto action : actionKeys){
                 QValue value = qValues[state][action];
@@ -174,13 +166,28 @@ void Qtable::saveToFile()
     }
 }
 
-void Qtable::loadFromFile(){
-    std::ifstream file(qtableFilename, std::ios_base::binary);
+// Generate new unique filename for Qtable.qtableFilename,
+// and save Q-table with that filename.
+void Qtable::saveToFile() {
+    // Create new qtableFilename, so the former one is not overwriten.
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S");
+    auto datetimeBuffer = oss.str();
+    qtableFilename = "saved_qtable_" + std::string(datetimeBuffer) + ".bin";
+
+    saveToFile(qtableFilename);
+}
+
+// Load Q-table from the given filename.
+void Qtable::loadFromFile(std::string filename) {
+    std::ifstream file(filename, std::ios_base::binary);
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
 
     QValue value;
     try {
-        std::cout << "loading Q-table from file: " << qtableFilename << std::endl;
+        std::cout << "loading Q-table from file: " << filename << std::endl;
         for(auto state : stateKeys){
             for (auto action : actionKeys){
                 file.read((char *)& value, sizeof(QValue));
@@ -194,4 +201,9 @@ void Qtable::loadFromFile(){
     catch (std::ifstream::failure e) {
         std::cerr << "Could not load from file";
     }
+}
+
+// Load Q-table from the filename: Qtable.qtableFilename.
+void Qtable::loadFromFile() {
+    loadFromFile(qtableFilename);
 }
