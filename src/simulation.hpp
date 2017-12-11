@@ -29,6 +29,26 @@ public:
         return {responsePacket0, responsePacket1, responsePacket2};
     };
 private:
+	//these functions help to get and set values to crawler, aka communiate with box2d
+
+
+	void createworld();
+	//create world for crawler, drawgraphics goes possibly here
+
+	void createcrawler();
+	//creates crawler in world
+
+	ResponsePacket getcrawlerstate(int responceid);
+	//get current position og crawler joints and location
+
+	void setcrawlerstate(ActorAction);
+	//set crawler to turn joints to desired position
+
+	void runstep();
+	//run signle step in box2d simulation
+
+
+
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     AgentShape& agentShape;
