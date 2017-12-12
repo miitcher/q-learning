@@ -195,6 +195,10 @@ TEST(test_AgentLearner, test_receive_simulation_response) {
     //std::cout << a;
     //std::cout << a.qtable;
 
+    // In the real run of the program, the simulation determines these values.
+    a.location = 0;
+    a.previousLocation = 0;
+
     SensorInput si0 = 11;
     SensorInput si1 = 199.99;
     SensorInput x = 10;

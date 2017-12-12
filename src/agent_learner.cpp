@@ -225,11 +225,31 @@ Action AgentLearner::convertKeyToAction(int key){
     return action;
 }
 
-void AgentLearner::receiveSimulationResponse(State const& state){
+void AgentLearner::receiveStartingState(State state) {
+    // Implementation is a modified copy of receiveSimulationResponse.
+    State copyState = state;
+    try {
+        // Differentiate the x-axis sensor
+        for(State::iterator it = copyState.begin(); it < copyState.end(); it++){
+            if ((*it).first == 999){
+                location = (*it).second;
+                previousLocation = location;
+                it = copyState.erase(it);
+                break;
+            }
+        }
+        currentStateKey = convertStateToKey(copyState);
+        previousStateKey = currentStateKey;
+    } catch(std::exception& e) {
+        std::cerr << "exception caught in receiveStartingState: "
+                    << e.what() << '\n';
+    }
+}
 
+void AgentLearner::receiveSimulationResponse(State const& state) {
     State copyState = state;
     previousLocation = location;
-    try{
+    try {
         // Differentiate the x-axis sensor
         for(State::iterator it = copyState.begin(); it < copyState.end(); it++){
             if ((*it).first == 999){
@@ -247,8 +267,7 @@ void AgentLearner::receiveSimulationResponse(State const& state){
         currentStateKey = convertStateToKey(copyState);
 
         updateQtable(reward);
-    }
-    catch(std::exception& e){
+    } catch (std::exception& e) {
         std::cerr << "exception caught in receiveSimulationResponse: "
                     << e.what() << '\n';
     }

@@ -3,26 +3,32 @@
 #include <vector>
 
 //NEED to iclude required framework for box2d
-//HEAVILY unfinished, lots to do! 
+//HEAVILY unfinished, lots to do!
 
-/*
-    Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-        AgentShape& agentShape, bool drawGraphics)
-        : actors(actors), sensors(sensors), agentShape(agentShape),
-        drawGraphics(drawGraphics) {}
-*/
+Simulation::Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
+    AgentShape& agentShape, bool drawGraphics)
+    : actors(actors), sensors(sensors), agentShape(agentShape),
+    drawGraphics(drawGraphics) {}
 
-/*
-//create world for crawler, drawgraphics goes possibly here
-void createworld();{        
+State Simulation::moveAgentToBegining() {
+    // TODO: Dummy
+    ResponsePacket responsePacket0(999, 1.2);
+    ResponsePacket responsePacket1(1, 22.6);
+    ResponsePacket responsePacket2(2, 52.3);
+    return {responsePacket0, responsePacket1, responsePacket2};
 }
 
-//creates crawler in world
-void createcrawler();{      
+State Simulation::simulateAction(Action action) {
+    // TODO: Dummy
+    ResponsePacket responsePacket0(999, 1.2);
+    ResponsePacket responsePacket1(1, 22.6);
+    ResponsePacket responsePacket2(2, 52.3);
+    return {responsePacket0, responsePacket1, responsePacket2};
 }
 
+/*
 //get current position of crawler joints and location
-ResponsePacket getcrawlerstate(int responseid){ 
+ResponsePacket getcrawlerstate(int responseid){
 	float elbowangle = elbow->GetJointAngle();
 	float shoulderangle = shoulder->GetJointAngle();
 	float crawlerposition = 0; //TODO get crawler position working
@@ -42,13 +48,5 @@ ResponsePacket getcrawlerstate(int responseid){
 	else{
 	return ResponcePacket(0,0); //returns empty responsepacket if called wrong responceid
 	}
-}
-	
-//set crawler to turn joints to desired position
-void setcrawlerstate(ActorAction);{  
-}
-
-//run signle step in box2d simulation
-void runstep();{             	
 }
 */

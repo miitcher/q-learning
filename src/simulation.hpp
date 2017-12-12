@@ -16,39 +16,42 @@ typedef int AgentShape;
 class Simulation {
 public:
     Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
-        AgentShape& agentShape, bool drawGraphics)
-        : actors(actors), sensors(sensors), agentShape(agentShape),
-        drawGraphics(drawGraphics) {}
+        AgentShape& agentShape, bool drawGraphics);
 
-    std::vector<ResponsePacket> simulateAction(Action action)
-    {
-        // Dummy
-        ResponsePacket responsePacket0(999, 1.2);
-        ResponsePacket responsePacket1(1, 22.6);
-        ResponsePacket responsePacket2(2, 52.3);
-        return {responsePacket0, responsePacket1, responsePacket2};
-    };
+    /*
+    Moves the Agent to the starting position in Box2D and returns the State.
+    The State is used by the AgentLearner to have a matching starting position
+    with the Simulation.
+    */
+    State moveAgentToBegining();
+
+    /*
+    Receives an Action from the AgentLearner.
+    Simulates the received Action in Box2D.
+    The simulation takes a fixed defined amount of time.
+    Returns the State of the Agent in Box2D after the simulation is done.
+    The simulation waits after this for the next Action.
+    */
+    State simulateAction(Action action);
 private:
-	//these functions help to get and set values to crawler, aka communiate with box2d
+    //create world for crawler, drawgraphics goes possibly here
+	void createWorld();
 
+    //creates crawler in world
+	void createCrawler();
 
-	void createworld();
-	//create world for crawler, drawgraphics goes possibly here
+    //get current position of crawler joints and location,
+    // sensorID IS NOT STATIC FOR THE JOINTS
+    // Use same terms as in the other code!
+    // The XAxisSensor has sensorID=999.
+	ResponsePacket getcrawlerstate(int sensorID);
 
-	void createcrawler();
-	//creates crawler in world
+    //set crawler to turn joints to desired position
+	void setCrawlerState(ActorAction);
 
-	ResponsePacket getcrawlerstate(int responceid);
-	//get current position og crawler joints and location, 
-	//responceid = joint id of asked joint, {1,2,999}
-
-	void setcrawlerstate(ActorAction);
-	//set crawler to turn joints to desired position
-
-	void runstep();
-	//run signle step in box2d simulation
-
-
+    //run single step in box2d simulation
+    // Explain what a step is!
+	void runSimulationStep();
 
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;

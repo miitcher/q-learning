@@ -37,6 +37,11 @@ public:
     AgentLearner(std::vector<Actor> const& actors,
         std::vector<Sensor> const& sensors);
 
+    // Receive what the "analog"-state of the AgentLearner is in the simulation
+    // at the start in the simulation.
+    // This function sets the AgentLearner:s internal values accordingly.
+    void receiveStartingState(State state);
+
     // Receive what the "analog"-state of the AgentLearner is in the simulation.
     // This function sets the AgentLearner:s internal values accordingly.
     void receiveSimulationResponse(State const& state);
@@ -131,19 +136,20 @@ private:
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
     double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
 
-    // might not need this
+    // TODO: might not need this & What is this used for?
     State currentAnalogState;
-
-    // key to the current state
+    // TODO: better description
     int currentStateKey;
-
-    // key to the previous state
+    // TODO: better description
     int previousStateKey;
+    // location is an analog value for the XAxisSensors input, in simulaion units.
+    // The simulation determines these trough: receiveStartingState.
+    SensorInput location;
+    SensorInput previousLocation;
 
+    // TODO: better description
     int currentActionKey;
 
-    SensorInput location = 0;
-    SensorInput previousLocation = 0;
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     std::vector<int> stateKeys;

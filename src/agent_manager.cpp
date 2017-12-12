@@ -65,6 +65,7 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     //std::thread::id thisThreadId(std::this_thread::get_id());
 
     // TODO (if time): Take the goal location as an input parameter.
+    // This is maby in the quantizised units???
     SensorInput agentXAxisLocationOfGoal = 3000;
 
     // Create AgeneLearner and Simulation that makes the Agent.
@@ -72,9 +73,8 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
     Simulation simulation(actors, sensors, agentShape, drawGraphics);
 
     // Have the Simulation:s and AgentLearner:s state at the beginning.
-    // TODO
-    State state; //= simulation.moveAgentToBegining();
-    //agentLearner.receiveStartingState(state);
+    State state = simulation.moveAgentToBegining();
+    agentLearner.receiveStartingState(state);
 
     // Initiate variable.
     Action action;
@@ -173,9 +173,8 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
             evolutionFittestFile_mutex.unlock();
 
             // Have the Simulation:s and AgentLearner:s state at the beginning.
-            // TODO
-            //state = simulation.moveAgentToBegining();
-            //agentLearner.receiveStartingState(state);
+            state = simulation.moveAgentToBegining();
+            agentLearner.receiveStartingState(state);
 
             // This thread, and the threads not containing the fittest Agent,
             // will now pause until all the Agents are done updating
