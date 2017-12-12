@@ -52,6 +52,8 @@ Simulation::Simulation(unsigned& agentID,
     //std::thread testbedThread(runTestbed, agentID);
     //testbedThread.join();
 
+    //ERROR1 is caused by calling testbed twice, it appears to initialize freeglut twice and freeglut doest like that
+
     // Just running the simulation
     /*
     ERROR:
@@ -60,7 +62,11 @@ Simulation::Simulation(unsigned& agentID,
         [xcb] Aborting, sorry about that.
         main: ../../src/xcb_io.c:165: dequeue_pending_request: Assertion `!xcb_xlib_unknown_req_in_deq' failed.
     */
-    //runTestbed(agentID);
+
+//testcode that compiles and runs
+//if (agentID == 0){
+//    runTestbed(agentID);
+//}
 }
 
 State Simulation::moveAgentToBegining() {
