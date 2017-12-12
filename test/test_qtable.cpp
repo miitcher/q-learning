@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/q-table.hpp"
 #include <iostream>
+#include <fstream>
 
 TEST(test_Qtable, test_constructor) {
     std::vector<int> stateKeys = {2,55,66,7,2};
@@ -97,7 +98,7 @@ TEST(test_Qtable, test_save_and_load) {
     //std::cout << t;
 
     // Save this q table to file
-    t.saveToFile();
+    t.saveToFile(str);
 
     // New table is created, every value is 0.1
     Qtable tableCopy(stateKeys, actionKeys, str);
@@ -136,4 +137,8 @@ TEST(test_Qtable, test_save_and_load) {
 
     state = 2; action = 2; value = 0.164;
     EXPECT_FLOAT_EQ(tableCopy.getQvalue(state,action), value);
+
+    // Remove saved file
+    std::remove(str.c_str());
+    EXPECT_TRUE(!std::ifstream(str));
 }

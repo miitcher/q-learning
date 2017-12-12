@@ -12,6 +12,7 @@
 #include <math.h> // pow
 #include <atomic>
 #include <system_error>
+#include <fstream>
 
 // The filename for the fittest saved Q-table, that is used for the evolution
 // of the Agents, when multiple Agents are learning.
@@ -23,6 +24,13 @@ std::mutex evolutionFittestFile_mutex;
 
 // Controlls the use of cout between threads.
 std::mutex cout_mutex;
+
+// String for keeping track of what the saved filename is in a thread.
+// Protected by mutex.
+std::string savedQtableFilename("");
+
+// Mutex protecting savedQtableFilename.
+std::mutex savedQtableFilename_mutex;
 
 // Counter that will keep track of how many Agents are waiting on to
 // update their Q-table with the fittest Q-table.
@@ -118,6 +126,12 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 
             // Save the fittest Q-table to file, so the other Agents can copy it.
             evolutionFittestFile_mutex.lock();
+            // Throw error if the file exist.
+            if (std::ifstream(evolutionFittestQtableFilename)) {
+                endThreads = true;
+                throw std::runtime_error("Reserved file '"
+                    + evolutionFittestQtableFilename + "' exists.");
+            }
             agentLearner.saveQtable(evolutionFittestQtableFilename);
             evolutionFittestFile_mutex.unlock();
 
@@ -127,7 +141,15 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
             }
 
             // Remove the fittest Q-table file.
-            // TODO
+            evolutionFittestFile_mutex.lock();
+            std::remove(evolutionFittestQtableFilename.c_str());
+            if (std::ifstream(evolutionFittestQtableFilename)) {
+                // End execution and throw error, when the file is not deleted.
+                endThreads = true;
+                throw std::runtime_error("File '"
+                    + evolutionFittestQtableFilename + "' not removed.");
+            }
+            evolutionFittestFile_mutex.unlock();
 
             // Resume the normal running of the learning.
             pauseThreads = false;
@@ -190,7 +212,9 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
         while (pauseThreads) {
             std::this_thread::sleep_for (std::chrono::milliseconds(500));
             if (canSaveQtable && saveQtableInThread) {
-                agentLearner.saveQtable();
+                savedQtableFilename_mutex.lock();
+                savedQtableFilename = agentLearner.saveQtable();
+                savedQtableFilename_mutex.unlock();
                 saveQtableInThread = false;
             }
         }
@@ -335,7 +359,7 @@ void AgentManager::initRun(unsigned runMode) {
     }
 }
 
-void AgentManager::saveQtable() {
+std::string AgentManager::saveQtable() {
     // Saving is done when all the threads are paused.
     pause_threads();
 
@@ -353,7 +377,12 @@ void AgentManager::saveQtable() {
 
     if (useLogging) {
         cout_mutex.lock();
-        std::cout << "Saved\nPaused" << std::endl; // Debug
+        std::cout << "Paused" << std::endl; // Debug
         cout_mutex.unlock();
     }
+
+    savedQtableFilename_mutex.lock();
+    std::string savedFilename = savedQtableFilename;
+    savedQtableFilename_mutex.unlock();
+    return savedFilename;
 }

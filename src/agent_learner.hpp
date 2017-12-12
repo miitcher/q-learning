@@ -61,13 +61,13 @@ public:
     void setExplorationFactor(double val) { explorationFactor = val; };
 
     // Has the Qtable save itself to file, with the given filename.
-    void saveQtable(std::string filename) { qtable.saveToFile(filename); };
+    const std::string& saveQtable(std::string filename);
     // Has the Qtable save itself to file, with an generated unique filename.
-    void saveQtable() { qtable.saveToFile(); };
+    const std::string& saveQtable();
     // Has the Qtable load itself from the given filename.
-    void loadQtable(std::string filename) { qtable.loadFromFile(filename); };
+    const std::string& loadQtable(std::string filename);
     // Has the Qtable load itself from the filename: Qtable.qtableFilename.
-    void loadQtable() { qtable.loadFromFile(); };
+    const std::string& loadQtable();
 
     /*
     Returns the Agents location on the x-axis in the simulation in

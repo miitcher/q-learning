@@ -39,7 +39,7 @@ public:
 
     const std::vector<int>& getStateKeys() const {return stateKeys;};
     const std::vector<int>& getActionKeys() const {return actionKeys;};
-    const std::string getQtableFilename() const {return qtableFilename;};
+    const std::string& getQtableFilename() const {return qtableFilename;};
 
     // Save Q-table to the given filename.
     void saveToFile(std::string filename);

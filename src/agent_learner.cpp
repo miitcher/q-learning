@@ -318,3 +318,25 @@ Action AgentLearner::doAction() {
         return chooseBestAction();
     }
 }
+
+// Has the Qtable save itself to file, with the given filename.
+const std::string& AgentLearner::saveQtable(std::string filename) {
+    qtable.saveToFile(filename);
+    return qtable.getQtableFilename();
+}
+
+// Has the Qtable save itself to file, with an generated unique filename.
+const std::string& AgentLearner::saveQtable() {
+    qtable.saveToFile();
+    return qtable.getQtableFilename();
+}
+// Has the Qtable load itself from the given filename.
+const std::string& AgentLearner::loadQtable(std::string filename) {
+    qtable.loadFromFile(filename);
+    return qtable.getQtableFilename();
+}
+// Has the Qtable load itself from the filename: Qtable.qtableFilename.
+const std::string& AgentLearner::loadQtable() {
+    qtable.loadFromFile();
+    return qtable.getQtableFilename();
+}

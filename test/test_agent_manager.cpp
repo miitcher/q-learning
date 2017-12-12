@@ -2,6 +2,7 @@
 #include "../src/agent_manager.hpp"
 #include <vector>
 #include <string>
+#include <fstream>
 
 TEST(test_agentManager, test_agentTask_smoketest) {
     // Smoketest
@@ -59,11 +60,15 @@ TEST(test_agentManager, test_initRun_smoketest) {
     std::this_thread::sleep_for (std::chrono::milliseconds(100));
     agentManager.resume_threads();
     std::this_thread::sleep_for (std::chrono::milliseconds(700));
-    agentManager.saveQtable();
+    std::string savedFilename = agentManager.saveQtable();
     std::this_thread::sleep_for (std::chrono::milliseconds(100));
     agentManager.resume_threads();
     std::this_thread::sleep_for (std::chrono::milliseconds(700));
     agentManager.stop_threads();
     // Check that it does not break from stopping twice.
     agentManager.stop_threads();
+
+    // Remove saved file
+    std::remove(savedFilename.c_str());
+    EXPECT_TRUE(!std::ifstream(savedFilename));
 }

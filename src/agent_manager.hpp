@@ -61,7 +61,7 @@ private:
     There is no need to differentiate witch ones Qtable is saved,
     because we do not know witch Agent in one generation is the best.
     */
-    void saveQtable();
+    std::string saveQtable();
 private:
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
