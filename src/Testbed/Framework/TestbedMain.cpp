@@ -42,7 +42,7 @@ namespace
 	b2Vec2 lastp;
 }
 
-static void Resize(int32 w, int32 h)
+void Resize(int32 w, int32 h)
 {
 	width = w;
 	height = h;
@@ -64,7 +64,7 @@ static void Resize(int32 w, int32 h)
 	gluOrtho2D(lower.x, upper.x, lower.y, upper.y);
 }
 
-static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
+b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 {
 	float32 u = x / float32(tw);
 	float32 v = (th - y) / float32(th);
@@ -83,14 +83,14 @@ static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 }
 
 // This is used to control the frame rate (60Hz).
-static void Timer(int)
+void Timer(int)
 {
 	glutSetWindow(mainWindow);
 	glutPostRedisplay();
 	glutTimerFunc(framePeriod, Timer, 0);
 }
 
-static void SimulationLoop()
+void SimulationLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -121,7 +121,7 @@ static void SimulationLoop()
 	}
 }
 
-static void Keyboard(unsigned char key, int x, int y)
+void Keyboard(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -194,7 +194,7 @@ static void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-static void KeyboardSpecial(int key, int x, int y)
+void KeyboardSpecial(int key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -268,7 +268,7 @@ static void KeyboardSpecial(int key, int x, int y)
 	}
 }
 
-static void KeyboardUp(unsigned char key, int x, int y)
+void KeyboardUp(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -279,7 +279,7 @@ static void KeyboardUp(unsigned char key, int x, int y)
 	}
 }
 
-static void Mouse(int32 button, int32 state, int32 x, int32 y)
+void Mouse(int32 button, int32 state, int32 x, int32 y)
 {
 	// Use the mouse to move things around.
 	if (button == GLUT_LEFT_BUTTON)
@@ -319,7 +319,7 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 	}
 }
 
-static void MouseMotion(int32 x, int32 y)
+void MouseMotion(int32 x, int32 y)
 {
 	b2Vec2 p = ConvertScreenToWorld(x, y);
 	test->MouseMove(p);
@@ -335,7 +335,7 @@ static void MouseMotion(int32 x, int32 y)
 }
 
 #ifdef FREEGLUT
-static void MouseWheel(int wheel, int direction, int x, int y)
+void MouseWheel(int wheel, int direction, int x, int y)
 {
 	B2_NOT_USED(wheel);
 	B2_NOT_USED(x);
@@ -352,7 +352,7 @@ static void MouseWheel(int wheel, int direction, int x, int y)
 }
 #endif
 
-static void Restart(int)
+void Restart(int)
 {
 	delete test;
 	entry = g_testEntries + testIndex;
@@ -360,12 +360,12 @@ static void Restart(int)
     Resize(width, height);
 }
 
-static void Pause(int)
+void Pause(int)
 {
 	settings.pause = !settings.pause;
 }
 
-static void Exit(int code)
+void Exit(int code)
 {
 	// TODO: freeglut is not building on OSX
 #ifdef FREEGLUT
@@ -374,7 +374,7 @@ static void Exit(int code)
 	exit(code);
 }
 
-static void SingleStep(int)
+void SingleStep(int)
 {
 	settings.pause = 1;
 	settings.singleStep = 1;
