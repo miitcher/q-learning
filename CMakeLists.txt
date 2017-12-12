@@ -25,17 +25,13 @@ set(SOURCES
     src/config_reader.hpp src/config_reader.cpp
     src/simulation.hpp src/simulation.cpp)
 
-# Define the framework files.
-set(Testbed_Framework_SRCS
+# Define the Simulation source files.
+set(Testbed_SOURCES
     src/Testbed/Framework/TestbedMain.cpp
     src/Testbed/Framework/Render.cpp
     src/Testbed/Framework/Render.h
     src/Testbed/Framework/Test.cpp
     src/Testbed/Framework/Test.h
-)
-
-# Define the Simulation source files.
-set(Testbed_Tests_SRCS
     src/Testbed/Tests/TestEntries.cpp
 )
 
@@ -58,9 +54,9 @@ add_definitions( -DFREEGLUT_EXPORTS -DFREEGLUT_STATIC -D_CRT_SECURE_NO_WARNINGS 
 # Add main
 include_directories(src/Testbed)
 ADD_EXECUTABLE(
-    main src/main.cpp ${SOURCES}
-    ${Testbed_Framework_SRCS}
-    ${Testbed_Tests_SRCS})
+    main src/main.cpp
+    ${SOURCES}
+    ${Testbed_SOURCES})
 target_link_libraries(
     main
     pthread
@@ -81,8 +77,16 @@ ADD_EXECUTABLE(qtests
     test/test_agent_manager.cpp
     test/test_qtable.cpp
     test/test_agent_learner.cpp
-    ${SOURCES})
-target_link_libraries(qtests gtest gtest_main pthread)
+    ${SOURCES}
+    ${Testbed_SOURCES})
+target_link_libraries(qtests
+    gtest gtest_main pthread
+    Box2D
+    freeglut_static
+    glui
+    ${ADDITIONAL_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    X11)
 add_test( qtests qtests )
 
 
@@ -92,8 +96,7 @@ if(FALSE) # fake a block comment
 
 ## Add Testbed
 add_executable(Testbed
-    ${Testbed_Framework_SRCS}
-    ${Testbed_Tests_SRCS}
+    ${Testbed_SOURCES}
 )
 
 target_link_libraries (

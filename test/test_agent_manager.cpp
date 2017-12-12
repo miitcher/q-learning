@@ -23,7 +23,7 @@ TEST(test_agentManager, test_agentTask_smoketest) {
     unsigned maxLoopCount = 100;
     bool canSaveQtable = false;
 
-    agentTask(actors, sensors, agentShape, qtableFilename,
+    agentTask(0, actors, sensors, agentShape, qtableFilename,
         drawGraphics, maxLoopCount, canSaveQtable);
 
 }

@@ -19,7 +19,8 @@ The function is called in AgentManager::initRun().
 canSaveQtable states if the Qtable can be saved in a thread. Only one
 thread can save its Qtable.
 */
-void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
+void agentTask(unsigned agentID,
+    std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
     bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable);
 

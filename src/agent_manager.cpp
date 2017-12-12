@@ -58,10 +58,13 @@ std::atomic_bool saveQtableInThread(false);
 std::atomic_bool useEvolution(true);
 std::atomic_bool anAgentHasReachedTheGoal(false);
 
-void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
+void agentTask(unsigned agentID,
+    std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
     bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable)
 {
+    //std::cout << "agentID: " << agentID << std::endl;
+
     //std::thread::id thisThreadId(std::this_thread::get_id());
 
     // TODO (if time): Take the goal location as an input parameter.
@@ -70,7 +73,7 @@ void agentTask(std::vector<Actor> actors, std::vector<Sensor> sensors,
 
     // Create AgeneLearner and Simulation that makes the Agent.
     AgentLearner agentLearner(actors, sensors, qtableFilename);
-    Simulation simulation(actors, sensors, agentShape, drawGraphics);
+    Simulation simulation(agentID, actors, sensors, agentShape, drawGraphics);
 
     // Have the Simulation:s and AgentLearner:s state at the beginning.
     State state = simulation.moveAgentToBegining();
@@ -286,14 +289,14 @@ void AgentManager::createAndStartThreads() {
     bool canSaveQtable;
 
     // Create threads in vector agentThreads.
-    for ( unsigned i = 0; i != agentCount; i++) {
+    for ( unsigned agentID = 0; agentID != agentCount; agentID++) {
         // Only one thread can have its Qtable saved; the first one.
-        if (i == 0) {
+        if (agentID == 0) {
             canSaveQtable = true;
         } else {
             canSaveQtable = false;
         }
-        agentThreads.emplace_back(agentTask, actors, sensors,
+        agentThreads.emplace_back(agentTask, agentID, actors, sensors,
             agentShape, qtableFilename, drawGraphics,
             maxLoopCount, canSaveQtable);
     }

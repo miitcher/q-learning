@@ -2,10 +2,6 @@
 #include "agent_learner.hpp"
 #include "agent_manager.hpp"
 #include "config_reader.hpp"
-
-#include "Testbed/Framework/TestbedMain.h"
-#include "Testbed/Framework/Test.h"
-#include "Testbed/Tests/TestCrawler.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,7 +12,7 @@ int main() {
     std::cout << "--- q-learning-9 ---" << std::endl;
 
     // File that dictates the learning AgentLearner.
-    std::string agentConfigFilename = "../test/files/configAgent_test.config";
+    std::string agentConfigFilename = "../src/configAgent.config";
 
     // Initialize variables
     std::vector<Actor> actors;
@@ -43,10 +39,6 @@ int main() {
     // Start learning
     unsigned runMode = 1;
     agentManager.initRun(runMode);
-
-    // Testing out Simulation
-    //char* argv[] = {"Hello"};
-    //TestbedMain(1, argv);
 
     return 0;
 }

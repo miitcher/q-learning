@@ -4,6 +4,7 @@
 #include "interactor.hpp"
 #include <vector>
 
+#include <thread>
 /*
 TODO: agentShape will be implemented according to the needs of the simulation.
 It will also be moved to an other file. ATM: there is no time to implement
@@ -15,7 +16,8 @@ typedef int AgentShape;
 // Shows the wanted behaviour.
 class Simulation {
 public:
-    Simulation(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
+    Simulation(unsigned& agentID,
+        std::vector<Actor>& actors, std::vector<Sensor>& sensors,
         AgentShape& agentShape, bool drawGraphics);
 
     /*
@@ -35,28 +37,30 @@ public:
     State simulateAction(Action action);
 private:
     //create world for crawler, drawgraphics goes possibly here
-	void createWorld();
+    void createWorld();
 
     //creates crawler in world
-	void createCrawler();
+    void createCrawler();
 
     //get current position of crawler joints and location,
     // sensorID IS NOT STATIC FOR THE JOINTS
     // Use same terms as in the other code!
     // The XAxisSensor has sensorID=999.
-	ResponsePacket getcrawlerstate(int sensorID);
+    ResponsePacket getcrawlerstate(int sensorID);
 
     //set crawler to turn joints to desired position
-	void setCrawlerState(ActorAction);
+    void setCrawlerState(ActorAction);
 
     //run single step in box2d simulation
     // Explain what a step is!
-	void runSimulationStep();
+    void runSimulationStep();
 
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     AgentShape& agentShape;
     bool drawGraphics;
+
+    std::thread testbedThread;
 };
 
 #endif
