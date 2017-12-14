@@ -42,6 +42,9 @@ namespace
 	b2Vec2 lastp;
 }
 
+
+
+//resizes window if it is manipulated by user
 void Resize(int32 w, int32 h)
 {
 	width = w;
@@ -64,6 +67,9 @@ void Resize(int32 w, int32 h)
 	gluOrtho2D(lower.x, upper.x, lower.y, upper.y);
 }
 
+
+
+//converts received pixel sized window to metres to allow proper scaling of box2d
 b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 {
 	float32 u = x / float32(tw);
@@ -82,6 +88,8 @@ b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 	return p;
 }
 
+
+
 // This is used to control the frame rate (60Hz).
 void Timer(int)
 {
@@ -90,6 +98,10 @@ void Timer(int)
 	glutTimerFunc(framePeriod, Timer, 0);
 }
 
+
+
+
+//simulationloop starter, actual simulationloop is in test.h/c
 void SimulationLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,6 +133,8 @@ void SimulationLoop()
 	}
 }
 
+
+//assign special keys to zoom, reset etc
 void Keyboard(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
@@ -194,6 +208,9 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
+
+
+//function that defines moving viewable area via arrow keys
 void KeyboardSpecial(int key, int x, int y)
 {
 	B2_NOT_USED(x);
@@ -268,6 +285,9 @@ void KeyboardSpecial(int key, int x, int y)
 	}
 }
 
+
+
+//funtion to handle when key is up
 void KeyboardUp(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
@@ -279,9 +299,12 @@ void KeyboardUp(unsigned char key, int x, int y)
 	}
 }
 
+
+
+
+//Mouse is used move objects in world
 void Mouse(int32 button, int32 state, int32 x, int32 y)
 {
-	// Use the mouse to move things around.
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		int mod = glutGetModifiers();
@@ -319,6 +342,9 @@ void Mouse(int32 button, int32 state, int32 x, int32 y)
 	}
 }
 
+
+
+//Mouse is used to move world around, rightclick
 void MouseMotion(int32 x, int32 y)
 {
 	b2Vec2 p = ConvertScreenToWorld(x, y);
@@ -334,6 +360,9 @@ void MouseMotion(int32 x, int32 y)
 	}
 }
 
+
+
+//Zoom view with mouse
 #ifdef FREEGLUT
 void MouseWheel(int wheel, int direction, int x, int y)
 {
@@ -352,6 +381,9 @@ void MouseWheel(int wheel, int direction, int x, int y)
 }
 #endif
 
+
+
+//deletes current world and starts new
 void Restart(int)
 {
 	delete test;
@@ -360,11 +392,18 @@ void Restart(int)
     Resize(width, height);
 }
 
+
+
+//pauses simulation
 void Pause(int)
 {
 	settings.pause = !settings.pause;
 }
 
+
+
+
+//exits simulation when shut down
 void Exit(int code)
 {
 	// TODO: freeglut is not building on OSX
@@ -374,12 +413,18 @@ void Exit(int code)
 	exit(code);
 }
 
+
+
+//Pauses and runs single step after witch is paused again
 void SingleStep(int)
 {
 	settings.pause = 1;
 	settings.singleStep = 1;
 }
 
+
+
+//
 int TestbedMain(int argc, char** argv)
 {
 	testCount = 0;
@@ -473,6 +518,7 @@ int TestbedMain(int argc, char** argv)
 
 	// Use a timer to control the frame rate.
 	glutTimerFunc(framePeriod, Timer, 0);
+	//glut main loop, here is where magic happens
 
 	glutMainLoop();
 
