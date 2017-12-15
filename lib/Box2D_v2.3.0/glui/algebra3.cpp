@@ -72,6 +72,9 @@
                                 
 **************************************************************************/
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "algebra3.h"
 #include "glui_internal.h"
 #include <cmath>

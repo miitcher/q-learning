@@ -28,6 +28,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 #ifdef HAVE_CONFIG_H
 #    include "config.h"
 #endif

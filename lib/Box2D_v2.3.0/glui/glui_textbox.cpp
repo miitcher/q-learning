@@ -29,6 +29,11 @@
 
 *****************************************************************************/
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wformat="
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wparentheses"
+
 #include "glui_internal_control.h"
 #include <cmath>
 

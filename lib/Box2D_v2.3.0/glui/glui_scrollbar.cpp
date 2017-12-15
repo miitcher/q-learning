@@ -15,6 +15,9 @@
 
 *****************************************************************************/
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 #include "glui_internal_control.h"
 #include <cmath>
 #include <cassert>

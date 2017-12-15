@@ -7,6 +7,10 @@
  * magellan X-based protocol.
  */
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "freeglut.h"
 #include "freeglut_internal.h"
 

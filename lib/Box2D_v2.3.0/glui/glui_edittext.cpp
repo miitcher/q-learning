@@ -29,6 +29,10 @@
 
 *****************************************************************************/
 
+
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wformat="
+
 #include "glui_internal_control.h"
 #include <cassert>
 

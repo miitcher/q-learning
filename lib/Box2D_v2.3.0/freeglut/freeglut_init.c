@@ -25,6 +25,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
+
 #define FREEGLUT_BUILDING_LIB
 #include "freeglut.h"
 #include "freeglut_internal.h"

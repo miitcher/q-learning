@@ -25,6 +25,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
+
 #include "freeglut.h"
 #include "freeglut_internal.h"
 #if HAVE_ERRNO

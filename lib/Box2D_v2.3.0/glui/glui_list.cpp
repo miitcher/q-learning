@@ -16,6 +16,10 @@
 
 *****************************************************************************/
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wparentheses"
+
 #include "glui_internal_control.h"
 #include <cmath>
 #include <sys/timeb.h>

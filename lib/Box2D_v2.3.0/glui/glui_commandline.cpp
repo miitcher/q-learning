@@ -29,6 +29,9 @@
 
 *****************************************************************************/
 
+//pragmas to keep build clean
+#pragma GCC diagnostic ignored "-Wformat="
+
 #include "glui.h"
 #include "glui_internal.h"
 
