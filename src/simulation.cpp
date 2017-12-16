@@ -78,6 +78,39 @@ State Simulation::moveAgentToBegining() {
 }
 
 State Simulation::simulateAction(Action action) {
+
+/*a draft of how to unpack an object of the Action type
+
+    // the first joint
+    switch (action[0]->second)
+    {
+    case Still:
+    break;
+
+    case Counterclockwise:
+    rotateArm(0);
+    break;
+
+    case Clockwise:
+    rotateArm(-2.0f);
+    break;
+    }
+
+    // the second joint
+    switch (action[1]->second)
+    {
+    case Still:
+    break;
+
+    case Counterclockwise:
+    rotateForearm(0);
+    break;
+
+    case Clockwise:
+    rotateForearm(0);
+    break;
+    }
+*/
     // TODO: Dummy
     ResponsePacket responsePacket0(999, 1.2);
     ResponsePacket responsePacket1(1, 22.6);
