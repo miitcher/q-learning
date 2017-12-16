@@ -44,7 +44,7 @@ public:
 
     // Receive what the "analog"-state of the AgentLearner is in the simulation.
     // This function sets the AgentLearner:s internal values accordingly.
-    void receiveSimulationResponse(State const& state);
+    void receiveSimulationResponse(State& state);
 
     // Chooses the best or a random action depending on the explorationFactor.
     // Communicates the choosen action to the simulation.

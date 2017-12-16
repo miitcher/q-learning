@@ -31,7 +31,7 @@ public:
     The State is used by the AgentLearner to have a matching starting position
     with the Simulation.
     */
-    State moveAgentToBegining();
+    State moveAgentToBeginning();
 
     /*
     Receives an Action from the AgentLearner.
@@ -40,9 +40,9 @@ public:
     Returns the State of the Agent in Box2D after the simulation is done.
     The simulation waits after this for the next Action.
     */
-    State simulateAction(Action action);
+    State simulateAction(Action& action);
 private:
-   
+
     //get current position of crawler joints and location,
     // sensorID IS NOT STATIC FOR THE JOINTS
     // Use same terms as in the other code!
@@ -60,6 +60,19 @@ private:
     std::vector<Sensor> sensors;
     AgentShape& agentShape;
     bool drawGraphics;
+
+    b2Body* crawler;
+    b2Body* forearm;
+    b2Body* upperarm;
+    b2RevoluteJoint* shoulder;
+    b2RevoluteJoint* elbow;
+
+    int shoulderID ;
+    int elbowID ;
+    float shoulderMinAngle;
+    float elbowMinAngle ;
+    float shoulderMaxAngle ;
+    float elbowMaxAngle ;
 
     std::thread testbedThread;
 };

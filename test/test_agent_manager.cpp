@@ -7,13 +7,13 @@
 TEST(test_agentManager, test_agentTask_smoketest) {
     // Smoketest
     Actor a0 = Actor
-    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (1, "generic actor", 15, 0, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
-    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (2, "generic actor", 15, 0, 200, {Still, Clockwise, Counterclockwise});
 
     Sensor b0 = XAxisSensor(999);
-    Sensor b1 = Sensor(1, "sensor1", 13, 11, 200);
-    Sensor b2 = JointSensor(2, 12, 10, 200);
+    Sensor b1 = Sensor(1, "sensor1", 13, 0, 200);
+    Sensor b2 = JointSensor(2, 12, 0, 200);
 
     std::vector<Actor> actors = {a0, a1};
     std::vector<Sensor> sensors = {b0, b1, b2};
@@ -35,13 +35,13 @@ TEST(test_agentManager, test_initRun_smoketest) {
     // the AgentManager class.
 
     Actor a0 = Actor
-    (21, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (1, "generic actor", 15, 0, 200, {Still, Clockwise, Counterclockwise});
     Actor a1 = Actor
-    (22, "generic actor", 15, 1, 200, {Still, Clockwise, Counterclockwise});
+    (2, "generic actor", 15, 0, 200, {Still, Clockwise, Counterclockwise});
 
     Sensor b0 = XAxisSensor(999);
-    Sensor b1 = Sensor(2, "sensor1", 13, 11, 200);
-    Sensor b2 = Sensor(1, "sensor2", 12, 10, 200);
+    Sensor b1 = Sensor(2, "sensor1", 13, 0, 200);
+    Sensor b2 = Sensor(1, "sensor2", 12, 0, 200);
 
     std::vector<Actor> actors = {a0, a1};
     std::vector<Sensor> sensors = {b0, b1, b2};

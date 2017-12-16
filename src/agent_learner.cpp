@@ -246,7 +246,7 @@ void AgentLearner::receiveStartingState(State state) {
     }
 }
 
-void AgentLearner::receiveSimulationResponse(State const& state) {
+void AgentLearner::receiveSimulationResponse(State& state) {
     State copyState = state;
     previousLocation = location;
     try {

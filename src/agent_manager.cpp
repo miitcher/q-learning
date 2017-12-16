@@ -76,7 +76,7 @@ void agentTask(unsigned agentID,
     Simulation simulation(agentID, actors, sensors, agentShape, drawGraphics);
 
     // Have the Simulation:s and AgentLearner:s state at the beginning.
-    State state = simulation.moveAgentToBegining();
+    State state = simulation.moveAgentToBeginning();
     agentLearner.receiveStartingState(state);
 
     // Initiate variable.
@@ -176,7 +176,7 @@ void agentTask(unsigned agentID,
             evolutionFittestFile_mutex.unlock();
 
             // Have the Simulation:s and AgentLearner:s state at the beginning.
-            state = simulation.moveAgentToBegining();
+            state = simulation.moveAgentToBeginning();
             agentLearner.receiveStartingState(state);
 
             // This thread, and the threads not containing the fittest Agent,
