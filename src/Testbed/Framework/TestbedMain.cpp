@@ -21,6 +21,7 @@
 #include "glui/glui.h"
 #include "TestbedMain.h"
 #include <stdio.h>
+#include <iostream>
 
 namespace
 {
@@ -35,7 +36,7 @@ namespace
 	int32 framePeriod = 16;
 	int32 mainWindow;
 	float settingsHz = 60.0;
-	GLUI *glui;
+//	GLUI *glui;
 	float32 viewZoom = 1.0f;
 	int tx, ty, tw, th;
 	bool rMouseDown;
@@ -45,7 +46,7 @@ namespace
 
 
 //resizes window if it is manipulated by user
-void Resize(int32 w, int32 h)
+/*void Resize(int32 w, int32 h)
 {
 	width = w;
 	height = h;
@@ -65,7 +66,7 @@ void Resize(int32 w, int32 h)
 
 	// L/R/B/T
 	gluOrtho2D(lower.x, upper.x, lower.y, upper.y);
-}
+}*/
 
 
 
@@ -91,12 +92,12 @@ b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 
 
 // This is used to control the frame rate (60Hz).
-void Timer(int)
+/*void Timer(int)
 {
 	glutSetWindow(mainWindow);
 	glutPostRedisplay();
 	glutTimerFunc(framePeriod, Timer, 0);
-}
+}*/
 
 
 
@@ -104,22 +105,22 @@ void Timer(int)
 //simulationloop starter, actual simulationloop is in test.h/c
 void SimulationLoop()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadIdentity();*/
 
 	b2Vec2 oldCenter = settings.viewCenter;
 	settings.hz = settingsHz;
 	test->Step(&settings);
-	if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+	/*if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 	{
 		Resize(width, height);
-	}
+	}*/
 
 	test->DrawTitle(entry->name);
 
-	glutSwapBuffers();
+	//glutSwapBuffers();
 
 	if (testSelection != testIndex)
 	{
@@ -129,13 +130,13 @@ void SimulationLoop()
 		test = entry->createFcn();
 		viewZoom = 1.0f;
 		settings.viewCenter.Set(0.0f, 20.0f);
-		Resize(width, height);
+		//Resize(width, height);
 	}
 }
 
 
 //assign special keys to zoom, reset etc
-void Keyboard(unsigned char key, int x, int y)
+/*void Keyboard(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -206,12 +207,12 @@ void Keyboard(unsigned char key, int x, int y)
 			test->Keyboard(key);
 		}
 	}
-}
+}*/
 
 
 
 //function that defines moving viewable area via arrow keys
-void KeyboardSpecial(int key, int x, int y)
+/*void KeyboardSpecial(int key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -283,12 +284,12 @@ void KeyboardSpecial(int key, int x, int y)
 		Resize(width, height);
 		break;
 	}
-}
+}*/
 
 
 
 //funtion to handle when key is up
-void KeyboardUp(unsigned char key, int x, int y)
+/*void KeyboardUp(unsigned char key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
@@ -297,13 +298,13 @@ void KeyboardUp(unsigned char key, int x, int y)
 	{
 		test->KeyboardUp(key);
 	}
-}
+}*/
 
 
 
 
 //Mouse is used move objects in world
-void Mouse(int32 button, int32 state, int32 x, int32 y)
+/*void Mouse(int32 button, int32 state, int32 x, int32 y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 	{
@@ -340,12 +341,12 @@ void Mouse(int32 button, int32 state, int32 x, int32 y)
 			rMouseDown = false;
 		}
 	}
-}
+}*/
 
 
 
 //Mouse is used to move world around, rightclick
-void MouseMotion(int32 x, int32 y)
+/*void MouseMotion(int32 x, int32 y)
 {
 	b2Vec2 p = ConvertScreenToWorld(x, y);
 	test->MouseMove(p);
@@ -358,12 +359,12 @@ void MouseMotion(int32 x, int32 y)
 		Resize(width, height);
 		lastp = ConvertScreenToWorld(x, y);
 	}
-}
+}*/
 
 
 
 //Zoom view with mouse
-#ifdef FREEGLUT
+/*#ifdef FREEGLUT
 void MouseWheel(int wheel, int direction, int x, int y)
 {
 	B2_NOT_USED(wheel);
@@ -380,7 +381,7 @@ void MouseWheel(int wheel, int direction, int x, int y)
 	Resize(width, height);
 }
 #endif
-
+*/
 
 
 //deletes current world and starts new
@@ -389,7 +390,7 @@ void Restart(int)
 	delete test;
 	entry = g_testEntries + testIndex;
 	test = entry->createFcn();
-    Resize(width, height);
+    //Resize(width, height);
 }
 
 
@@ -407,9 +408,9 @@ void Pause(int)
 void Exit(int code)
 {
 	// TODO: freeglut is not building on OSX
-#ifdef FREEGLUT
+/*#ifdef FREEGLUT
 	glutLeaveMainLoop();
-#endif
+#endif*/
 	exit(code);
 }
 
@@ -438,8 +439,8 @@ int TestbedMain(int argc, char** argv)
 
 	entry = g_testEntries + testIndex;
 	test = entry->createFcn();
-
-	glutInit(&argc, argv);
+	std::cout << "Hello" << std::endl;
+	/*glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(width, height);
 	char title[32];
@@ -499,17 +500,17 @@ int TestbedMain(int argc, char** argv)
 	glui->add_checkbox_to_panel(drawPanel, "Center of Masses", &settings.drawCOMs);
 	glui->add_checkbox_to_panel(drawPanel, "Statistics", &settings.drawStats);
 	glui->add_checkbox_to_panel(drawPanel, "Profile", &settings.drawProfile);
-
+*/
 	int32 testCount = 0;
 	TestEntry* e = g_testEntries;
 	while (e->createFcn)
 	{
-		testList->add_item(testCount, e->name);
+		// testList->add_item(testCount, e->name);
 		++testCount;
 		++e;
 	}
 
-	glui->add_button("Pause", 0, Pause);
+	/*glui->add_button("Pause", 0, Pause);
 	glui->add_button("Single Step", 0, SingleStep);
 	glui->add_button("Restart", 0, Restart);
 
@@ -521,6 +522,6 @@ int TestbedMain(int argc, char** argv)
 	//glut main loop, here is where magic happens
 
 	glutMainLoop();
-
+*/
 	return 0;
 }

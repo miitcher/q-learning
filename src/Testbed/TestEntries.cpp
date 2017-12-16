@@ -17,13 +17,13 @@
 */
 
 #include "../Framework/Test.h"
-#include "../Framework/Render.h"
+/*#include "../Framework/Render.h"
 
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
 #else
 	#include "freeglut/freeglut.h"
-#endif
+#endif*/
 /*
 #include "AddPair.h"
 #include "ApplyForce.h"
