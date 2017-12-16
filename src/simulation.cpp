@@ -9,27 +9,6 @@
 #include <sstream>
 #include "Testbed/Framework/TestbedMain.h"
 
-//NEED to iclude required framework for box2d
-//HEAVILY unfinished, lots to do!
-
-void helloThere() {
-    std::cout << "Simulation: hello" << std::endl;
-}
-
-// TODO: This should be done better inside the Simulation-class.
-void runTestbed(unsigned agentID) {
-    std::string agentID_string = std::to_string(agentID);
-    std::cout << "agentID_string: " << agentID_string << std::endl;
-    // Max 100 agent-threads.
-    if (agentID_string.size() > 2) {
-        throw std::runtime_error("Too many agent-threads.");
-    }
-    char he[3] = {agentID_string[0], agentID_string[1], '\0'};
-
-    //char* argv[] = {"Hello"};
-    char* argv[] = {he};
-    TestbedMain(1, argv);
-}
 
 Simulation::Simulation(unsigned& agentID,
     std::vector<Actor>& actors, std::vector<Sensor>& sensors,
@@ -50,10 +29,10 @@ Simulation::Simulation(unsigned& agentID,
     b2Vec2 gravity;
     gravity.Set(0.0f, -10.0f);
     m_world = new b2World(gravity);
-    std::cout << "world created, ";
+    //std::cout << "world created, ";
 
     //Create floor
-    b2Body* ground = NULL;
+    ground = NULL;
     {
         b2BodyDef grounddef;
         grounddef.position.Set(0.0f, 0.0f);
@@ -62,8 +41,8 @@ Simulation::Simulation(unsigned& agentID,
         shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
         ground->CreateFixture(&shape, 0.0f);
         b2Vec2 gposition = ground->GetPosition();
-        std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
-                    << gposition.y << std::endl;
+        //std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
+        //            << gposition.y << std::endl;
     }
 
     crawler = NULL;
@@ -115,7 +94,7 @@ Simulation::Simulation(unsigned& agentID,
         shoulderJointDef.enableMotor = true;
         shoulderJointDef.enableLimit = true;
         shoulderJointDef.lowerAngle = shoulderMinAngle + 0.2;
-        shoulderJointDef.upperAngle = shoulderMaxAngle - 0.3; // max angle is exclusive
+        shoulderJointDef.upperAngle = shoulderMaxAngle - 0.3;
         shoulderJointDef.maxMotorTorque = 500;
         //the top right corner of the body of crawler
         shoulderJointDef.localAnchorA.Set(3,1);
@@ -139,7 +118,6 @@ Simulation::Simulation(unsigned& agentID,
 }
 
 State Simulation::moveAgentToBeginning() {
-
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
     SensorInput convertedElbow = static_cast<SensorInput>(elbowangle);

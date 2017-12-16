@@ -25,6 +25,10 @@ public:
         std::vector<Actor>& actors, std::vector<Sensor>& sensors,
         AgentShape& agentShape, bool drawGraphics);
 
+    ~Simulation(){
+        delete m_world;
+    };
+
     /*
     Moves the Agent to the starting position in Box2D and returns the State.
     The State is used by the AgentLearner to have a matching starting position
@@ -63,6 +67,7 @@ private:
     bool drawGraphics;
 
     b2World* m_world;
+    b2Body* ground;
     b2Body* crawler;
     b2Body* forearm;
     b2Body* upperarm;
