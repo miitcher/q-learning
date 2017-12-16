@@ -49,7 +49,7 @@ Simulation::Simulation(unsigned& agentID,
     //create world with gravity
     b2Vec2 gravity;
     gravity.Set(0.0f, -10.0f);
-    b2World* m_world = new b2World(gravity);
+    m_world = new b2World(gravity);
     std::cout << "world created, ";
 
     //Create floor
@@ -184,6 +184,11 @@ State Simulation::simulateAction(Action& action) {
             }
         }
     }
+
+    float timeStep = 1.0f / 60.0f;
+    int velocityIterations = 6;
+    int positionIterations = 2;
+    m_world->Step(timeStep, velocityIterations, positionIterations);
 
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
