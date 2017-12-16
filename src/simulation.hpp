@@ -1,10 +1,13 @@
 #ifndef QLEARNING_9_SIMULATION_H_
 #define QLEARNING_9_SIMULATION_H_
 
+
+#include <Box2D/Box2D.h>
 #include "interactor.hpp"
 #include <vector>
-
 #include <thread>
+
+
 /*
 TODO: agentShape will be implemented according to the needs of the simulation.
 It will also be moved to an other file. ATM: there is no time to implement
@@ -16,6 +19,9 @@ typedef int AgentShape;
 // Shows the wanted behaviour.
 class Simulation {
 public:
+
+    b2World* m_world;
+
     Simulation(unsigned& agentID,
         std::vector<Actor>& actors, std::vector<Sensor>& sensors,
         AgentShape& agentShape, bool drawGraphics);
@@ -36,12 +42,7 @@ public:
     */
     State simulateAction(Action action);
 private:
-    //create world for crawler, drawgraphics goes possibly here
-    void createWorld();
-
-    //creates crawler in world
-    void createCrawler();
-
+   
     //get current position of crawler joints and location,
     // sensorID IS NOT STATIC FOR THE JOINTS
     // Use same terms as in the other code!
