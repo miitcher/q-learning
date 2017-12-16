@@ -7,6 +7,8 @@
 #include <vector>
 #include <thread>
 
+#define FRIEND_TEST(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
 
 /*
 TODO: agentShape will be implemented according to the needs of the simulation.
@@ -42,6 +44,8 @@ public:
     */
     State simulateAction(Action& action);
 private:
+    FRIEND_TEST(test_Simulation, test_constructor);
+    FRIEND_TEST(test_Simulation, test_simulateAction);
 
     //get current position of crawler joints and location,
     // sensorID IS NOT STATIC FOR THE JOINTS
@@ -76,5 +80,7 @@ private:
 
     std::thread testbedThread;
 };
+
+std::ostream& operator<<(std::ostream& os, Simulation const& simulation);
 
 #endif

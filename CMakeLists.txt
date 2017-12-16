@@ -77,6 +77,7 @@ ADD_EXECUTABLE(qtests
     test/test_agent_manager.cpp
     test/test_qtable.cpp
     test/test_agent_learner.cpp
+    test/test_simulation.cpp
     ${SOURCES}
     ${Testbed_SOURCES})
 target_link_libraries(qtests

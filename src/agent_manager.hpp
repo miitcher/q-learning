@@ -35,8 +35,8 @@ public:
     Creates and runs threads that contain an agent and its simulation.
     The threads use agentTask as their task.
     runMode has modes:
-        1: Controll from command line.
-        2: Controll from GUI (Not implemented)
+        1: Control from command line.
+        2: Control from GUI (Not implemented)
     */
     void initRun(unsigned runMode);
 private:

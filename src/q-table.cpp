@@ -164,6 +164,7 @@ void Qtable::saveToFile(std::string filename) {
     catch (std::ifstream::failure e) {
         std::cerr << "Could not save to file";
     }
+    //std::cout << *this;//debug
 }
 
 // Generate new unique filename for Qtable.qtableFilename,

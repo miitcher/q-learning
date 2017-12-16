@@ -202,37 +202,3 @@ State Simulation::simulateAction(Action& action) {
     ResponsePacket responsePacket2(elbowID, convertedElbow);
     return {responsePacket0, responsePacket1, responsePacket2};
 }
-/*
-b2Body* forearm;
-b2Body* upperArm;
-b2Body* crawler;
-
-*/
-/*
-// USE 4 SPACES INSTEAD OF TABS!
-
-//get current position of crawler joints and location
-ResponsePacket getcrawlerstate(int responseid){
-    float elbowangle = elbow->GetJointAngle();
-    float shoulderangle = shoulder->GetJointAngle();
-    float crawlerposition = 0; //TODO get crawler position working
-    //actorid 1 = shoulder, 2 = elbow, 999 = position(x-coordinate);
-    if(responseid == 1){
-    ResponsePacket shoulderresponce(1,shoulderangle);
-    return shoulderresponce;
-    }
-    if(responseid == 2){
-    ResponsePacket elbowresponce(2,elbowangle);
-    return elbowresponce;
-    }
-    if(responseid == 999){
-    ResponsePacket locationresponce(999,crawlerposition);
-    return locationresponce;
-    }
-    else{
-    //returns empty responsepacket if called wrong responceid
-    return ResponcePacket(0,0);
-    }
-}
-*/
-
