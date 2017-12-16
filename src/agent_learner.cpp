@@ -154,16 +154,15 @@ std::vector<int> AgentLearner::createStateKeys2
 }
 
 int AgentLearner::quantiziseSensorInput(int sensorID, SensorInput sInput){
-    int input = static_cast<int>(sInput);
-    int minAngle;
-    int maxAngle;
+    float minAngle;
+    float maxAngle;
     int quantizationSteps;
     // have to search the information of the sensor
     bool found = false;
     for (auto sensor: getSensors()){
         if (sensorID == sensor.getID()){
-            minAngle = static_cast<int>(sensor.getMinAngle());
-            maxAngle = static_cast<int>(sensor.getMaxAngle());
+            minAngle = sensor.getMinAngle();
+            maxAngle = sensor.getMaxAngle();
             quantizationSteps = sensor.getQuantizationSteps();
             found = true;
             break;
@@ -173,10 +172,14 @@ int AgentLearner::quantiziseSensorInput(int sensorID, SensorInput sInput){
         throw std::invalid_argument("Sensor ID does not belong to this agent");
     }
     // max angle is exclusive and min angle inclusive
-    if(input < minAngle || input >= maxAngle){
-        throw std::out_of_range("Sensor input is not within correct range");
+    if(sInput < minAngle || sInput >= maxAngle){
+        throw std::out_of_range("Sensor input is not within correct range: "
+                     + std::to_string(minAngle) + " to " +
+                       std::to_string(maxAngle) + ", input: " +
+                                                std::to_string(sInput));
     }
-    int scaled = (quantizationSteps*(input-minAngle)) / (maxAngle - minAngle);
+    int scaled = static_cast<int>((quantizationSteps*(sInput-minAngle))
+                                        / (maxAngle - minAngle));
     return scaled;
 }
 

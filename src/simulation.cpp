@@ -88,7 +88,7 @@ Simulation::Simulation(unsigned& agentID,
         b2Body* upperArm = NULL;
         myBodyDef.type = b2_dynamicBody;   //this will be a dynamic body
         myBodyDef.position.Set(4, 2);      //set the starting position
-        myBodyDef.angle = 0;               //set the starting angle
+        myBodyDef.angle = -0.01;               //set the starting angle
         upperArm = m_world->CreateBody(&myBodyDef);
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
@@ -100,7 +100,7 @@ Simulation::Simulation(unsigned& agentID,
         b2Body* forearm = NULL;
         myBodyDef.type = b2_dynamicBody;  //this will be a dynamic body
         myBodyDef.position.Set(7, 2);     //set the starting position
-        myBodyDef.angle = 0;              //set the starting angle
+        myBodyDef.angle = -0.01;              //set the starting angle
         forearm = m_world->CreateBody(&myBodyDef);
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
@@ -114,8 +114,8 @@ Simulation::Simulation(unsigned& agentID,
         shoulderJointDef.collideConnected = false;
         shoulderJointDef.enableMotor = true;
         shoulderJointDef.enableLimit = true;
-        shoulderJointDef.lowerAngle = shoulderMinAngle;
-        shoulderJointDef.upperAngle = shoulderMaxAngle;
+        shoulderJointDef.lowerAngle = shoulderMinAngle + 0.2;
+        shoulderJointDef.upperAngle = shoulderMaxAngle - 0.3; // max angle is exclusive
         shoulderJointDef.maxMotorTorque = 500;
         //the top right corner of the body of crawler
         shoulderJointDef.localAnchorA.Set(3,1);
@@ -129,8 +129,8 @@ Simulation::Simulation(unsigned& agentID,
         elbowJointDef.collideConnected = false;
         elbowJointDef.enableMotor = true;
         elbowJointDef.enableLimit = true;
-        elbowJointDef.lowerAngle = elbowMinAngle;
-        elbowJointDef.upperAngle = elbowMaxAngle;
+        elbowJointDef.lowerAngle = elbowMinAngle + 0.2;
+        elbowJointDef.upperAngle = elbowMaxAngle - 0.3;
         elbowJointDef.maxMotorTorque = 500;
         elbowJointDef.localAnchorA.Set(-1.5,0);     //left end of forearm
         elbowJointDef.localAnchorB.Set(1.5,0);      //right end of upperarm

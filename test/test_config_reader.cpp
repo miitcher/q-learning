@@ -16,14 +16,14 @@ TEST(test_config_reader, test_readAgentConfigFile) {
         actors, sensors, agentShape, agentCount, qtableFilename, drawGraphics);
 
     // Actor 0
-    EXPECT_EQ(actors[0].getID(), 0);
+    EXPECT_EQ(actors[0].getID(), 1);
     EXPECT_EQ(actors[0].getQuantizationSteps(), 256);
-    EXPECT_EQ(actors[0].getMinAngle(), 0.0);
+    EXPECT_EQ(actors[0].getMinAngle(), -1);
 
     // Sensor 1
-    EXPECT_EQ(sensors[1].getID(), 1);
+    EXPECT_EQ(sensors[1].getID(), 2);
     EXPECT_EQ(sensors[1].getQuantizationSteps(), 512);
-    EXPECT_EQ(sensors[1].getMaxAngle(), float(200));
+    EXPECT_EQ(sensors[1].getMaxAngle(), float(2.5));
 
     // The other variables.
     EXPECT_EQ(agentShape, 2); // TODO: Define agentShape for Box2D.

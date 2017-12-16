@@ -21,9 +21,6 @@ typedef int AgentShape;
 // Shows the wanted behaviour.
 class Simulation {
 public:
-
-    b2World* m_world;
-
     Simulation(unsigned& agentID,
         std::vector<Actor>& actors, std::vector<Sensor>& sensors,
         AgentShape& agentShape, bool drawGraphics);
@@ -65,18 +62,19 @@ private:
     AgentShape& agentShape;
     bool drawGraphics;
 
+    b2World* m_world;
     b2Body* crawler;
     b2Body* forearm;
     b2Body* upperarm;
     b2RevoluteJoint* shoulder;
     b2RevoluteJoint* elbow;
 
-    int shoulderID ;
-    int elbowID ;
+    int shoulderID;
+    int elbowID;
     float shoulderMinAngle;
     float elbowMinAngle ;
-    float shoulderMaxAngle ;
-    float elbowMaxAngle ;
+    float shoulderMaxAngle;
+    float elbowMaxAngle;
 
     std::thread testbedThread;
 };
