@@ -72,8 +72,10 @@ private:
     float elbowMinAngle;
     float shoulderMaxAngle;
     float elbowMaxAngle;
+    float shoulderqsteps;
     int shoulderID;
     int elbowID;
+    int simsteps;
 
     std::thread testbedThread;
 };

@@ -31,6 +31,7 @@ Simulation::Simulation(unsigned& agentID,
         if (actor.getID() == 1){
             shoulderMinAngle = actor.getMinAngle();
             shoulderMaxAngle = actor.getMaxAngle();
+            shoulderqsteps = actor.getQuantizationSteps();
             foundShoulder = true;
         }
         else if(actor.getID() == 2){
@@ -39,6 +40,10 @@ Simulation::Simulation(unsigned& agentID,
             foundElbow = true;
         }
     }
+    //calculate necessary amount of simulation steps per quantization step
+    simsteps = floor(1 + ((shoulderMaxAngle - shoulderMinAngle)/shoulderqsteps)/0.0333);
+
+
     if (!foundShoulder){
         throw std::invalid_argument(
     "Shoulder actor of the crawler was not found. Shoulder should have ID 1.");
@@ -120,7 +125,7 @@ Simulation::Simulation(unsigned& agentID,
 
         // the angle of the joints go beyond the lowerAngle and upperAngle,
         // which is suboptimal.
-        shoulderJointDef.lowerAngle = shoulderMinAngle + 0.2;
+        shoulderJointDef.lowerAngle = shoulderMinAngle + 0.3;
         shoulderJointDef.upperAngle = shoulderMaxAngle - 0.3;
         shoulderJointDef.maxMotorTorque = 500;
         //the top right corner of the body of crawler
@@ -135,7 +140,7 @@ Simulation::Simulation(unsigned& agentID,
         elbowJointDef.collideConnected = false;
         elbowJointDef.enableMotor = true;
         elbowJointDef.enableLimit = true;
-        elbowJointDef.lowerAngle = elbowMinAngle + 0.2;
+        elbowJointDef.lowerAngle = elbowMinAngle + 0.3;
         elbowJointDef.upperAngle = elbowMaxAngle - 0.3;
         elbowJointDef.maxMotorTorque = 500;
         elbowJointDef.localAnchorA.Set(1.5,0);      //right end of upperarm
@@ -212,10 +217,11 @@ State Simulation::simulateAction(Action& action) {
     // This function simulates the physics for some time.
     // If timeStep is increased, joints go out of their range!!!!!!!!!!!!
     // Which is suboptimal.
-
-    for(int i = 0; i < 5; i++){
+    
+    for(int i = 0; i < simsteps; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
-        //usleep(150);
+        //usleep(15); //use only if experiencing unstability, 
+        //greatly reduces speed of simulation
     }
 
     return getState();
