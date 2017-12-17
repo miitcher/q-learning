@@ -18,17 +18,11 @@ Directory structure:
   * `build/` -- Here the project is built.
 
 
-## Compiling the project and tests ##
+## Build-instructions: Compiling the project and tests ##
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
 * Install required packages if it's not installed already
-`sudo apt install cmake libcairo2-dev freeglut3-dev libxi-dev`
-
-(
-* Packages earlier used by Box2D:
-`freeglut3-dev`
-`libxi-dev`
-)
+`sudo apt install cmake libcairo2-dev`
 
 * Move to the build folder in the q-learning-9 folder.
 `cd q-learning-9/build/`
