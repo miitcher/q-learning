@@ -62,7 +62,7 @@ Simulation::Simulation(unsigned& agentID,
         grounddef.position.Set(0.0f, 0.0f);
         ground = m_world->CreateBody(&grounddef);
         b2EdgeShape shape;
-        shape.Set(b2Vec2(-4000.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+        shape.Set(b2Vec2(-40000.0f, 0.0f), b2Vec2(40.0f, 0.0f));
         ground->CreateFixture(&shape, 0.0f);
         //b2Vec2 gposition = ground->GetPosition();
         //std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
@@ -202,7 +202,7 @@ State Simulation::simulateAction(Action& action) {
 
     for(int i = 0; i < 5; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
-        usleep(15000);
+        usleep(150);
     }
 
 
