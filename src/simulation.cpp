@@ -2,15 +2,12 @@
 #include "interactor.hpp"
 #include <vector>
 #include <stdexcept>
-#include <Box2D/Box2D.h>
 #include <stdio.h>
-#include <thread>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
 #include <iomanip>
-#include "Testbed/Framework/TestbedMain.h"
-
+#include <Box2D/Box2D.h>
 
 Simulation::Simulation(unsigned& agentID,
     std::vector<Actor>& actors, std::vector<Sensor>& sensors,
@@ -52,7 +49,6 @@ Simulation::Simulation(unsigned& agentID,
         throw std::invalid_argument(
     "Elbow actor of the crawler was not found. Elbow should have ID 2.");
     }
-
 
     //create world with gravity
     b2Vec2 gravity;
