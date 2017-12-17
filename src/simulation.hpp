@@ -66,6 +66,11 @@ private:
     b2RevoluteJoint* shoulder;
     b2RevoluteJoint* elbow;
 
+
+
+    float timeStep;
+    int velocityIterations;
+    int positionIterations;
     float shoulderMinAngle;
     float elbowMinAngle;
     float shoulderMaxAngle;

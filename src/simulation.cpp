@@ -54,7 +54,11 @@ Simulation::Simulation(unsigned& agentID,
     b2Vec2 gravity;
     gravity.Set(0.0f, -10.0f);
     m_world = new b2World(gravity);
-    //std::cout << "world created, ";
+
+    //set simulation parameters
+    timeStep = 1.0f / 60.0f;
+    velocityIterations = 6;
+    positionIterations = 2;
 
     //Create floor
     ground = NULL;
@@ -85,7 +89,7 @@ Simulation::Simulation(unsigned& agentID,
         b2FixtureDef boxFixtureDef;
         boxFixtureDef.shape = &boxShape;
         boxFixtureDef.density = 1;
-        boxFixtureDef.friction = 0.5f;
+        boxFixtureDef.friction = 0.2f;
         crawler->CreateFixture(&boxFixtureDef);
 
         // create upperarm
@@ -97,7 +101,7 @@ Simulation::Simulation(unsigned& agentID,
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
         boxFixtureDef.density = 1;
-        boxFixtureDef.friction = 100;
+        boxFixtureDef.friction = 1;
         upperArm->CreateFixture(&boxFixtureDef);
 
         // create forearm
@@ -109,6 +113,7 @@ Simulation::Simulation(unsigned& agentID,
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
         boxFixtureDef.density = 1;
+        boxFixtureDef.friction = 100;
         forearm->CreateFixture(&boxFixtureDef);
 
         //create shoulder joint and set its properties
@@ -171,13 +176,38 @@ State Simulation::getState() {
 }
 
 void Simulation::moveAgentToStartPosition() {
-    /*
-    TODO: remove this comment.
-    I googled "box2d move body to position" and found:
-    https://stackoverflow.com/questions/6170087/move-body-to-a-specific-position-box2d
-    I did not test anyting.
-    -Mikael
-    */
+	//set all parts of crawler to beginning
+	
+	//lift crawler up for transport
+    for(int i = 0; i < 60; i++){	
+    	crawler->SetLinearVelocity( b2Vec2( 0, 1 ) );
+    	m_world->Step(timeStep, velocityIterations, positionIterations);
+    }    
+
+    while(crawler->GetPosition().x > 10){	
+    	crawler->SetLinearVelocity( b2Vec2( -120, 0 ) );
+    	m_world->Step(timeStep, velocityIterations, positionIterations);
+    }
+    while(crawler->GetPosition().x > 0){	
+    	crawler->SetLinearVelocity( b2Vec2( -1, 0 ) );
+    	m_world->Step(timeStep, velocityIterations, positionIterations);
+    }    
+    crawler->SetLinearVelocity( b2Vec2( 0, 0 ) );
+    for(int i = 0; i < 60; i++){	
+    	m_world->Step(timeStep, velocityIterations, positionIterations);
+    }
+    //float crawlerLoca = crawler->GetPosition().x;
+    //std::cout << "cloca" << crawlerLoca << std::endl;
+
+
+
+	   // crawler.SetTransform(b2Vec2(0,1),0);
+	   // upperarm.SetTransform(b2Vec2(4,2),0);
+	   // forearm.SetTransform(b2Vec2(7,2),0);
+    
+
+
+	return;
 }
 
 State Simulation::simulateAction(Action& action) {
@@ -207,16 +237,12 @@ State Simulation::simulateAction(Action& action) {
         }
     }
 
-    float timeStep = 1.0f / 60.0f;
-    int velocityIterations = 6;
-    int positionIterations = 2;
     // This function simulates the physics for some time.
     // If timeStep is increased, joints go out of their range!!!!!!!!!!!!
     // Which is suboptimal.
-
     for(int i = 0; i < simsteps; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
-        //usleep(15); //use only if experiencing unstability,
+        //usleep(150); //use only if experiencing unstability,
         //greatly reduces speed of simulation
     }
 
