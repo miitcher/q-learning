@@ -21,7 +21,7 @@ Directory structure:
 ## Compiling the project and tests ##
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
-* Install required packages if it's not installed already
+* Install required packages if they are not installed already
 `sudo apt install cmake libcairo2-dev freeglut3-dev libxi-dev`
 
 (

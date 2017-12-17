@@ -295,11 +295,11 @@ void AgentLearner::updateQtable(QReward const& reward) {
 
         qtable.updateQvalue(previousStateKey, currentActionKey, newQValue);
 
- /*     // debug
-        std::cout   << "Old q-value: " << oldQValue << std::endl
+      // debug
+  /*      std::cout   << "Old q-value: " << oldQValue << std::endl
                     << "max q-value for the next state: "
                     << maxQvalueForCurrentState << std::endl
-        std::cout            << "reward: " << reward << std::endl ;
+                    << "reward: " << reward << std::endl
                     << "alpha, gamma: " << learningRate << ", "
                     << discountFactor << std::endl
                     << "new q-value: " << newQValue << std::endl<< std::endl;
@@ -317,7 +317,7 @@ QReward AgentLearner::calculateReward(SensorInput distanceTravelled){
 
     //std::cout << "distace travelled: " << distanceTravelled << std::endl;
 
-    return static_cast<QReward>(distanceTravelled);
+    return static_cast<QReward>(distanceTravelled + 1);
 }
 
 Action AgentLearner::chooseBestAction() {
