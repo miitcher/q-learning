@@ -61,10 +61,10 @@ private:
     b2RevoluteJoint* shoulder;
     b2RevoluteJoint* elbow;
 
-    int shoulderMinAngle;
-    int elbowMinAngle;
-    int shoulderMaxAngle;
-    int elbowMaxAngle;
+    float shoulderMinAngle;
+    float elbowMinAngle;
+    float shoulderMaxAngle;
+    float elbowMaxAngle;
     int shoulderID;
     int elbowID;
 
