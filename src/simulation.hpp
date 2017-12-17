@@ -48,19 +48,6 @@ private:
     FRIEND_TEST(test_Simulation, test_constructor);
     FRIEND_TEST(test_Simulation, test_simulateAction);
 
-    //get current position of crawler joints and location,
-    // sensorID IS NOT STATIC FOR THE JOINTS
-    // Use same terms as in the other code!
-    // The XAxisSensor has sensorID=999.
-    ResponsePacket getcrawlerstate(int sensorID);
-
-    //set crawler to turn joints to desired position
-    void setCrawlerState(ActorAction);
-
-    //run single step in box2d simulation
-    // Explain what a step is!
-    void runSimulationStep();
-
     std::vector<Actor> actors;
     std::vector<Sensor> sensors;
     AgentShape& agentShape;
@@ -74,12 +61,12 @@ private:
     b2RevoluteJoint* shoulder;
     b2RevoluteJoint* elbow;
 
+    int shoulderMinAngle;
+    int elbowMinAngle;
+    int shoulderMaxAngle;
+    int elbowMaxAngle;
     int shoulderID;
     int elbowID;
-    float shoulderMinAngle;
-    float elbowMinAngle ;
-    float shoulderMaxAngle;
-    float elbowMaxAngle;
 
     std::thread testbedThread;
 };

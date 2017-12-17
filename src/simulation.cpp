@@ -16,13 +16,35 @@ Simulation::Simulation(unsigned& agentID,
     : actors(actors), sensors(sensors), agentShape(agentShape),
     drawGraphics(drawGraphics)
 {
+    // At the moment, this class is combatible only with crawlers that have
+    // two joints. The one connected to the body is called shoulder and the
+    // other is called elbow.
 
-    shoulderID =          actors[0].getID();
-    elbowID =             actors[1].getID();
-    shoulderMinAngle =    actors[0].getMinAngle();
-    elbowMinAngle =       actors[1].getMinAngle();
-    shoulderMaxAngle =    actors[0].getMaxAngle();
-    elbowMaxAngle =       actors[1].getMaxAngle();
+    // Shoulder of the crawler has ID 1 and elbow has ID 2
+    shoulderID = 1;
+    elbowID =    2;
+    bool foundShoulder = false;
+    bool foundElbow = false;
+    for (auto actor : actors){
+        if (actor.getID() == 1){
+            shoulderMinAngle = actor.getMinAngle();
+            shoulderMaxAngle = actor.getMaxAngle();
+            foundShoulder = true;
+        }
+        else if(actor.getID() == 2){
+            elbowMinAngle = actor.getMinAngle();
+            elbowMaxAngle = actor.getMaxAngle();
+            foundElbow = true;
+        }
+    }
+    if (!foundShoulder){
+        throw std::invalid_argument(
+    "Shoulder actor of the crawler was not found. Shoulder should have ID 1.");
+    }
+    if (!foundElbow){
+        throw std::invalid_argument(
+    "Elbow actor of the crawler was not found. Elbow should have ID 2.");
+    }
 
 
     //create world with gravity
@@ -40,7 +62,7 @@ Simulation::Simulation(unsigned& agentID,
         b2EdgeShape shape;
         shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
         ground->CreateFixture(&shape, 0.0f);
-        b2Vec2 gposition = ground->GetPosition();
+        //b2Vec2 gposition = ground->GetPosition();
         //std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
         //            << gposition.y << std::endl;
     }
@@ -67,7 +89,7 @@ Simulation::Simulation(unsigned& agentID,
         b2Body* upperArm = NULL;
         myBodyDef.type = b2_dynamicBody;   //this will be a dynamic body
         myBodyDef.position.Set(4, 2);      //set the starting position
-        myBodyDef.angle = -0.01;               //set the starting angle
+        myBodyDef.angle = 0;               //set the starting angle
         upperArm = m_world->CreateBody(&myBodyDef);
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
@@ -79,7 +101,7 @@ Simulation::Simulation(unsigned& agentID,
         b2Body* forearm = NULL;
         myBodyDef.type = b2_dynamicBody;  //this will be a dynamic body
         myBodyDef.position.Set(7, 2);     //set the starting position
-        myBodyDef.angle = -0.01;              //set the starting angle
+        myBodyDef.angle = 0;              //set the starting angle
         forearm = m_world->CreateBody(&myBodyDef);
         boxShape.SetAsBox(1.5,0.1);
         boxFixtureDef.shape = &boxShape;
@@ -93,6 +115,9 @@ Simulation::Simulation(unsigned& agentID,
         shoulderJointDef.collideConnected = false;
         shoulderJointDef.enableMotor = true;
         shoulderJointDef.enableLimit = true;
+
+        // the angle of the joints go beyond the lowerAngle and upperAngle,
+        // which is suboptimal.
         shoulderJointDef.lowerAngle = shoulderMinAngle + 0.2;
         shoulderJointDef.upperAngle = shoulderMaxAngle - 0.3;
         shoulderJointDef.maxMotorTorque = 500;
@@ -118,6 +143,9 @@ Simulation::Simulation(unsigned& agentID,
 }
 
 State Simulation::moveAgentToBeginning() {
+    // The crawler is initialized in the correct position in the constructor,
+    // so this function does not change the position at the moment.
+
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
     SensorInput convertedElbow = static_cast<SensorInput>(elbowangle);
@@ -166,12 +194,14 @@ State Simulation::simulateAction(Action& action) {
     float timeStep = 1.0f / 60.0f;
     int velocityIterations = 6;
     int positionIterations = 2;
+    // This function simulates the physics for some time.
+    // If timeStep is increased, joints go out of their range!!!!!!!!!!!!
+    // Which is suboptimal.
     m_world->Step(timeStep, velocityIterations, positionIterations);
 
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
     SensorInput convertedElbow = static_cast<SensorInput>(elbowangle);
-
     float shoulderangle = shoulder->GetJointAngle();
     SensorInput convertedShoulder = static_cast<SensorInput>(shoulderangle);
 
@@ -179,7 +209,14 @@ State Simulation::simulateAction(Action& action) {
     float crawlerLocation = crawler->GetPosition().x;
     SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
 
-    // create a state to return to the learning classes
+/*  // debug
+    std::cout   << "location:      " << convertedLocation << std::endl
+                << "elbowangle:    " << elbowangle << std::endl
+                << "shoulderangle: " << shoulderangle << std::endl;
+*/
+
+    // create a state to return to the AgentLearner receiveSimulationResponse-
+    // function
     ResponsePacket responsePacket0(999, convertedLocation);
     ResponsePacket responsePacket1(shoulderID, convertedShoulder);
     ResponsePacket responsePacket2(elbowID, convertedElbow);

@@ -15,7 +15,7 @@ friend class test_case_name##_##test_name##_Test
 // The state and reward are calculated by the agent from the simulation's
 // response.
 typedef int QState;
-typedef int QReward;
+typedef double QReward;
 
 class AgentLearner {
 public:

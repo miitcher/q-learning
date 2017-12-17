@@ -291,7 +291,7 @@ void AgentLearner::updateQtable(QReward const& reward) {
         std::cout   << "Old q-value: " << oldQValue << std::endl
                     << "max q-value for the next state: "
                     << maxQvalueForCurrentState << std::endl
-                    << "reward: " << reward << std::endl
+        std::cout            << "reward: " << reward << std::endl ;
                     << "alpha, gamma: " << learningRate << ", "
                     << discountFactor << std::endl
                     << "new q-value: " << newQValue << std::endl<< std::endl;
@@ -306,6 +306,9 @@ void AgentLearner::updateQtable(QReward const& reward) {
 QReward AgentLearner::calculateReward(SensorInput distanceTravelled){
     // This should be adjusted to yield a reasonable value.
     // At the moment does only a type conversion
+
+    //std::cout << "distace travelled: " << distanceTravelled << std::endl;
+
     return static_cast<QReward>(distanceTravelled);
 }
 
