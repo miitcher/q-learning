@@ -67,7 +67,7 @@ Simulation::Simulation(unsigned& agentID,
         grounddef.position.Set(0.0f, 0.0f);
         ground = m_world->CreateBody(&grounddef);
         b2EdgeShape shape;
-        shape.Set(b2Vec2(-40000.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+        shape.Set(b2Vec2(-40000.0f, 0.0f), b2Vec2(40000.0f, 0.0f));
         ground->CreateFixture(&shape, 0.0f);
         //b2Vec2 gposition = ground->GetPosition();
         //std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
@@ -217,10 +217,10 @@ State Simulation::simulateAction(Action& action) {
     // This function simulates the physics for some time.
     // If timeStep is increased, joints go out of their range!!!!!!!!!!!!
     // Which is suboptimal.
-    
+
     for(int i = 0; i < simsteps; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
-        //usleep(15); //use only if experiencing unstability, 
+        //usleep(15); //use only if experiencing unstability,
         //greatly reduces speed of simulation
     }
 
