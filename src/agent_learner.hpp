@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cairo.h>
+
 
 // Add these two lines and FRIEND_TEST declarations in private to test
 // private methods

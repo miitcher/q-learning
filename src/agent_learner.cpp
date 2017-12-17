@@ -99,6 +99,14 @@ AgentLearner::AgentLearner(std::vector<Actor> const& actors,
     // Initialize the Q-table
     qtable = Qtable(stateKeys, actionKeys, qtableFilename);
 
+/*
+    for (auto move: actors[0].getMoves()){
+        std::cout << move << std::endl;
+    }
+    for (auto move: actors[1].getMoves()){
+        std::cout << move << std::endl;
+    }
+*/
 }
 
 AgentLearner::AgentLearner(std::vector<Actor> const& actors,

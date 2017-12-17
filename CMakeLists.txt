@@ -7,8 +7,10 @@ ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 CMAKE_MINIMUM_REQUIRED(VERSION 3.7.2)
 PROJECT(q-learning-9)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 # Set compiler and linker flags
-add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread)
+add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread -I /usr/include/cairo/ -L /usr/lib -lcairo )
 
 # TODO: Add Doxygen
 # Build Doxygen documentation
@@ -41,10 +43,12 @@ add_subdirectory(lib/Box2D_v2.3.0)
 include_directories(
     ${OPENGL_INCLUDE_DIR}
     ${Box2D_SOURCE_DIR}
+    ${Cairo_INCLUDE_DIRS}
 )
 
 # Add dependencies (for graphics)
 find_package(OpenGL REQUIRED)
+find_package(Cairo)
 add_subdirectory(lib/Box2D_v2.3.0/freeglut)
 add_subdirectory(lib/Box2D_v2.3.0/glui)
 
@@ -63,8 +67,10 @@ target_link_libraries(
     Box2D
     freeglut_static
     glui
+    cairo
     ${ADDITIONAL_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    ${Cairo_LIBRARIES}
     X11)
 
 # Add tests that use googletest

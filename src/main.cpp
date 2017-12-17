@@ -6,9 +6,30 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <cairo.h>
 
 // The main will controll IO and graphics, and start the program.
 int main() {
+
+
+    // trying the cairo library
+    // this prints hello.png in the build folder
+    cairo_surface_t *surface =
+            cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 240, 80);
+    cairo_t *cr =
+            cairo_create (surface);
+
+    cairo_select_font_face (cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size (cr, 32.0);
+    cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
+    cairo_move_to (cr, 10.0, 50.0);
+    cairo_show_text (cr, "Hello, world");
+
+    cairo_destroy (cr);
+    cairo_surface_write_to_png (surface, "hello.png");
+    cairo_surface_destroy (surface);
+
+
     std::cout << "--- q-learning-9 ---" << std::endl;
 
     // File that dictates the learning AgentLearner.
