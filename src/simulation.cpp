@@ -176,37 +176,28 @@ State Simulation::getState() {
 }
 
 void Simulation::moveAgentToStartPosition() {
-	//set all parts of crawler to beginning
+	//set all parts of crawler to beginning by giving them speed
 	
 	//lift crawler up for transport
     for(int i = 0; i < 60; i++){	
-    	crawler->SetLinearVelocity( b2Vec2( 0, 1 ) );
+    	crawler->SetLinearVelocity( b2Vec2( 0, 10 ) );
     	m_world->Step(timeStep, velocityIterations, positionIterations);
-    }    
-
-    while(crawler->GetPosition().x > 10){	
+    } 
+    //move crawler fast towards 0
+    while(crawler->GetPosition().x > 20){	
     	crawler->SetLinearVelocity( b2Vec2( -120, 0 ) );
     	m_world->Step(timeStep, velocityIterations, positionIterations);
     }
+    //let crawler fall to ground and stabilize   
+    crawler->SetLinearVelocity( b2Vec2( 0, 0 ) );
+    for(int i = 0; i < 600; i++){	
+    	m_world->Step(timeStep, velocityIterations, positionIterations);
+    }
+    //move crawler slow towards 0
     while(crawler->GetPosition().x > 0){	
     	crawler->SetLinearVelocity( b2Vec2( -1, 0 ) );
     	m_world->Step(timeStep, velocityIterations, positionIterations);
-    }    
-    crawler->SetLinearVelocity( b2Vec2( 0, 0 ) );
-    for(int i = 0; i < 60; i++){	
-    	m_world->Step(timeStep, velocityIterations, positionIterations);
-    }
-    //float crawlerLoca = crawler->GetPosition().x;
-    //std::cout << "cloca" << crawlerLoca << std::endl;
-
-
-
-	   // crawler.SetTransform(b2Vec2(0,1),0);
-	   // upperarm.SetTransform(b2Vec2(4,2),0);
-	   // forearm.SetTransform(b2Vec2(7,2),0);
-    
-
-
+    } 
 	return;
 }
 
