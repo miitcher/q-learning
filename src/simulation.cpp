@@ -7,6 +7,8 @@
 #include <thread>
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
+#include <iomanip>
 #include "Testbed/Framework/TestbedMain.h"
 
 
@@ -68,7 +70,7 @@ Simulation::Simulation(unsigned& agentID,
     }
 
     crawler = NULL;
-    forearm = NULL;
+    b2Body* forearm = NULL;
     upperarm = NULL;
     {
         // create main body of crawler
@@ -197,7 +199,12 @@ State Simulation::simulateAction(Action& action) {
     // This function simulates the physics for some time.
     // If timeStep is increased, joints go out of their range!!!!!!!!!!!!
     // Which is suboptimal.
-    m_world->Step(timeStep, velocityIterations, positionIterations);
+
+    for(int i = 0; i < 5; i++){
+        m_world->Step(timeStep, velocityIterations, positionIterations);
+        usleep(15000);
+    }
+
 
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
@@ -208,6 +215,9 @@ State Simulation::simulateAction(Action& action) {
     // Position on x-axis
     float crawlerLocation = crawler->GetPosition().x;
     SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
+ //   std::cout << std::fixed << std::setprecision(3) << "elbow:" 
+ //             << elbowangle << "R shoulder:" << shoulderangle 
+ //             << "R Xlocation" << crawlerLocation <<std::endl;
 
 /*  // debug
     std::cout   << "location:      " << convertedLocation << std::endl
