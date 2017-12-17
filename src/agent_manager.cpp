@@ -83,8 +83,12 @@ void agentTask(unsigned agentID,
     // Initiate variable.
     Action action;
 
-    // count used for debugging and testing.
     unsigned count = 0;
+    SensorInput currentLocation; // practically a double
+    // Used for showing the Agents learning amount. If the speed is constant
+    // and large, then the Agent has learnt an optimal "strategy".
+    double lastAgentXLocation = 0.0;
+    double timeDeltaBetweenSpeadReading = 5; // thousand counts
     while (true) {
         // The learning and simulation parts communicate.
         try {
@@ -97,6 +101,8 @@ void agentTask(unsigned agentID,
             std::cerr << "exeption when learning functions called from agentTask: "
                         << e.what() << '\n';
         }
+
+        currentLocation = agentLearner.getXAxisLocation();
 
         try {
 
@@ -130,7 +136,7 @@ void agentTask(unsigned agentID,
                 // No other Agent has reached the goal.
                 && !anAgentHasReachedTheGoal
                 // This Agent has reached the goal.
-                && agentLearner.getXAxisLocation() > agentXAxisLocationOfGoal)
+                && currentLocation > agentXAxisLocationOfGoal)
             {
                 if (useLogging) {
                     cout_mutex.lock();
@@ -268,12 +274,20 @@ void agentTask(unsigned agentID,
             break;
 
         if (useLogging) {
-            int loop_count_between_output = pow(10, 3) * 5;
+            int loop_count_between_output = pow(10, 3)
+                * timeDeltaBetweenSpeadReading;
             if (count % loop_count_between_output == 0) {
+                // v = d / t; time is X * 1000 count-units
+                float speed = ( currentLocation
+                    - lastAgentXLocation )
+                    / timeDeltaBetweenSpeadReading;
+                lastAgentXLocation = currentLocation;
+
                 cout_mutex.lock();
-                //std::cout << count / loop_count_between_output << std::endl;
                 std::cout << int(count / 1000) << "k: Agent_" << agentID
-                    << " X=" << agentLearner.getXAxisLocation() << std::endl;
+                    << " V=" << int(speed)
+                    << " X=" << currentLocation
+                    << std::endl;
                 cout_mutex.unlock();
             }
         }
