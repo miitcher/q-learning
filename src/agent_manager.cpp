@@ -13,6 +13,8 @@
 #include <atomic>
 #include <system_error>
 #include <fstream>
+#include <random>
+#include <sstream>
 
 // The filename for the fittest saved Q-table, that is used for the evolution
 // of the Agents, when multiple Agents are learning.
@@ -58,22 +60,117 @@ std::atomic_bool saveQtableInThread(false);
 std::atomic_bool useEvolution(true);
 std::atomic_bool anAgentHasReachedTheGoal(false);
 
+// log and debug are helper functions that manage thread safe writing to cout.
+void log(std::string str0, std::string str1, std::string str2, std::string str3) {
+    if (useLogging) {
+        cout_mutex.lock();
+        std::cout << str0 << str1 << str2 << str3 << std::endl;
+        cout_mutex.unlock();
+    }
+}
+
+void log(unsigned integer0, std::string str1, unsigned integer2, std::string str3) {
+    log(std::to_string(integer0), str1, std::to_string(integer2), str3);
+}
+
+void log(std::string str0) {
+    log(str0, "", "", "");
+}
+
+void debug(std::string str0, std::string str1, std::string str2) {
+    if (useDebugging) {
+        cout_mutex.lock();
+        std::cout << str0 << str1 << str2 << std::endl;
+        cout_mutex.unlock();
+    }
+}
+
+void debug(std::string str0, int integer1) {
+    debug(str0, std::to_string(integer1), "");
+}
+
+void debug(std::string str0, std::string str1) {
+    debug(str0, str1, "");
+}
+
+void debug(std::string str0) {
+    debug(str0, "", "");
+}
+
+void debug(int integer0, std::string str1) {
+    debug(std::to_string(integer0), str1, "");
+}
+
 void agentTask(unsigned agentID,
     std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
     bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable)
 {
-    //std::cout << "agentID: " << agentID << std::endl;
+    // This is in the Box2D units in the Simulation.
+    SensorInput agentXAxisLocationOfGoal = 30000;
 
-    //std::thread::id thisThreadId(std::this_thread::get_id());
-
-    // TODO (if time): Take the goal location as an input parameter.
-    // This is maby in the quantizised units???
-    SensorInput agentXAxisLocationOfGoal = 3000;
-
-    // Create AgeneLearner and Simulation that makes the Agent.
+    // Create AgentLearner and Simulation that makes the Agent.
     AgentLearner agentLearner(actors, sensors, qtableFilename);
     Simulation simulation(agentID, actors, sensors, agentShape, drawGraphics);
+
+    // Set Q-Learning function variables in AgentLearner when there are
+    // more than one Agent. Changes all Agents but the first.
+    if (agentID != 0) {
+        // Construct a trivial random generator engine from a time-based seed:
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine generator(seed);
+        std::uniform_int_distribution<int> distribution(0, 100);
+
+        // Semi random float in range [-0.25; 0.25]
+        float random_float = ( float(distribution(generator)) - 0.5 ) / 200.0;
+        //debug("random_float: ", std::to_string(random_float));
+
+        double discountFactor = agentLearner.getDiscountFactor();
+        double learningRate = agentLearner.getLearningRate();
+        double explorationFactor = agentLearner.getExplorationFactor();
+
+        /*
+        {
+        std::stringstream ss;
+        ss << "Agent_" << agentID << " QVars: " << discountFactor << "; "
+            << learningRate << "; " << explorationFactor;
+        debug(ss.str());
+        }
+        */
+
+        // Change the variables, but ceep them in the range [0,1].
+        discountFactor += random_float;
+        if (discountFactor < 0) {
+            discountFactor = 0.0;
+        } else if (discountFactor > 1) {
+            discountFactor = 1.0;
+        }
+
+        learningRate += random_float;
+        if (learningRate < 0) {
+            learningRate = 0.0;
+        } else if (learningRate > 1) {
+            learningRate = 1.0;
+        }
+
+        explorationFactor += random_float;
+        if (explorationFactor < 0) {
+            explorationFactor = 0.0;
+        } else if (explorationFactor > 1) {
+            explorationFactor = 1.0;
+        }
+
+        {
+        std::stringstream ss;
+        ss << "Agent_" << agentID << " QVars: " << discountFactor << "; "
+            << learningRate << "; " << explorationFactor;
+        debug(ss.str());
+        }
+
+        agentLearner.setDiscountFactor(discountFactor);
+        agentLearner.setLearningRate(learningRate);
+        agentLearner.setExplorationFactor(explorationFactor);
+    }
 
     // Have the Simulation:s and AgentLearner:s state at the beginning be
     // the same.
@@ -138,13 +235,8 @@ void agentTask(unsigned agentID,
                 // This Agent has reached the goal.
                 && currentLocation > agentXAxisLocationOfGoal)
             {
-                if (useLogging) {
-                    cout_mutex.lock();
-                    std::cout << count << " Agent_" << agentID
-                        << " has reached the goal, the agents will now evolve"
-                        << std::endl;
-                    cout_mutex.unlock();
-                }
+                log(count, " Agent_", agentID,
+                    " has reached the goal, the agents will now evolve");
 
                 // This thread contains the fittest Agent this generation.
                 anAgentHasReachedTheGoal = true;
@@ -153,13 +245,7 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex.lock();
                 // Remove the reserved file if it exist. It should not.
                 if (std::ifstream(evolutionFittestQtableFilename)) {
-                    if (useDebugging) {
-                        cout_mutex.lock();
-                        std::cout << agentID
-                            << " Evolution fittest: Remove existing qtable"
-                            << std::endl;
-                        cout_mutex.unlock();
-                    }
+                    debug(agentID, " Evolution fittest: Remove existing qtable");
                     std::remove(evolutionFittestQtableFilename.c_str());
                     if (std::ifstream(evolutionFittestQtableFilename)) {
                         // End execution and throw error, when the file is not deleted.
@@ -168,12 +254,7 @@ void agentTask(unsigned agentID,
                             + evolutionFittestQtableFilename + "' not removed.");
                     }
                 }
-                if (useDebugging) {
-                    cout_mutex.lock();
-                    std::cout << agentID << " Evolution fittest: Save qtable"
-                        << std::endl;
-                    cout_mutex.unlock();
-                }
+                debug(agentID, " Evolution fittest: Save qtable");
                 agentLearner.saveQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
 
@@ -183,13 +264,8 @@ void agentTask(unsigned agentID,
                 }
 
                 // Remove the fittest Q-table file.
+                debug(agentID, " Evolution fittest: Remove qtable");
                 evolutionFittestFile_mutex.lock();
-                if (useDebugging) {
-                    cout_mutex.lock();
-                    std::cout << agentID << " Evolution fittest: Remove qtable"
-                        << std::endl;
-                    cout_mutex.unlock();
-                }
                 std::remove(evolutionFittestQtableFilename.c_str());
                 if (std::ifstream(evolutionFittestQtableFilename)) {
                     // End execution and throw error, when the file is not deleted.
@@ -235,13 +311,8 @@ void agentTask(unsigned agentID,
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
 
                 // Set the Q-table for all the Agents to the fittest agents Q-table.
+                debug(agentID, " Evolution other: Load qtable");
                 evolutionFittestFile_mutex.lock();
-                if (useDebugging) {
-                    cout_mutex.lock();
-                    std::cout << agentID << " Evolution other: Load qtable"
-                        << std::endl;
-                    cout_mutex.unlock();
-                }
                 agentLearner.loadQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
 
@@ -283,6 +354,8 @@ void agentTask(unsigned agentID,
                     / timeDeltaBetweenSpeadReading;
                 lastAgentXLocation = currentLocation;
 
+                // Print the current speed and location for the Agent.
+                // Used instead of graphics.
                 cout_mutex.lock();
                 std::cout << int(count / 1000) << "k: Agent_" << agentID
                     << " V=" << int(speed)
@@ -321,20 +394,12 @@ AgentManager::AgentManager(std::vector<Actor>& actors,
 
 void AgentManager::pause_threads() {
     pauseThreads = true;
-    if (useLogging) {
-        cout_mutex.lock();
-        std::cout << "Paused" << std::endl;
-        cout_mutex.unlock();
-    }
+    log("Paused");
 }
 
 void AgentManager::resume_threads() {
     pauseThreads = false;
-    if (useLogging) {
-        cout_mutex.lock();
-        std::cout << "Resumed" << std::endl;
-        cout_mutex.unlock();
-    }
+    log("Resumed");
 }
 
 // Helper function for AgentManager::join_threads().
@@ -347,10 +412,8 @@ void AgentManager::join_threads() {
         // Remove all the joined threads.
         agentThreads.clear();
     } catch (std::system_error& e) {
-        cout_mutex.lock();
         std::cout << "Error during joining of threads: " << e.what()
             << std::endl;
-        cout_mutex.unlock();
     }
 }
 
@@ -358,11 +421,7 @@ void AgentManager::stop_threads() {
     pauseThreads = false;
     endThreads = true;
     join_threads();
-    if (useLogging) {
-        cout_mutex.lock();
-        std::cout << "Stopped" << std::endl;
-        cout_mutex.unlock();
-    }
+    log("Stopped");
 }
 
 void AgentManager::createAndStartThreads() {
@@ -455,11 +514,7 @@ std::string AgentManager::saveQtable() {
         std::this_thread::sleep_for (std::chrono::milliseconds(100));
     }
 
-    if (useLogging) {
-        cout_mutex.lock();
-        std::cout << "Paused" << std::endl;
-        cout_mutex.unlock();
-    }
+    log("Paused");
 
     savedQtableFilename_mutex.lock();
     std::string savedFilename = savedQtableFilename;
