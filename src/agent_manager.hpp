@@ -34,11 +34,9 @@ public:
     /**
     Creates and runs threads that contain an agent and its simulation.
     The threads use agentTask as their task.
-    runMode has modes:
-        1: Control from command line.
-        2: Control from GUI (Not implemented)
+    The run is controled from thecommand line.
     */
-    void initRun(unsigned runMode);
+    void initRun();
 private:
     // For access to private methods in AgentManager from googletest.
     FRIEND_TEST(test_agentManager, test_initRun_smoketest);

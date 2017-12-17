@@ -37,8 +37,7 @@ int main() {
         qtableFilename, drawGraphics);
 
     // Start learning
-    unsigned runMode = 1;
-    agentManager.initRun(runMode);
+    agentManager.initRun();
 
     return 0;
 }

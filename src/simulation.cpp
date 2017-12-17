@@ -202,7 +202,7 @@ State Simulation::simulateAction(Action& action) {
 
     for(int i = 0; i < 5; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
-        usleep(150);
+        //usleep(150);
     }
 
 
@@ -216,10 +216,10 @@ State Simulation::simulateAction(Action& action) {
     float crawlerLocation = crawler->GetPosition().x;
     SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
 
-    //debug 
+    //debug
     /*
-    std::cout << std::fixed << std::setprecision(3) << "elbow:" 
-        << elbowangle << "R shoulder:" << shoulderangle 
+    std::cout << std::fixed << std::setprecision(3) << "elbow:"
+        << elbowangle << "R shoulder:" << shoulderangle
         << "R Xlocation " << crawlerLocation <<std::endl;
     */
 
