@@ -70,7 +70,7 @@ Simulation::Simulation(unsigned& agentID,
     }
 
     crawler = NULL;
-    b2Body* forearm = NULL;
+    forearm = NULL;
     upperarm = NULL;
     {
         // create main body of crawler
@@ -215,15 +215,15 @@ State Simulation::simulateAction(Action& action) {
     // Position on x-axis
     float crawlerLocation = crawler->GetPosition().x;
     SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
- //   std::cout << std::fixed << std::setprecision(3) << "elbow:" 
- //             << elbowangle << "R shoulder:" << shoulderangle 
- //             << "R Xlocation" << crawlerLocation <<std::endl;
 
-/*  // debug
-    std::cout   << "location:      " << convertedLocation << std::endl
-                << "elbowangle:    " << elbowangle << std::endl
-                << "shoulderangle: " << shoulderangle << std::endl;
-*/
+    //debug 
+    /*
+    std::cout << std::fixed << std::setprecision(3) << "elbow:" 
+        << elbowangle << "R shoulder:" << shoulderangle 
+        << "R Xlocation " << crawlerLocation <<std::endl;
+    */
+
+
 
     // create a state to return to the AgentLearner receiveSimulationResponse-
     // function
