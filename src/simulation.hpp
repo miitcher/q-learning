@@ -30,11 +30,18 @@ public:
     };
 
     /*
-    Moves the Agent to the starting position in Box2D and returns the State.
-    The State is used by the AgentLearner to have a matching starting position
-    with the Simulation.
+    Returns the Box2D State.
     */
-    State moveAgentToBeginning();
+    State getState();
+
+    /**
+    The Agent is moved stright to the starting position.
+    This moving disregards the physics. The moving is practically the Agent
+    teleporting to the starting position, with its arm in the starting
+    position in a resting state (velosity is zero).
+    This function used by the AgentManager when evolving Agents.
+    */
+    void moveAgentToStartPosition();
 
     /*
     Receives an Action from the AgentLearner.

@@ -144,14 +144,10 @@ Simulation::Simulation(unsigned& agentID,
     }
 }
 
-State Simulation::moveAgentToBeginning() {
-    // The crawler is initialized in the correct position in the constructor,
-    // so this function does not change the position at the moment.
-
+State Simulation::getState() {
     // Angles of joints in radians
     float elbowangle = elbow->GetJointAngle();
     SensorInput convertedElbow = static_cast<SensorInput>(elbowangle);
-
     float shoulderangle = shoulder->GetJointAngle();
     SensorInput convertedShoulder = static_cast<SensorInput>(shoulderangle);
 
@@ -159,11 +155,28 @@ State Simulation::moveAgentToBeginning() {
     float crawlerLocation = crawler->GetPosition().x;
     SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
 
-    // create a state to return to the learning classes
+    //debug
+    /*
+    std::cout << std::fixed << std::setprecision(3) << "elbow:"
+        << elbowangle << "R shoulder:" << shoulderangle
+        << "R Xlocation " << crawlerLocation <<std::endl;
+    */
+
+    // Return State
     ResponsePacket responsePacket0(999, convertedLocation);
     ResponsePacket responsePacket1(shoulderID, convertedShoulder);
     ResponsePacket responsePacket2(elbowID, convertedElbow);
     return {responsePacket0, responsePacket1, responsePacket2};
+}
+
+void Simulation::moveAgentToStartPosition() {
+    /*
+    TODO: remove this comment.
+    I googled "box2d move body to position" and found:
+    https://stackoverflow.com/questions/6170087/move-body-to-a-specific-position-box2d
+    I did not test anyting.
+    -Mikael
+    */
 }
 
 State Simulation::simulateAction(Action& action) {
@@ -205,30 +218,5 @@ State Simulation::simulateAction(Action& action) {
         //usleep(150);
     }
 
-
-    // Angles of joints in radians
-    float elbowangle = elbow->GetJointAngle();
-    SensorInput convertedElbow = static_cast<SensorInput>(elbowangle);
-    float shoulderangle = shoulder->GetJointAngle();
-    SensorInput convertedShoulder = static_cast<SensorInput>(shoulderangle);
-
-    // Position on x-axis
-    float crawlerLocation = crawler->GetPosition().x;
-    SensorInput convertedLocation = static_cast<SensorInput>(crawlerLocation);
-
-    //debug
-    /*
-    std::cout << std::fixed << std::setprecision(3) << "elbow:"
-        << elbowangle << "R shoulder:" << shoulderangle
-        << "R Xlocation " << crawlerLocation <<std::endl;
-    */
-
-
-
-    // create a state to return to the AgentLearner receiveSimulationResponse-
-    // function
-    ResponsePacket responsePacket0(999, convertedLocation);
-    ResponsePacket responsePacket1(shoulderID, convertedShoulder);
-    ResponsePacket responsePacket2(elbowID, convertedElbow);
-    return {responsePacket0, responsePacket1, responsePacket2};
+    return getState();
 }

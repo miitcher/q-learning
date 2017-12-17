@@ -75,8 +75,9 @@ void agentTask(unsigned agentID,
     AgentLearner agentLearner(actors, sensors, qtableFilename);
     Simulation simulation(agentID, actors, sensors, agentShape, drawGraphics);
 
-    // Have the Simulation:s and AgentLearner:s state at the beginning.
-    State state = simulation.moveAgentToBeginning();
+    // Have the Simulation:s and AgentLearner:s state at the beginning be
+    // the same.
+    State state = simulation.getState();
     agentLearner.receiveStartingState(state);
 
     // Initiate variable.
@@ -131,6 +132,14 @@ void agentTask(unsigned agentID,
                 // This Agent has reached the goal.
                 && agentLearner.getXAxisLocation() > agentXAxisLocationOfGoal)
             {
+                if (useLogging) {
+                    cout_mutex.lock();
+                    std::cout << count << " Agent_" << agentID
+                        << " has reached the goal, the agents will now evolve"
+                        << std::endl;
+                    cout_mutex.unlock();
+                }
+
                 // This thread contains the fittest Agent this generation.
                 anAgentHasReachedTheGoal = true;
 
@@ -189,7 +198,8 @@ void agentTask(unsigned agentID,
                     << agentLearner.getXAxisLocation() << std::endl;
 
                 // Have the Simulation:s and AgentLearner:s state at the beginning.
-                state = simulation.moveAgentToBeginning();
+                simulation.moveAgentToStartPosition();
+                state = simulation.getState();
                 agentLearner.receiveStartingState(state);
 
                 // Debug   TODO: remove, when "resetting" works
@@ -199,6 +209,8 @@ void agentTask(unsigned agentID,
                 // Resume the normal running of the learning.
                 anAgentHasReachedTheGoal = false;
                 pauseThreads = false;
+
+                //std::this_thread::sleep_for (std::chrono::milliseconds(1000));
             }
 
             /*
@@ -228,7 +240,8 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex.unlock();
 
                 // Have the Simulation:s and AgentLearner:s state at the beginning.
-                state = simulation.moveAgentToBeginning();
+                simulation.moveAgentToStartPosition();
+                state = simulation.getState();
                 agentLearner.receiveStartingState(state);
 
                 // This thread, and the threads not containing the fittest Agent,
@@ -364,7 +377,7 @@ void AgentManager::createAndStartThreads() {
 void AgentManager::initRun() {
     // Print more information to cout.
     useLogging = true;
-    //useDebugging = true;
+    useDebugging = true;
 
     createAndStartThreads();
 
