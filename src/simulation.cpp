@@ -62,7 +62,7 @@ Simulation::Simulation(unsigned& agentID,
         grounddef.position.Set(0.0f, 0.0f);
         ground = m_world->CreateBody(&grounddef);
         b2EdgeShape shape;
-        shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+        shape.Set(b2Vec2(-4000.0f, 0.0f), b2Vec2(40.0f, 0.0f));
         ground->CreateFixture(&shape, 0.0f);
         //b2Vec2 gposition = ground->GetPosition();
         //std::cout   << "ground created, groundpos x:" << gposition.x << " y:"
@@ -130,16 +130,16 @@ Simulation::Simulation(unsigned& agentID,
 
         //create elbow joint and set its properties
         b2RevoluteJointDef elbowJointDef;
-        elbowJointDef.bodyA = forearm;
-        elbowJointDef.bodyB = upperArm;
+        elbowJointDef.bodyA = upperArm;
+        elbowJointDef.bodyB = forearm;
         elbowJointDef.collideConnected = false;
         elbowJointDef.enableMotor = true;
         elbowJointDef.enableLimit = true;
         elbowJointDef.lowerAngle = elbowMinAngle + 0.2;
         elbowJointDef.upperAngle = elbowMaxAngle - 0.3;
         elbowJointDef.maxMotorTorque = 500;
-        elbowJointDef.localAnchorA.Set(-1.5,0);     //left end of forearm
-        elbowJointDef.localAnchorB.Set(1.5,0);      //right end of upperarm
+        elbowJointDef.localAnchorA.Set(1.5,0);      //right end of upperarm
+        elbowJointDef.localAnchorB.Set(-1.5,0);     //left end of forearm
         elbow = (b2RevoluteJoint*)m_world->CreateJoint( &elbowJointDef );
     }
 }
