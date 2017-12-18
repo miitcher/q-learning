@@ -28,9 +28,15 @@ Main functionalities of this Q-learning implementation include:
   the learning process.
 \end{itemize}
 
+The crawler looks like this:
+
+\includegraphics[width=0.8\textwidth]{simple_agent}
+
 We could not get the graphics to work. Problems arose with
 the GLUT library lacking compatibility with threading.
-<visa lassi explain problems some more>
+visa lassi explain problems some more
+
+
 
 A plan-B was to visualize the Qtable with Cairo graphics library which we
 configured, but we didn't have time to implement the visualization.
@@ -42,7 +48,19 @@ top speed. After acquiring a top speed, the movement is stable (velocity is
 constant) if the exploration factor is set to a low value, so that the crawler
 does not make random actions.
 
-<mikael explain the evolution and config from file>
+The original plan was to make the programm support many kinds of learning
+creatures. This is the case for some of the classes (Qtable, AgentManager)
+but not all. AgentLearner class has support for crawlers with one or two joints
+and the Simulation class supports only crawlers with two joints. The finished
+program is thus compatible with a crawler that has two joints, but compatibility
+for different kinds of crawlers could be implemented with relatively small
+changes, which we did not have time for.
+
+
+
+mikael explain the evolution and config from file
+
+
 
 \section{Software structure}
 
@@ -53,8 +71,9 @@ simulate the action, returning the new simulated change of the agent to the
 learning part. The learning part evaluates the simulated change, determining
 what the reward for the performed action was, updating the Q-value.
 
-In other words, the simulation part contains the world and the body of the
-agent. The learning part contains the "brain" of the agent.
+
+uml picture here
+
 
 
 \subsection{Q-learning}
@@ -90,8 +109,17 @@ state is represented by two digits (14, 13, 15). Sensors' states are
 in the range 1...quantizationSteps. ActionKeys are in the format
 int actionKey = 30302 where each sensor's
 state is represented by two digits (3, 3, 2). Actors' moves are
-enumerations: 0 still, 1 counterclockwise and 2 clockwise and 1 is added to them
-so the key cannot be 000000.
+enumerations: 0 still, 1 counterclockwise and 2 clockwise and 1 is
+added to them so the key cannot be 000000.
+
+\subsection{Simulation}
+
+more content
+
+\subsection{Thread management,
+the user interface and configuring learner from file}
+
+more content
 
 
 \section{Instructions for building and using the program}
@@ -135,7 +163,7 @@ the classes that pertain to the learning algorithm. more content
 
 \section{Worklog}
 
-\textbf{Nov 6th to 12th}
+\subsection{Week: Nov 6th to 12th}
 
 Anssi:
 Configured the programming environment, i.e., linux virtual machine.
@@ -145,20 +173,20 @@ Mikael and myself, as we are the group members that implement the learning
 algorithm.
 15 hours
 
-\textbf{Nov 13th to 19th}
+\subsection{Week: Nov 13th to 19th}
 
 Anssi:
 Continued planning the project, made the UML picture for the plan.
 3 hours
 
-\textbf{Nov 20th to 26th}
+\subsection{Week: Nov 20th to 26th}
 
 Anssi:
 Planned the Q-learning implementation with Mikael and started coding.
 My responsibilities are the AgentLearning and Qtable classes.
 10 hours
 
-\textbf{Nov 27th to Dec 3rd}
+\subsection{Week: Nov 27th to Dec 3rd}
 
 Anssi:
 Implemented functions in the Qtable class and in the Agent class and
@@ -166,7 +194,7 @@ re-named the Agent class as AgentLearner. Made tests for these functions.
 Changed Q-table data structure from vectors to maps.
 30 hours
 
-\textbf{Dec 4th to 10th}
+\subsection{Week: Dec 4th to 10th}
 
 Anssi:
 Implemented functions in the Qtable class and in the Agent class, for
@@ -174,20 +202,20 @@ converting actions and states to keys for the Q-table map and choosing
 the Action. Also for saving and loading Q-table from a file.
 25 hours
 
-\textbf{Dec 11th to 17th}
+\subsection{Week: Dec 11th to 17th}
 
 Anssi:
 Finalized AgentLearner class and Qtable class and implemented the
 Simulation class with Visa. Tried to visualize the Q-table with
 Cairo graphics library, but didn’t have time to finish. Debugged
 and optimized  the learning process.
-30 hours
+26 hours
 
-\textbf{Dec 18th}
+\subsection{Week: Dec 18th}
 
 Anssi:
 Wrote the documentation.
-x hours
+6 hours
 
 
 \end{document}
