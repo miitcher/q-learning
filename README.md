@@ -22,7 +22,7 @@ Directory structure:
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
 * Install required packages if it's not installed already
-`sudo apt install cmake libcairo2-dev`
+`sudo apt install cmake`
 
 * Move to the build folder in the q-learning-9 folder.
 `cd q-learning-9/build/`
