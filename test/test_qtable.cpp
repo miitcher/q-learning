@@ -6,14 +6,13 @@
 TEST(test_Qtable, test_constructor) {
     std::vector<int> stateKeys = {2,55,66,7,2};
     std::vector<int> actionKeys = {3,88,99,8};
-    std::string str = "asd";
+    std::string str = "../test/files/saved_qtable_test.bin";
     Qtable t(stateKeys, actionKeys, str);
     Qtable t1(stateKeys, actionKeys);
     //std::cout << t;
     EXPECT_EQ(t.getStateKeys()[0], 2);
     EXPECT_EQ(t.getActionKeys()[0], 3);
-    EXPECT_EQ(t.getQtableFilename(), "asd");
-    EXPECT_EQ(t1.getQtableFilename(), "");
+    EXPECT_EQ(t.getQtableFilename(), str);
 
     ASSERT_THROW(Qtable t({},actionKeys, str), std::invalid_argument);
     ASSERT_THROW(Qtable t(stateKeys, {}, str), std::invalid_argument);
@@ -22,7 +21,7 @@ TEST(test_Qtable, test_constructor) {
 TEST(test_Qtable, test_functions) {
     std::vector<int> stateKeys = {2,55,66,7,2};
     std::vector<int> actionKeys = {3,88,99,8};
-    std::string str = "asd";
+    std::string str = "../test/files/saved_qtable_test.bin";
     Qtable t(stateKeys, actionKeys, str);
     Qtable t1(stateKeys, actionKeys);
 
@@ -63,7 +62,7 @@ TEST(test_Qtable, test_save_and_load) {
     std::vector<int> stateKeys = {2,55,66,7,2};
     std::vector<int> actionKeys = {3,88,99,8,2};
     std::string str = "qtabletestfile3.bin";
-    Qtable t(stateKeys, actionKeys, str);
+    Qtable t(stateKeys, actionKeys);
 
     int state = 7;
     int action = 8;
@@ -101,7 +100,7 @@ TEST(test_Qtable, test_save_and_load) {
     t.saveToFile(str);
 
     // New table is created, every value is 0.1
-    Qtable tableCopy(stateKeys, actionKeys, str);
+    Qtable tableCopy(stateKeys, actionKeys);
 
     state = 7; action = 3;
     EXPECT_FLOAT_EQ(tableCopy.getQvalue(state,action), 0.1);
@@ -119,7 +118,7 @@ TEST(test_Qtable, test_save_and_load) {
     EXPECT_FLOAT_EQ(tableCopy.getQvalue(state,action), 0.1);
 
     //std::cout << tableCopy;
-    tableCopy.loadFromFile();
+    tableCopy.loadFromFile(str);
     //std::cout << tableCopy;
 
     // Qtable is loaded from file:

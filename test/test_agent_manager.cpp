@@ -18,7 +18,7 @@ TEST(test_agentManager, test_agentTask_smoketest) {
     std::vector<Actor> actors = {a0, a1};
     std::vector<Sensor> sensors = {b0, b1, b2};
     AgentShape agentShape = 42;
-    std::string qtableFilename = "qtabletestfile2.bin";
+    std::string qtableFilename = "../test/files/fast_qtable.bin";
     bool drawGraphics = false;
     unsigned maxLoopCount = 100;
     bool canSaveQtable = false;
@@ -47,7 +47,7 @@ TEST(test_agentManager, test_initRun_smoketest) {
     std::vector<Sensor> sensors = {b0, b1, b2};
     AgentShape agentShape = 42;
     unsigned agentCount = 3;
-    std::string qtableFilename = "qtabletestfile.bin";
+    std::string qtableFilename = "../test/files/fast_qtable.bin";
     bool drawGraphics = false;
 
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
