@@ -6,17 +6,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <cairo.h>
 
-
-// Add these two lines and FRIEND_TEST declarations in private to test
-// private methods
+// For testing private methods
 #define FRIEND_TEST(test_case_name, test_name)\
 friend class test_case_name##_##test_name##_Test
 
-// The state and reward are calculated by the agent from the simulation's
+// The reward is calculated by the agent from the simulation's
 // response.
-typedef int QState;
 typedef double QReward;
 
 class AgentLearner {
@@ -138,18 +134,17 @@ private:
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
     double explorationFactor   = 0.001;   // range: 0...1, e.g. 0.5, decrease
 
-    // TODO: might not need this & What is this used for?
-    State currentAnalogState;
-    // TODO: better description
+    // the key to the state that this AgentLeaner is currently
     int currentStateKey;
-    // TODO: better description
+    // the key to the state that this AgentLeaner was before the current state
     int previousStateKey;
-    // location is an analog value for the XAxisSensors input, in simulaion units.
-    // The simulation determines these trough: receiveStartingState.
+    // location is an analog value for the XAxisSensors input, in simulation
+    // units.
+    // The simulation determines these trough: receiveSimulationResponse.
     SensorInput location;
     SensorInput previousLocation;
 
-    // TODO: better description
+    // the key to the action that this AgentLeaner just committed
     int currentActionKey;
 
     std::vector<Actor> actors;
