@@ -89,7 +89,7 @@ Simulation::Simulation(unsigned& agentID,
         b2FixtureDef boxFixtureDef;
         boxFixtureDef.shape = &boxShape;
         boxFixtureDef.density = 1;
-        boxFixtureDef.friction = 0.2f;
+        boxFixtureDef.friction = 0.3f;
         crawler->CreateFixture(&boxFixtureDef);
 
         // create upperarm
@@ -177,27 +177,73 @@ State Simulation::getState() {
 
 void Simulation::moveAgentToStartPosition() {
 	//set all parts of crawler to beginning by giving them speed
-	
-	//lift crawler up for transport
-    for(int i = 0; i < 60; i++){	
-    	crawler->SetLinearVelocity( b2Vec2( 0, 10 ) );
-    	m_world->Step(timeStep, velocityIterations, positionIterations);
-    } 
+	/*
+    if(crawler->GetAngle() > 1.5 || crawler->GetAngle() < -1.5 ){
+    	std::cout << "Crawler was fallen at moment of position reset" << std::endl;
+    }
+    */
     //move crawler fast towards 0
-    while(crawler->GetPosition().x > 20){	
-    	crawler->SetLinearVelocity( b2Vec2( -120, 0 ) );
+    while(crawler->GetPosition().x > 5){	
+    	crawler->SetLinearVelocity( b2Vec2( -100, 0.2 ));
     	m_world->Step(timeStep, velocityIterations, positionIterations);
     }
-    //let crawler fall to ground and stabilize   
+
+    //rotate joints so they wont touch ground
+    elbow->SetMotorSpeed(-2.0f);
+    shoulder->SetMotorSpeed(2.0f);
+
+    //rotate crawler to 0 degrees
+    if(crawler->GetAngle() > 0 ){
+        while(crawler->GetAngle() > 0.1){	
+    	    crawler->SetAngularVelocity(-0.5);
+    	    crawler->SetLinearVelocity(b2Vec2( 0, 0 ));
+    	    m_world->Step(timeStep, velocityIterations, positionIterations);
+    	}  
+    }
+    else{
+    	while(crawler->GetAngle() < -0.1){	
+    	    crawler->SetAngularVelocity(0.5);
+    	    crawler->SetLinearVelocity(b2Vec2( 0, 0 ));
+    	    m_world->Step(timeStep, velocityIterations, positionIterations);
+    	}
+    }
+
+    //fine tune crawler position;
+    if(crawler->GetPosition().x > 0 ){
+        while(crawler->GetPosition().x > 0.1){	
+    	    crawler->SetLinearVelocity(b2Vec2( -0.5, 0 ));
+    	    crawler->SetAngularVelocity(0);
+    	    m_world->Step(timeStep, velocityIterations, positionIterations);
+    	}  
+    }
+    else{
+    	while(crawler->GetPosition().x < -0.1){	
+    	    crawler->SetLinearVelocity(b2Vec2( 0.5, 0 ));
+    	    crawler->SetAngularVelocity(0);
+    	    m_world->Step(timeStep, velocityIterations, positionIterations);
+    	}  
+    }
+
+    //stabilize crawler 
+    crawler->SetAngularVelocity(0);  
     crawler->SetLinearVelocity( b2Vec2( 0, 0 ) );
-    for(int i = 0; i < 600; i++){	
+
+    //Let crawler fall to ground
+    for(int i = 0; i < 50; i++){	
     	m_world->Step(timeStep, velocityIterations, positionIterations);
     }
-    //move crawler slow towards 0
-    while(crawler->GetPosition().x > 0){	
-    	crawler->SetLinearVelocity( b2Vec2( -1, 0 ) );
-    	m_world->Step(timeStep, velocityIterations, positionIterations);
-    } 
+
+    //debug info
+    /*
+    std::cout << "crawler Position X:" 
+    << crawler->GetPosition().x  
+    << " Y:"
+    << crawler->GetPosition().y
+    << " Angle:"
+    << crawler->GetAngle()
+    << std::endl; 
+    */
+
 	return;
 }
 
@@ -233,6 +279,7 @@ State Simulation::simulateAction(Action& action) {
     // Which is suboptimal.
     for(int i = 0; i < simsteps; i++){
         m_world->Step(timeStep, velocityIterations, positionIterations);
+
         //usleep(150); //use only if experiencing unstability,
         //greatly reduces speed of simulation
     }

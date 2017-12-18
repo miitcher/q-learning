@@ -245,7 +245,7 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex.lock();
                 // Remove the reserved file if it exist. It should not.
                 if (std::ifstream(evolutionFittestQtableFilename)) {
-                    debug(agentID, " Evolution fittest: Remove existing qtable");
+                    //debug(agentID, " Evolution fittest: Remove existing qtable");
                     std::remove(evolutionFittestQtableFilename.c_str());
                     if (std::ifstream(evolutionFittestQtableFilename)) {
                         // End execution and throw error, when the file is not deleted.
@@ -254,7 +254,7 @@ void agentTask(unsigned agentID,
                             + evolutionFittestQtableFilename + "' not removed.");
                     }
                 }
-                debug(agentID, " Evolution fittest: Save qtable");
+                //debug(agentID, " Evolution fittest: Save qtable");
                 agentLearner.saveQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
 
@@ -264,7 +264,7 @@ void agentTask(unsigned agentID,
                 }
 
                 // Remove the fittest Q-table file.
-                debug(agentID, " Evolution fittest: Remove qtable");
+                //debug(agentID, " Evolution fittest: Remove qtable");
                 evolutionFittestFile_mutex.lock();
                 std::remove(evolutionFittestQtableFilename.c_str());
                 if (std::ifstream(evolutionFittestQtableFilename)) {
@@ -276,8 +276,8 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex.unlock();
 
                 // Debug   TODO: remove, when "resetting" works
-                std::cout << agentID << " Evolution fittest: before X="
-                    << agentLearner.getXAxisLocation() << std::endl;
+                //std::cout << agentID << " Evolution fittest: before X="
+                //    << agentLearner.getXAxisLocation() << std::endl;
 
                 // Have the Simulation:s and AgentLearner:s state at the beginning.
                 simulation.moveAgentToStartPosition();
@@ -285,8 +285,8 @@ void agentTask(unsigned agentID,
                 agentLearner.receiveStartingState(state);
 
                 // Debug   TODO: remove, when "resetting" works
-                std::cout << agentID << " Evolution fittest: after  X="
-                    << agentLearner.getXAxisLocation() << std::endl;
+                //std::cout << agentID << " Evolution fittest: after  X="
+                //    << agentLearner.getXAxisLocation() << std::endl;
 
                 // Resume the normal running of the learning.
                 anAgentHasReachedTheGoal = false;
@@ -311,7 +311,7 @@ void agentTask(unsigned agentID,
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
 
                 // Set the Q-table for all the Agents to the fittest agents Q-table.
-                debug(agentID, " Evolution other: Load qtable");
+                //debug(agentID, " Evolution other: Load qtable");
                 evolutionFittestFile_mutex.lock();
                 agentLearner.loadQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
