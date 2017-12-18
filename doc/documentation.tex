@@ -122,7 +122,9 @@ the user interface and configuring learner from file}
 more content
 
 
-\section{Instructions for building and using the program}
+\section{Instructions for using the program}
+
+\subsubsection{Build}
 
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
@@ -153,6 +155,13 @@ Build targets can be listed, built together, built separately and removed:
  \item The executable compiled targets will be in the build folder as:
   \textbf{main} and \textbf{qtests}
 \end{itemize}
+
+\subsubsection{Running}
+
+The program is run from: build/main.
+The program is configured from the file: src/configAgent.config.
+In the config-file you can change how many Agents are running and
+an optional file for the saved qtable-file.
 
 \section{Testing}
 
