@@ -180,12 +180,21 @@ int AgentLearner::quantiziseSensorInput(int sensorID, SensorInput sInput){
         throw std::invalid_argument("Sensor ID does not belong to this agent");
     }
     // max angle is exclusive and min angle inclusive
-    if(sInput < minAngle || sInput >= maxAngle){
+
+    // if the angle goes out of range, input is rounded to the limit value
+    if(sInput < minAngle){
+        sInput = minAngle;
+    }
+    if (sInput >= maxAngle){
+        sInput =maxAngle-0.001; // maxAngle is exclusive so have to add -0.001;
+    }
+        /*
         throw std::out_of_range("Sensor input is not within correct range: "
                      + std::to_string(minAngle) + " to " +
                        std::to_string(maxAngle) + ", input: " +
                                                 std::to_string(sInput));
-    }
+                                                */
+
     int scaled = static_cast<int>((quantizationSteps*(sInput-minAngle))
                                         / (maxAngle - minAngle));
     return scaled;
