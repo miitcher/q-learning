@@ -9,16 +9,44 @@
 #include <ctime>
 #include <cairo.h>
 
+// Load Q-table from the given filename.
+void Qtable::loadFromFile(std::string filename) {
+    std::ifstream file(filename, std::ios_base::binary);
+    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+
+    QValue value;
+    try {
+        std::cout << "loading Q-table from file: " << filename << std::endl;
+        for(auto state : stateKeys){
+            for (auto action : actionKeys){
+                file.read((char *)& value, sizeof(QValue));
+                //std::cout   << "Reading value from file: "
+                  //          << std::fixed << value << std::endl;
+                qValues[state][action] = value;
+            }
+        }
+        file.close();
+    }
+    catch (std::ifstream::failure e) {
+        std::cerr << "Could not load from file";
+    }
+}
+
+// Load Q-table from the filename: Qtable.qtableFilename.
+void Qtable::loadFromFile() {
+    loadFromFile(qtableFilename);
+}
+
 Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
-    std::string const& qtableFilename)
+    std::string const& qtableFilename_in)
     : stateKeys(stateKeys), actionKeys(actionKeys),
-    qtableFilename(qtableFilename)
+    qtableFilename(qtableFilename_in)
 {
     if ( stateKeys.size() < 1 || actionKeys.size() < 1){
         throw std::invalid_argument(
                     "Invalid key vector for initialization of Q-table");
     }
-// initial value is non-zero because it's used as a factor in the calculations
+    // initial value is non-zero because it's used as a factor in the calculations
     QValue initial = 0.1; // initial Q-value of every state-action element
 
     std::map<int, QValue> actionMap;
@@ -28,6 +56,10 @@ Qtable::Qtable(std::vector<int> stateKeys, std::vector<int> actionKeys,
     std::map<int, QValue>& ref = actionMap;
     for(auto key : stateKeys){
         qValues.insert(std::pair<int,std::map<int, QValue>>(key, ref));
+    }
+
+    if (!qtableFilename.empty()) {
+        loadFromFile();
     }
 }
 
@@ -41,7 +73,6 @@ std::ostream& operator<<(std::ostream& os, Qtable const& table) {
         << std::endl
         << "Qtable filename: " << table.getQtableFilename()
         << std::endl;
-
 
     // debug
     std::cout << "ActionKeys: "<< std::endl;
@@ -202,32 +233,4 @@ void Qtable::saveToFile() {
     qtableFilename = "saved_qtable_" + std::string(datetimeBuffer) + ".bin";
 
     saveToFile(qtableFilename);
-}
-
-// Load Q-table from the given filename.
-void Qtable::loadFromFile(std::string filename) {
-    std::ifstream file(filename, std::ios_base::binary);
-    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
-
-    QValue value;
-    try {
-        std::cout << "loading Q-table from file: " << filename << std::endl;
-        for(auto state : stateKeys){
-            for (auto action : actionKeys){
-                file.read((char *)& value, sizeof(QValue));
-                //std::cout   << "Reading value from file: "
-                  //          << std::fixed << value << std::endl;
-                qValues[state][action] = value;
-            }
-        }
-        file.close();
-    }
-    catch (std::ifstream::failure e) {
-        std::cerr << "Could not load from file";
-    }
-}
-
-// Load Q-table from the filename: Qtable.qtableFilename.
-void Qtable::loadFromFile() {
-    loadFromFile(qtableFilename);
 }

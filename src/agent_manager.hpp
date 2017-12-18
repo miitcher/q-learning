@@ -24,7 +24,6 @@ void agentTask(unsigned agentID,
     AgentShape agentShape, std::string qtableFilename,
     bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable);
 
-// TODO: Mikael
 // Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {
 public:
