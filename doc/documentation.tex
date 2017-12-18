@@ -16,7 +16,6 @@
 \newpage
 
 \section{Overview}
-
 Main functionalities of this Q-learning implementation include:
 \begin{itemize}
   \item Support for a crawler creature that has an arm with two joints. The
@@ -34,9 +33,8 @@ The crawler looks like this:
 
 We could not get the graphics to work. Problems arose with
 the GLUT library lacking compatibility with threading.
-visa lassi explain problems some more
 
-
+TODO: visa lassi explain problems some more
 
 A plan-B was to visualize the Qtable with Cairo graphics library which we
 configured, but we didn't have time to implement the visualization.
@@ -56,14 +54,25 @@ program is thus compatible with a crawler that has two joints, but compatibility
 for different kinds of crawlers could be implemented with relatively small
 changes, which we did not have time for.
 
+\subsection{Configuration-file}
+The support for many kinds of learning Agents is visible also in the
+configuration-file, where the plan was to have the option to change what
+Agent you run, without changing source-code. Because of obstacles and
+not having time, the only things you can modify are the number of Agents
+per run, and initializing the Agent(s) QTable from a saved file.
 
-
-mikael explain the evolution and config from file
-
+\subsection{Evolution}
+When running more than one Agent evolution is used. This means that the
+Q-Learning algorithms variables differ some from the first Agents, which
+has always the same variables.
+All Agents in a run form the current generation. When one of the Agents
+reaches to a certain distance the goal, then this Agent is the fittest. All
+other Agents will copy the fittest Agents QTable into theirs, and every Agent
+teleports to the starting position. Then the next generation tries to
+reach the goal. And so on.
 
 
 \section{Software structure}
-
 The main divide of the program is: learning and simulation. The
 simulation and the learning parts communicate with each other mainly by the
 learning part telling the simulation to do an action. The simulation will then
@@ -71,13 +80,9 @@ simulate the action, returning the new simulated change of the agent to the
 learning part. The learning part evaluates the simulated change, determining
 what the reward for the performed action was, updating the Q-value.
 
-
-uml picture here
-
-
+TODO: uml picture here
 
 \subsection{Q-learning}
-
 The learning process takes place in the AgentLearner class.
 An object of the AgentLearner
 class uses a Qtable object to store and access the Q-table. A Qtable object
@@ -113,19 +118,36 @@ enumerations: 0 still, 1 counterclockwise and 2 clockwise and 1 is
 added to them so the key cannot be 000000.
 
 \subsection{Simulation}
+TODO: Lassi and Visa: more content
 
-more content
+\subsection{Thread management}
+The AgentManager-class controlls the treads and their running trough
+atomic-booleans and mutexes. Every threads task is the AgentTask-function
+in agent\_manager.cpp. AgentManager listens on the users and AgentTasks
+inputs.
 
-\subsection{Thread management,
-the user interface and configuring learner from file}
+\subsection{User Interface}
+Because there was problems with our graphics library, we do not have a GUI.
+The program is started from the commandline, where controlls listed
+to controll the program when it is running.
 
-more content
+The Agent(s) location in the simulation is visible on the commandline as:
+
+"65k: Agent\_0 V=127 X=6418.52"
+
+\textbf{Meaning:}
+
+\begin{tabular}{ll}
+65k                     & 65 thousand actions executed \\
+Agent\_0                & Line conserns Agent number 0 \\
+V=127                   & Agents velocity in simulation units per 5k actions\\
+X=6418.52               & Agents location in simulation units\\
+\end{tabular}
 
 
 \section{Instructions for using the program}
 
 \subsubsection{Build}
-
 Cmake creates the Makefiles, and make uses the Makefiles to build the project.
 
 \begin{itemize}
@@ -157,23 +179,30 @@ Build targets can be listed, built together, built separately and removed:
 \end{itemize}
 
 \subsubsection{Running}
-
-The program is run from: build/main.
-The program is configured from the file: src/configAgent.config.
+The program is run from the built file: build/main.
+The program is optionally configured from the file: src/configAgent.config.
 In the config-file you can change how many Agents are running and
-an optional file for the saved qtable-file.
+an optional file for a saved qtable-file.
+
 
 \section{Testing}
-
-Source files for testing are in the 'test' folder. Unit tests
-are implemented for
-the classes that pertain to the learning algorithm. more content
+Testing is done with unittest trough googletest.
+The test are built as the "qtests"-buildtarget in cmake.
+The built test are run from file: build/qtests.
+Valgrind has been used from time to time, but it is not automated.
 
 
 \section{Worklog}
 
-\subsection{Week: Nov 6th to 12th}
+\subsection{Mikael}
+My main area I worked on was the planning, building, AgentManager,
+Interactor and the configuration-file. I helped also partly with nearly all
+other parts.
+A detailed log of what I worked on can be found from the GitLab-commit-history,
+and the time spent was not recorded.
 
+\subsection{Anssi}
+\subsubsection{Week: Nov 6th to 12th}
 Anssi:
 Configured the programming environment, i.e., linux virtual machine.
 Planned the learning classes; what functions they will need and what
@@ -182,37 +211,32 @@ Mikael and myself, as we are the group members that implement the learning
 algorithm.
 15 hours
 
-\subsection{Week: Nov 13th to 19th}
-
+\subsubsection{Week: Nov 13th to 19th}
 Anssi:
 Continued planning the project, made the UML picture for the plan.
 3 hours
 
-\subsection{Week: Nov 20th to 26th}
-
+\subsubsection{Week: Nov 20th to 26th}
 Anssi:
 Planned the Q-learning implementation with Mikael and started coding.
 My responsibilities are the AgentLearning and Qtable classes.
 10 hours
 
-\subsection{Week: Nov 27th to Dec 3rd}
-
+\subsubsection{Week: Nov 27th to Dec 3rd}
 Anssi:
 Implemented functions in the Qtable class and in the Agent class and
 re-named the Agent class as AgentLearner. Made tests for these functions.
 Changed Q-table data structure from vectors to maps.
 30 hours
 
-\subsection{Week: Dec 4th to 10th}
-
+\subsubsection{Week: Dec 4th to 10th}
 Anssi:
 Implemented functions in the Qtable class and in the Agent class, for
 converting actions and states to keys for the Q-table map and choosing
 the Action. Also for saving and loading Q-table from a file.
 25 hours
 
-\subsection{Week: Dec 11th to 17th}
-
+\subsubsection{Week: Dec 11th to 17th}
 Anssi:
 Finalized AgentLearner class and Qtable class and implemented the
 Simulation class with Visa. Tried to visualize the Q-table with
@@ -220,11 +244,9 @@ Cairo graphics library, but didn’t have time to finish. Debugged
 and optimized  the learning process.
 26 hours
 
-\subsection{Week: Dec 18th}
-
+\subsubsection{Week: Dec 18th}
 Anssi:
 Wrote the documentation.
 6 hours
-
 
 \end{document}
