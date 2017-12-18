@@ -354,12 +354,20 @@ Action AgentLearner::doAction() {
 
 // Has the Qtable save itself to file, with the given filename.
 const std::string& AgentLearner::saveQtable(std::string filename) {
+/*
+        std::cout << "QVars: " << discountFactor << "; "
+            << learningRate << "; " << explorationFactor << std::endl;
+            */
     qtable.saveToFile(filename);
     return qtable.getQtableFilename();
 }
 
 // Has the Qtable save itself to file, with an generated unique filename.
 const std::string& AgentLearner::saveQtable() {
+/*
+    std::cout << "QVars2: " << discountFactor << "; "
+            << learningRate << "; " << explorationFactor << std::endl;
+            */
     qtable.saveToFile();
     return qtable.getQtableFilename();
 }

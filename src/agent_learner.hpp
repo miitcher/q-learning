@@ -136,7 +136,7 @@ private:
     int ID;
     double discountFactor      = 0.9;  // range 0...1, e.g. 0.9, increase
     double learningRate        = 0.1;   // range: 0...1, e.g. 0.1
-    double explorationFactor   = 0.5;   // range: 0...1, e.g. 0.5, decrease
+    double explorationFactor   = 0.001;   // range: 0...1, e.g. 0.5, decrease
 
     // TODO: might not need this & What is this used for?
     State currentAnalogState;
