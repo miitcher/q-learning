@@ -101,13 +101,67 @@ void debug(int integer0, std::string str1) {
     debug(std::to_string(integer0), str1, "");
 }
 
+void moveAgentToBeginning(Simulation &simulation, AgentLearner &agentLearner,
+    double &lastAgentXLocation)
+{
+    // Have the Simulation:s and AgentLearner:s state at the beginning.
+    simulation.moveAgentToStartPosition();
+    agentLearner.receiveStartingState(simulation.getState());
+    lastAgentXLocation = 0.0;
+}
+
+void introduceVariationInQVars(double &discountFactor,
+    double &learningRate, double &explorationFactor)
+{
+    // Construct a trivial random generator engine from a time-based seed:
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+    std::uniform_int_distribution<int> distribution(0, 100);
+
+    // Semi random floats in range [-0.1; 0.1]
+    float random_float0 = ( float(distribution(generator)) - 50.0 ) / 500.0;
+    float random_float1 = ( float(distribution(generator)) - 50.0 ) / 500.0;
+    float random_float2 = ( float(distribution(generator)) - 50.0 ) / 500.0;
+
+    std::stringstream ss;
+    ss << "random_floats: " << random_float0 << "; "
+        << random_float1 << "; " << random_float2;
+    debug(ss.str());
+
+    // Change the variables, but ceep them in the range [0,1].
+    discountFactor += random_float0;
+    if (discountFactor < 0) {
+        discountFactor = 0.0;
+    } else if (discountFactor > 1) {
+        discountFactor = 1.0;
+    }
+
+    learningRate += random_float1;
+    if (learningRate < 0) {
+        learningRate = 0.0;
+    } else if (learningRate > 1) {
+        learningRate = 1.0;
+    }
+
+    explorationFactor += random_float2;
+    if (explorationFactor < 0) {
+        explorationFactor = 0.0;
+    } else if (explorationFactor > 1) {
+        explorationFactor = 1.0;
+    }
+}
+
 void agentTask(unsigned agentID,
     std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
     bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable)
 {
     // This is in the Box2D units in the Simulation.
+    // Used for the goal in evolution.
     SensorInput agentXAxisLocationOfGoal = 30000;
+    // Used for the last position an Agent can be.
+    // The worlds floor is 40 000 units long in both directions: [-40k; 40k].
+    SensorInput agentXAxisLastPosition = 35000;
 
     // Create AgentLearner and Simulation that makes the Agent.
     AgentLearner agentLearner(actors, sensors, qtableFilename);
@@ -115,77 +169,37 @@ void agentTask(unsigned agentID,
 
     // Set Q-Learning function variables in AgentLearner when there are
     // more than one Agent. Changes all Agents but the first.
+    double discountFactor = agentLearner.getDiscountFactor();
+    double learningRate = agentLearner.getLearningRate();
+    double explorationFactor = agentLearner.getExplorationFactor();
     if (agentID != 0) {
-        // Construct a trivial random generator engine from a time-based seed:
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine generator(seed);
-        std::uniform_int_distribution<int> distribution(0, 100);
-
-        // Semi random float in range [-0.25; 0.25]
-        float random_float = ( float(distribution(generator)) - 0.5 ) / 200.0;
-        //debug("random_float: ", std::to_string(random_float));
-
-        double discountFactor = agentLearner.getDiscountFactor();
-        double learningRate = agentLearner.getLearningRate();
-        double explorationFactor = agentLearner.getExplorationFactor();
-
-        /*
-        {
-        std::stringstream ss;
-        ss << "Agent_" << agentID << " QVars: " << discountFactor << "; "
-            << learningRate << "; " << explorationFactor;
-        debug(ss.str());
-        }
-        */
-
-        // Change the variables, but ceep them in the range [0,1].
-        discountFactor += random_float;
-        if (discountFactor < 0) {
-            discountFactor = 0.0;
-        } else if (discountFactor > 1) {
-            discountFactor = 1.0;
-        }
-
-        learningRate += random_float;
-        if (learningRate < 0) {
-            learningRate = 0.0;
-        } else if (learningRate > 1) {
-            learningRate = 1.0;
-        }
-
-        explorationFactor += random_float;
-        if (explorationFactor < 0) {
-            explorationFactor = 0.0;
-        } else if (explorationFactor > 1) {
-            explorationFactor = 1.0;
-        }
-
-        {
-        std::stringstream ss;
-        ss << "Agent_" << agentID << " QVars: " << discountFactor << "; "
-            << learningRate << "; " << explorationFactor;
-        debug(ss.str());
-        }
-
+        introduceVariationInQVars(discountFactor, learningRate,
+            explorationFactor);
         agentLearner.setDiscountFactor(discountFactor);
         agentLearner.setLearningRate(learningRate);
         agentLearner.setExplorationFactor(explorationFactor);
     }
+    std::stringstream ss;
+    ss << "Agent_" << agentID << " QVars: d=" << discountFactor << "; l="
+        << learningRate << "; e=" << explorationFactor;
+    log(ss.str());
 
     // Have the Simulation:s and AgentLearner:s state at the beginning be
     // the same.
     State state = simulation.getState();
     agentLearner.receiveStartingState(state);
 
-    // Initiate variable.
+    // Initiate variables.
     Action action;
-
     unsigned count = 0;
-    SensorInput currentLocation; // practically a double
+    double currentXLocation;
+    float currentVelosity;
     // Used for showing the Agents learning amount. If the speed is constant
     // and large, then the Agent has learnt an optimal "strategy".
     double lastAgentXLocation = 0.0;
     double timeDeltaBetweenSpeadReading = 5; // thousand counts
+    int loop_count_between_output = pow(10, 3) * timeDeltaBetweenSpeadReading;
+
     while (true) {
         // The learning and simulation parts communicate.
         try {
@@ -199,14 +213,14 @@ void agentTask(unsigned agentID,
                         << e.what() << '\n';
         }
 
-        currentLocation = agentLearner.getXAxisLocation();
+        currentXLocation = agentLearner.getXAxisLocation();
 
         try {
 
             // EVOLUTION RELATED CODE START!
 
             /*
-            - About the evolution of the Agents, when multiple Agents are learning:
+            Evolution of the Agents, when multiple Agents are learning:
 
             The fittest AgentLearner saves its Qtable to the filename:
                 evolutionFittestQtableFilename
@@ -219,10 +233,8 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex
             When the Q-tables have been set, the Agents bodyes will also move to the
             starting position.
-            */
 
-            /*
-            Evolution fittest Agent.
+            Evolution of fittest Agent.
             If an Agent has reached the goal its the fittest of the Agents
             that are running, and will "teach" the other Agents. The "teaching"
             is done by having the other Agents copy the fittest Agents Qtable into
@@ -233,7 +245,7 @@ void agentTask(unsigned agentID,
                 // No other Agent has reached the goal.
                 && !anAgentHasReachedTheGoal
                 // This Agent has reached the goal.
-                && currentLocation > agentXAxisLocationOfGoal)
+                && currentXLocation > agentXAxisLocationOfGoal)
             {
                 log(count, " Agent_", agentID,
                     " has reached the goal, the agents will now evolve");
@@ -245,7 +257,7 @@ void agentTask(unsigned agentID,
                 evolutionFittestFile_mutex.lock();
                 // Remove the reserved file if it exist. It should not.
                 if (std::ifstream(evolutionFittestQtableFilename)) {
-                    //debug(agentID, " Evolution fittest: Remove existing qtable");
+                    debug(agentID, " Evolution fittest: Remove existing qtable");
                     std::remove(evolutionFittestQtableFilename.c_str());
                     if (std::ifstream(evolutionFittestQtableFilename)) {
                         // End execution and throw error, when the file is not deleted.
@@ -254,7 +266,7 @@ void agentTask(unsigned agentID,
                             + evolutionFittestQtableFilename + "' not removed.");
                     }
                 }
-                //debug(agentID, " Evolution fittest: Save qtable");
+                debug(agentID, " Evolution fittest: Save qtable");
                 agentLearner.saveQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
 
@@ -264,7 +276,7 @@ void agentTask(unsigned agentID,
                 }
 
                 // Remove the fittest Q-table file.
-                //debug(agentID, " Evolution fittest: Remove qtable");
+                debug(agentID, " Evolution fittest: Remove qtable");
                 evolutionFittestFile_mutex.lock();
                 std::remove(evolutionFittestQtableFilename.c_str());
                 if (std::ifstream(evolutionFittestQtableFilename)) {
@@ -275,28 +287,15 @@ void agentTask(unsigned agentID,
                 }
                 evolutionFittestFile_mutex.unlock();
 
-                // Debug   TODO: remove, when "resetting" works
-                //std::cout << agentID << " Evolution fittest: before X="
-                //    << agentLearner.getXAxisLocation() << std::endl;
-
-                // Have the Simulation:s and AgentLearner:s state at the beginning.
-                simulation.moveAgentToStartPosition();
-                state = simulation.getState();
-                agentLearner.receiveStartingState(state);
-
-                // Debug   TODO: remove, when "resetting" works
-                //std::cout << agentID << " Evolution fittest: after  X="
-                //    << agentLearner.getXAxisLocation() << std::endl;
+                moveAgentToBeginning(simulation, agentLearner, lastAgentXLocation);
 
                 // Resume the normal running of the learning.
                 anAgentHasReachedTheGoal = false;
                 pauseThreads = false;
-
-                //std::this_thread::sleep_for (std::chrono::milliseconds(1000));
             }
 
             /*
-            Evolution Agents other than the fittest Agent.
+            Evolution of Agents other than the fittest Agent.
             When the fittest Agent has reached the goal, the other agent will
             wait until they can read the saved Q-table.
             */
@@ -311,15 +310,12 @@ void agentTask(unsigned agentID,
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
 
                 // Set the Q-table for all the Agents to the fittest agents Q-table.
-                //debug(agentID, " Evolution other: Load qtable");
+                debug(agentID, " Evolution other: Load qtable");
                 evolutionFittestFile_mutex.lock();
                 agentLearner.loadQtable(evolutionFittestQtableFilename);
                 evolutionFittestFile_mutex.unlock();
 
-                // Have the Simulation:s and AgentLearner:s state at the beginning.
-                simulation.moveAgentToStartPosition();
-                state = simulation.getState();
-                agentLearner.receiveStartingState(state);
+                moveAgentToBeginning(simulation, agentLearner, lastAgentXLocation);
 
                 // This thread, and the threads not containing the fittest Agent,
                 // will now pause until all the Agents are done updating
@@ -340,29 +336,35 @@ void agentTask(unsigned agentID,
 
         }
 
+        //Move Agent to beginning if the Agent has reached the end of the
+        //worlds floor [-40k; 40k].
+        if (agentXAxisLastPosition < currentXLocation
+            || currentXLocation < -agentXAxisLastPosition)
+        {
+            debug("Move Agent_", std::to_string(agentID)," to begginning!");
+            moveAgentToBeginning(simulation, agentLearner, lastAgentXLocation);
+        }
+
         count++;
+
+        // Used in testing where the learning is ending fast.
         if (maxLoopCount != 0 && count > maxLoopCount)
             break;
 
-        if (useLogging) {
-            int loop_count_between_output = pow(10, 3)
-                * timeDeltaBetweenSpeadReading;
-            if (count % loop_count_between_output == 0) {
-                // v = d / t; time is X * 1000 count-units
-                float speed = ( currentLocation
-                    - lastAgentXLocation )
-                    / timeDeltaBetweenSpeadReading;
-                lastAgentXLocation = currentLocation;
-
-                // Print the current speed and location for the Agent.
-                // Used instead of graphics.
-                cout_mutex.lock();
-                std::cout << int(count / 1000) << "k: Agent_" << agentID
-                    << " V=" << int(speed)
-                    << " X=" << currentLocation
-                    << std::endl;
-                cout_mutex.unlock();
-            }
+        // Output info about Agent to commandline.
+        if (count % loop_count_between_output == 0) {
+            // v = d / t; time is X * 1000 count-units
+            currentVelosity = ( currentXLocation - lastAgentXLocation )
+                / timeDeltaBetweenSpeadReading;
+            lastAgentXLocation = currentXLocation;
+            // Print the current currentVelosity and location for the Agent.
+            // Used instead of graphics.
+            cout_mutex.lock();
+            std::cout << int(count / 1000) << "k: Agent_" << agentID
+                << " V=" << int(currentVelosity)
+                << " X=" << currentXLocation
+                << std::endl;
+            cout_mutex.unlock();
         }
 
         /*
@@ -450,7 +452,7 @@ void AgentManager::createAndStartThreads() {
 void AgentManager::initRun() {
     // Print more information to cout.
     useLogging = true;
-    useDebugging = true;
+    //useDebugging = true;
 
     createAndStartThreads();
 

@@ -279,8 +279,10 @@ void AgentLearner::receiveSimulationResponse(State& state) {
             }
         }
         // Calculate reward based on the distace travelled
-        //std::cout << "distance: " << location - previousLocation <<std::endl;
-        QReward reward = calculateReward( location - previousLocation );
+        // The reward is scaled to about 1 and then a punishment of
+        // 0.04 is added.
+        QReward reward = ( (location - previousLocation) * 5 ) - 0.04;
+        // Debug
         //std::cout << "reward: " << reward << std::endl;
 
         previousStateKey = currentStateKey;
@@ -296,37 +298,25 @@ void AgentLearner::receiveSimulationResponse(State& state) {
 void AgentLearner::updateQtable(QReward const& reward) {
     try{
         QValue oldQValue = qtable.getQvalue(previousStateKey, currentActionKey);
-
         QValue maxQvalueForCurrentState = qtable.getMaxQvalue(currentStateKey);
-
         QValue newQValue = ((1 - learningRate) * oldQValue) + learningRate *
-                    ( reward * discountFactor * maxQvalueForCurrentState);
-
+                    ( reward + discountFactor * maxQvalueForCurrentState);
+        // Debug
+        /*
+        std::cout << "QVals: "
+            << newQValue - oldQValue << " "
+            << oldQValue << " "
+            << newQValue << " "
+            << reward << " "
+            << maxQvalueForCurrentState
+            << std::endl;
+        */
         qtable.updateQvalue(previousStateKey, currentActionKey, newQValue);
-
-      // debug
-  /*      std::cout   << "Old q-value: " << oldQValue << std::endl
-                    << "max q-value for the next state: "
-                    << maxQvalueForCurrentState << std::endl
-                    << "reward: " << reward << std::endl
-                    << "alpha, gamma: " << learningRate << ", "
-                    << discountFactor << std::endl
-                    << "new q-value: " << newQValue << std::endl<< std::endl;
-*/
     }
     catch(std::exception& e){
         std::cerr << "exception caught in updateQtable: "
                     << e.what() << '\n';
     }
-}
-
-QReward AgentLearner::calculateReward(SensorInput distanceTravelled){
-    // This should be adjusted to yield a reasonable value.
-    // At the moment does only a type conversion
-
-    //std::cout << "distace travelled: " << distanceTravelled << std::endl;
-
-    return static_cast<QReward>(distanceTravelled + 1);
 }
 
 Action AgentLearner::chooseBestAction() {

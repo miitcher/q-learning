@@ -120,9 +120,6 @@ private:
      */
     int quantiziseSensorInput(int sensorID, SensorInput sInput);
 
-    /* Calculates the reward according to simulation input */
-    QReward calculateReward(SensorInput distanceTravelled);
-
     // Uses the Q-learning algorithm.
     void updateQtable(QReward const& reward);
 
@@ -132,7 +129,7 @@ private:
     int ID;
     double discountFactor      = 0.9;   // range 0...1, increase
     double learningRate        = 0.1;   // range: 0...1,
-    double explorationFactor   = 0.001; // range: 0...1, decrease
+    double explorationFactor   = 0.5;   // range: 0...1, decrease
 
     // the key to the state that this AgentLeaner is currently
     int currentStateKey;
