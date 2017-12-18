@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc} % Allow using of åäö, etc.
+\usepackage{graphicx} % Add pictures.
+\usepackage{verbatim} % Add multiline comments.
+
+% comment about something
+\author{Mikael Grön, Anssi Moisio, Visa Koski, Lassi Knuuttila}
+\title{Q-learning Project Documentation - C++ ELEC-A7150}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Overview}
+
+\begin{itemize}
+  \item Basic Q-Learning implementation
+  \item Bots will eventually learn how to perform simple
+  tasks (such as moving forward) by themselves
+  \item Application can save learning data to external file so user
+  doesn't lose progress between sessions
+  \item Bots can share their knowledge with other bots to speed up learning
+  process
+\end{itemize}
+
+\section{Software structure}
+
+The main divide of the program is: learning and simulation. The
+simulation and the learning parts communicate with each other mainly by the
+learning part telling the simulation to do an action. The simulation will then
+simulate the action, returning the new simulated change of the agent to the
+learning part. The learning part evaluates the simulated change, determining
+what the reward for the performed action was, updating the Q-value.
+
+In other words, the simulation part contains the world and the body of the
+agent. The learning part contains the "brain" of the agent.
+
+
+\section{Instructions for building and using the program}
+
+Cmake creates the Makefiles, and make uses the Makefiles to build the project.
+
+\begin{itemize}
+  \item Install required packages if they're not installed already
+  `sudo apt install cmake libcairo2-dev`
+
+  \item Move to the build folder in the q-learning-9 folder.
+  `cd q-learning-9/build/`
+
+  \item Create Makefile.
+  `cmake ..`
+\end{itemize}
+
+Build targets can be listed, built together, built separately and removed:
+
+\begin{itemize}
+  \item List targets that can be built.
+`make help`
+
+ \item Compile everything.
+`make` or `make all`
+
+ \item Compile main.
+`make main`
+
+ \item Compile tests.
+`make qtests`
+
+ \item Remove compiled targets.
+`make clean`
+
+ \item The executable compiled targets will be in the build folder as:
+`main`
+`qtests`
+\end{itemize}
+
+\section{Testing}
+
+Source files for testing are in the 'test' folder. Unit tests are implemented for
+the classes that pertain to the learning algorithm. more content
+
+
+\section{Worklog}
+
+\textbf{Nov 6th to 12th}
+
+Anssi:
+Configured the programming environment, i.e., linux virtual machine. Planned the learning classes; what functions they will need and what member data they will use. Planned the distribution of roles between Mikael and myself, as we are the group members that implement the learning algorithm.
+15 hours
+
+\textbf{Nov 13th to 19nd}
+
+Anssi:
+Continued planning the project, made the UML picture for the plan.
+3 hours
+
+\textbf{Nov 20th to 26th}
+
+Anssi:
+Planned the Q-learning implementation with Mikael and started coding. My responsibilities are the AgentLearning and Qtable classes.
+10 hours
+
+\textbf{Nov 27th to Dec 3rd}
+
+Anssi:
+Implemented functions in the Qtable class and in the Agent class and re-named the Agent class as AgentLearner. Made tests for these functions. Changed Q-table data structure from vectors to maps.
+30 hours
+
+\textbf{Dec 4th to 10th}
+
+Anssi:
+Implemented functions in the Qtable class and in the Agent class, for converting actions and states to keys for the Q-table map and choosing the Action. Also for saving and loading Q-table from a file.
+25 hours
+
+\textbf{Dec 11th to 17th}
+
+Anssi:
+Finalized AgentLearner class and Qtable class and implemented the Simulation class with Visa. Tried to visualize the Q-table with Cairo graphics library, but didn’t have time to finish. Debugged and optimized  the learning process.
+30 hours
+
+\textbf{Dec 18th}
+
+Anssi:
+Wrote the documentation.
+x hours
+
+
+\end{document}

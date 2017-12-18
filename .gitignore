@@ -2,6 +2,10 @@
 plan/*.aux
 plan/*.log
 plan/*.toc
+doc/*.aux
+doc/*.log
+doc/*.toc
+doc/*.dvi
 
 # Files from building project
 build/*
