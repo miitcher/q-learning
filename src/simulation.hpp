@@ -15,8 +15,7 @@ this feature, therefore AgentShape is a placeholder.
 */
 typedef int AgentShape;
 
-// Model-class used before the real Box2D simulation can be used.
-// Shows the wanted behaviour.
+/* Uses box2d to simulate the process */
 class Simulation {
 public:
     Simulation(unsigned& agentID,

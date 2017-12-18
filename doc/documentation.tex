@@ -104,7 +104,17 @@ detect each 10 different states, the total number of states is
 
 The Qtable class has functions for finding the best action and finding
 the optimal Q-value for a state of the crawler. These are used in the
-learning process to update the Q-values.
+learning process to update the Q-values. The actual learning algorithm
+is in the updateQtable function in the AgentLearner class. The algorithm
+is:
+\[Q(s_t, a_t) = (1 - \alpha) \cdot Q(s_t, a_t) + \alpha
+[ r_t + \gamma \cdot max_aQ(s_{t+1}, a)]\]
+
+Where $s_t$ is the current state, $a_t$ the current action,
+$\alpha$ is the learning rate, $r_t$ is the reward from doing the action,
+$\gamma$ is the discount factor, $max_aQ(s_{t+1}, a)$ is the next states
+highest possible Q-value. The reward is calculated from the distance travelled
+as a consequence of the action.
 
 The AgentLearner needs to convert the state of the learning crawler to a key
 for the Qtable object. The states are quantisized from the continuous states
@@ -115,21 +125,21 @@ in the range 1...quantizationSteps. ActionKeys are in the format
 int actionKey = 30302 where each sensor's
 state is represented by two digits (3, 3, 2). Actors' moves are
 enumerations: 0 still, 1 counterclockwise and 2 clockwise and 1 is
-added to them so the key cannot be 000000.
+added to the key so the key cannot be 000000.
 
 \subsection{Simulation}
 TODO: Lassi and Visa: more content
 
 \subsection{Thread management}
-The AgentManager-class controlls the treads and their running trough
+The AgentManager-class controls the treads and their running trough
 atomic-booleans and mutexes. Every threads task is the AgentTask-function
 in agent\_manager.cpp. AgentManager listens on the users and AgentTasks
 inputs.
 
 \subsection{User Interface}
 Because there was problems with our graphics library, we do not have a GUI.
-The program is started from the commandline, where controlls listed
-to controll the program when it is running.
+The program is started from the commandline, where controls listed
+to control the program when it is running.
 
 The Agent(s) location in the simulation is visible on the commandline as:
 
@@ -201,7 +211,7 @@ other parts.
 A detailed log of what I worked on can be found from the GitLab-commit-history,
 and the time spent was not recorded.
 
-\subsection{Anssi}
+\subsection{Others}
 \subsubsection{Week: Nov 6th to 12th}
 Anssi:
 Configured the programming environment, i.e., linux virtual machine.
@@ -221,8 +231,8 @@ Continued planning the project, made the UML picture for the plan.
 3 hours
 
 Lassi:
-Continued watching educational videos on Box2D. Created the Simulation 
-part of the UML and project plan with Visa. 
+Continued watching educational videos on Box2D. Created the Simulation
+part of the UML and project plan with Visa.
 10 hours
 
 \subsubsection{Week: Nov 20th to 26th}
@@ -243,8 +253,8 @@ Changed Q-table data structure from vectors to maps.
 30 hours
 
 Lassi:
-After a lot of trial and error, Visa and I got the simulation to a point 
-where one could control the crawler with keyboard. We used a testbed from 
+After a lot of trial and error, Visa and I got the simulation to a point
+where one could control the crawler with keyboard. We used a testbed from
 Box2D and decided to keep it so that the Q-learner would control the testbed.
 25 hours.
 
