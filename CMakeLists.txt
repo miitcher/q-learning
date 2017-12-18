@@ -4,7 +4,7 @@ IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 
 # Project wide settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.7.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 PROJECT(q-learning-9)
 
 # Module path added separately for Cairo, because it is not in cmake.

@@ -2,6 +2,8 @@
 plan/*.aux
 plan/*.log
 plan/*.toc
+
+# Files generated when compiling the documentation
 doc/*.aux
 doc/*.log
 doc/*.toc
