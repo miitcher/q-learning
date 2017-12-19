@@ -31,10 +31,8 @@ The crawler looks like this:
 
 \includegraphics[width=0.8\textwidth]{simple_agent}
 
-We could not get the graphics to work. Problems arose with
+We could not get the graphics Box2D's Testbed to work. Problems arose with
 the GLUT library lacking compatibility with threading.
-
-TODO: visa lassi explain problems some more
 
 A plan-B was to visualize the Qtable with Cairo graphics library which we
 configured, but we didn't have time to implement the visualization.
@@ -123,7 +121,9 @@ offered some physics demos. We made a new test that simulated our crawler
 and the user could control it with WASD-keys (demoed in the mid-term meeting).
 The problems started when we tried to combine it with the Q-learner as the
 Testbed paused the Q-learner thread. This was because the OpenGL library GLUT
-wasn't compatible with multiple threads.
+didn't seem to be compatible with multiple threads. So we discarded our work on
+Testbed and started investigating Cairo graphics library but our time was running out
+so we didn't implement it in our project. 
 
 \subsection{Thread management}
 The AgentManager-class controlls the treads and their running trough
@@ -206,11 +206,12 @@ other parts.
 A detailed log of what I worked on can be found from the GitLab-commit-history,
 and the time spent was not recorded.
 
-\subsection{Anssi}
 
-\subsection{Visa}
-my area was box2d, simulation and graphics. graphics didnt get implemented due 
-time and opengl not liking threading
+\subsection{Visa and Lassi}
+Our area was implementing the Box2D, simulation and graphics. However, as we didn't
+get the graphics to work, we had to discard them.
+
+\subsection{Timeline}
 
 \subsubsection{Week: Nov 6th to 12th}
 Anssi:
