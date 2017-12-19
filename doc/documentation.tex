@@ -102,7 +102,18 @@ detect each 10 different states, the total number of states is
 
 The Qtable class has functions for finding the best action and finding
 the optimal Q-value for a state of the crawler. These are used in the
-learning process to update the Q-values.
+learning process to update the Q-values. The actual learning algorithm
+is in the updateQtable function in the AgentLearner class. The algorithm
+is:
+\[Q(s_t, a_t) = (1 - \alpha) \cdot Q(s_t, a_t) + \alpha
+[ r_t + \gamma \cdot max_aQ(s_{t+1}, a)]\]
+
+Where $s_t$ is the current state, $a_t$ the current action,
+$\alpha$ is the learning rate, $r_t$ is the reward from doing the action,
+$\gamma$ is the discount factor, $max_aQ(s_{t+1}, a)$ is the next states
+highest possible Q-value. The reward is calculated from the distance travelled
+as a consequence of the action.
+
 
 The AgentLearner needs to convert the state of the learning crawler to a key
 for the Qtable object. The states are quantisized from the continuous states
@@ -206,6 +217,8 @@ other parts.
 A detailed log of what I worked on can be found from the GitLab-commit-history,
 and the time spent was not recorded.
 
+\subsection{Anssi}
+My area was to implement the AgentLearner and Q-table classes.
 
 \subsection{Visa and Lassi}
 Our area was implementing the Box2D, simulation and graphics. However, as we didn't
