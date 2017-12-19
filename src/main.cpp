@@ -21,11 +21,12 @@ int main() {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+    bool doNotTrain;
     // Set variables. This is error prone, because the user can modify the
     // configuration file.
     try {
         readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
-            agentShape, agentCount, qtableFilename, drawGraphics);
+            agentShape, agentCount, qtableFilename, drawGraphics, doNotTrain);
     } catch (std::runtime_error& e) {
         std::cout << "An error occured, while reading the config file: "
             << e.what() << std::endl;
@@ -34,7 +35,7 @@ int main() {
 
     // Set AgentManager
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
-        qtableFilename, drawGraphics);
+        qtableFilename, drawGraphics, doNotTrain);
 
     // Start learning
     agentManager.initRun();

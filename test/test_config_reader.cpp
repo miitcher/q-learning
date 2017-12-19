@@ -11,9 +11,10 @@ TEST(test_config_reader, test_readAgentConfigFile) {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+    bool doNotTrain;
 
-    readAgentLearnerConfigFile(agentConfigFilename,
-        actors, sensors, agentShape, agentCount, qtableFilename, drawGraphics);
+    readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
+        agentShape, agentCount, qtableFilename, drawGraphics, doNotTrain);
 
     // Actor 0
     EXPECT_EQ(actors[0].getID(), 1);
@@ -30,6 +31,7 @@ TEST(test_config_reader, test_readAgentConfigFile) {
     EXPECT_EQ(agentCount, unsigned(3));
     EXPECT_EQ(qtableFilename, "qtabletestfile4.bin");
     EXPECT_EQ(drawGraphics, false);
+    EXPECT_EQ(doNotTrain, false);
 
     /* Debug code for printing the variables.
     std::cout << std::endl << "Retvals:" << std::endl;
@@ -55,10 +57,11 @@ TEST(test_config_reader, test_readAgentConfigFile_wrong_filename) {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+    bool doNotTrain;
 
     try {
         readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
-            agentShape, agentCount, qtableFilename, drawGraphics);
+            agentShape, agentCount, qtableFilename, drawGraphics, doNotTrain);
     } catch (std::runtime_error& e) {
         EXPECT_STREQ(e.what(),
             "File '../test/files/configAgent_test.config2' does not exist.");
@@ -74,10 +77,11 @@ TEST(test_config_reader, test_readAgentConfigFile_faulty_file) {
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+    bool doNotTrain;
 
     try {
         readAgentLearnerConfigFile(agentConfigFilename, actors, sensors,
-            agentShape, agentCount, qtableFilename, drawGraphics);
+            agentShape, agentCount, qtableFilename, drawGraphics, doNotTrain);
     } catch (std::runtime_error& e) {
         EXPECT_STREQ(e.what(),
             "FAULTY LINE:11: JointSensor, 1, 512, 0.0");

@@ -22,14 +22,15 @@ thread can save its Qtable.
 void agentTask(unsigned agentID,
     std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
-    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable);
+    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable,
+    bool doNotTrain);
 
 // Initializes and controlls the threads where agents and their simulation are.
 class AgentManager {
 public:
     AgentManager(std::vector<Actor>& actors, std::vector<Sensor>& sensors,
         AgentShape& agentShape, unsigned int agentCount,
-        std::string const& qtableFilename, bool drawGraphics);
+        std::string const& qtableFilename, bool drawGraphics, bool doNotTrain);
     /**
     Creates and runs threads that contain an agent and its simulation.
     The threads use agentTask as their task.
@@ -67,6 +68,7 @@ private:
     unsigned int agentCount;
     std::string qtableFilename;
     bool drawGraphics;
+    bool doNotTrain;
     std::vector<std::thread> agentThreads;
 };
 

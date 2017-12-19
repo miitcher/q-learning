@@ -22,9 +22,10 @@ TEST(test_agentManager, test_agentTask_smoketest) {
     bool drawGraphics = false;
     unsigned maxLoopCount = 100;
     bool canSaveQtable = false;
+    bool doNotTrain = false;
 
     agentTask(0, actors, sensors, agentShape, qtableFilename,
-        drawGraphics, maxLoopCount, canSaveQtable);
+        drawGraphics, maxLoopCount, canSaveQtable, doNotTrain);
 
 }
 
@@ -49,9 +50,10 @@ TEST(test_agentManager, test_initRun_smoketest) {
     unsigned agentCount = 3;
     std::string qtableFilename = "../test/files/fast_qtable.bin";
     bool drawGraphics = false;
+    bool doNotTrain = false;
 
     AgentManager agentManager(actors, sensors, agentShape, agentCount,
-        qtableFilename, drawGraphics);
+        qtableFilename, drawGraphics, doNotTrain);
 
     agentManager.createAndStartThreads();
 

@@ -151,10 +151,34 @@ void introduceVariationInQVars(double &discountFactor,
     }
 }
 
+// Used every 1000k count
+void mofifyQVars(unsigned agentID, AgentLearner &agentLearner) {
+    // Reduse explorationFactor
+    double explorationFactor = agentLearner.getExplorationFactor();
+    // 0.5 * ( 0.5 ^ 9 ) ~= 0.001
+    agentLearner.setExplorationFactor(explorationFactor * 0.5);
+    // Increase discountFactor
+    double discountFactor = agentLearner.getDiscountFactor();
+    // 0.8 * (1.04 ^ 3 ) ~= 0.9
+    if (discountFactor >= 0.9) {
+        discountFactor = 0.9;
+    } else {
+        agentLearner.setDiscountFactor(discountFactor * 1.04);
+    }
+
+    std::stringstream ss;
+    ss << "Agent_" << agentID << " QVars changed to: d="
+        << agentLearner.getDiscountFactor()
+        << "; l=" << agentLearner.getLearningRate()
+        << "; e=" << agentLearner.getExplorationFactor();
+    log(ss.str());
+}
+
 void agentTask(unsigned agentID,
     std::vector<Actor> actors, std::vector<Sensor> sensors,
     AgentShape agentShape, std::string qtableFilename,
-    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable)
+    bool drawGraphics, unsigned maxLoopCount, bool canSaveQtable,
+    bool doNotTrain)
 {
     // This is in the Box2D units in the Simulation.
     // Used for the goal in evolution.
@@ -166,6 +190,17 @@ void agentTask(unsigned agentID,
     // Create AgentLearner and Simulation that makes the Agent.
     AgentLearner agentLearner(actors, sensors, qtableFilename);
     Simulation simulation(agentID, actors, sensors, agentShape, drawGraphics);
+
+    /*
+    WHEN AN AGENT IS TRAINED THE explorationFactor AND learningRate
+    CAN BE SET TO ZERO, SO ONLY THE OPTIMAL MOVES ARE MADE.
+    */
+    if (doNotTrain) {
+        agentLearner.setDiscountFactor(0.0);
+        agentLearner.setLearningRate(0.0);
+        // The explorationFactor, so the agent do not get stuck.
+        agentLearner.setExplorationFactor(0.0001);
+    }
 
     // Set Q-Learning function variables in AgentLearner when there are
     // more than one Agent. Changes all Agents but the first.
@@ -197,8 +232,9 @@ void agentTask(unsigned agentID,
     // Used for showing the Agents learning amount. If the speed is constant
     // and large, then the Agent has learnt an optimal "strategy".
     double lastAgentXLocation = 0.0;
-    double timeDeltaBetweenSpeadReading = 5; // thousand counts
+    double timeDeltaBetweenSpeadReading = 5 * 10; // thousand counts
     int loop_count_between_output = pow(10, 3) * timeDeltaBetweenSpeadReading;
+    int mofify_QVars_between_output = pow(10, 6);
 
     while (true) {
         // The learning and simulation parts communicate.
@@ -367,6 +403,11 @@ void agentTask(unsigned agentID,
             cout_mutex.unlock();
         }
 
+        // Modify QVars every 1000k count
+        if (!doNotTrain && count % mofify_QVars_between_output == 0) {
+            mofifyQVars(agentID, agentLearner);
+        }
+
         /*
         Listen to commands from the main thread.
         Actions that can be requested:
@@ -389,10 +430,10 @@ void agentTask(unsigned agentID,
 AgentManager::AgentManager(std::vector<Actor>& actors,
     std::vector<Sensor>& sensors, AgentShape& agentShape,
     unsigned int agentCount, std::string const& qtableFilename,
-    bool drawGraphics)
+    bool drawGraphics, bool doNotTrain)
     : actors(actors), sensors(sensors), agentShape(agentShape),
     agentCount(agentCount), qtableFilename(qtableFilename),
-    drawGraphics(drawGraphics) {}
+    drawGraphics(drawGraphics), doNotTrain(doNotTrain) {}
 
 void AgentManager::pause_threads() {
     pauseThreads = true;
@@ -440,7 +481,7 @@ void AgentManager::createAndStartThreads() {
         }
         agentThreads.emplace_back(agentTask, agentID, actors, sensors,
             agentShape, qtableFilename, drawGraphics,
-            maxLoopCount, canSaveQtable);
+            maxLoopCount, canSaveQtable, doNotTrain);
     }
 
     // Evolution is used with generating new generations of Agents

@@ -16,7 +16,8 @@ enum setting {
     AgentShapeSetting,
     AgentCountSetting,
     QtableFilenameSetting,
-    DrawGraphicsSetting
+    DrawGraphicsSetting,
+    DoNotTrain
 };
 
 std::vector<std::string> commaSplitString(std::string str) {
@@ -38,7 +39,8 @@ void readAgentLearnerConfigFile(std::string& agentConfigFilename,
     AgentShape& agentShape,
     unsigned int& agentCount,
     std::string& qtableFilename,
-    bool& drawGraphics)
+    bool& drawGraphics,
+    bool& doNotTrain)
 {
     // Check if agentConfigFilename exists.
     struct stat buffer;
@@ -51,6 +53,7 @@ void readAgentLearnerConfigFile(std::string& agentConfigFilename,
     agentCount = 1;
     qtableFilename = "";
     drawGraphics = true;
+    doNotTrain = false;
 
     std::string line; // A line in the configuration file.
     std::ifstream configFile(agentConfigFilename);
@@ -78,6 +81,8 @@ void readAgentLearnerConfigFile(std::string& agentConfigFilename,
                     currentSetting = QtableFilenameSetting;
                 } else if (line == "drawGraphics") {
                     currentSetting = DrawGraphicsSetting;
+                } else if (line == "doNotTrain") {
+                    currentSetting = DoNotTrain;
                 } else if ( line[0] == '/') {
                     currentSetting = Nothing;
                 } else {
@@ -148,6 +153,16 @@ void readAgentLearnerConfigFile(std::string& agentConfigFilename,
                                 drawGraphics = true;
                             } else if (line == "false") {
                                 drawGraphics = false;
+                            } else {
+                                throw std::runtime_error("FAULTY LINE:"
+                                    + std::to_string(lineNumber) + ": " + line);
+                            }
+                            break;
+                        case DoNotTrain:
+                            if (line == "true") {
+                                doNotTrain = true;
+                            } else if (line == "false") {
+                                doNotTrain = false;
                             } else {
                                 throw std::runtime_error("FAULTY LINE:"
                                     + std::to_string(lineNumber) + ": " + line);

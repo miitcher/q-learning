@@ -127,7 +127,7 @@ private:
     Action chooseRandomAction();
 
     int ID;
-    double discountFactor      = 0.9;   // range 0...1, increase
+    double discountFactor      = 0.8;   // range 0...1, increase
     double learningRate        = 0.1;   // range: 0...1,
     double explorationFactor   = 0.5;   // range: 0...1, decrease
 

@@ -13,4 +13,5 @@ void readAgentLearnerConfigFile(std::string& agentConfigFilename,
     AgentShape& agentShape,
     unsigned int& agentCount,
     std::string& qtableFilename,
-    bool& drawGraphics);
+    bool& drawGraphics,
+    bool& doNotTrain);
