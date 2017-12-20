@@ -11,19 +11,19 @@ PROJECT(q-learning-9)
 add_compile_options(-c -g -std=c++0x -Wall -Wextra -pedantic -pthread)
 
 # Create SOURCES variable that contain the used source files
-set(SOURCES
+set(
+    SOURCES
     src/interactor.hpp src/interactor.cpp
     src/q-table.hpp src/q-table.cpp
     src/agent_learner.hpp src/agent_learner.cpp
     src/agent_manager.hpp src/agent_manager.cpp
     src/config_reader.hpp src/config_reader.cpp
-    src/simulation.hpp src/simulation.cpp)
+    src/simulation.hpp src/simulation.cpp
+)
 
 # Add Box2D
 add_subdirectory(lib/Box2D_v2.3.0)
-include_directories(
-    ${Box2D_SOURCE_DIR}
-)
+include_directories(${Box2D_SOURCE_DIR})
 
 # Add main
 ADD_EXECUTABLE(
@@ -39,6 +39,8 @@ target_link_libraries(
 
 # Add tests
 enable_testing()
+# Included as source code, because google test library must be built with
+# the same flags as the C++ code under test
 add_subdirectory(lib/gtest-1.7.0)
 include_directories(lib/gtest-1.7.0/include)
 ADD_EXECUTABLE(
